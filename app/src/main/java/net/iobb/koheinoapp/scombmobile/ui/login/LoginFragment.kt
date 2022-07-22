@@ -8,14 +8,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
+import androidx.navigation.findNavController
 import kotlinx.android.synthetic.main.fragment_login.*
+import net.iobb.koheinoapp.scombmobile.AppViewModel
 import net.iobb.koheinoapp.scombmobile.BasicAuthWebViewClient
 import net.iobb.koheinoapp.scombmobile.R
-import net.iobb.koheinoapp.scombmobile.Values
+import net.iobb.koheinoapp.scombmobile.SCOMB_LOGIN_PAGE_URL
 
 class LoginFragment : Fragment() {
     private lateinit var viewModel: LoginViewModel
+    private val appViewModel: AppViewModel by activityViewModels()
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -72,7 +77,7 @@ class LoginFragment : Fragment() {
     }
 
     fun logout(){
-        Values.sessionId = null
+        appViewModel.sessionId = null
         (webView.webViewClient as BasicAuthWebViewClient).removeAllCookies()
         loginState.value = LoginState.loggedOut
         webView.clearCache(true)
@@ -82,16 +87,18 @@ class LoginFragment : Fragment() {
         loginState.value = LoginState.inAuth
         webView.webViewClient = BasicAuthWebViewClient(user, pass){
             if(it.getOrNull(1)?.matches(Regex(".*SESSION=.*")) == true){
-                Values.sessionId = it[1].split(Regex(".*SESSION="))[1]
+                appViewModel.sessionId = it[1].split(Regex(".*SESSION="))[1]
             }
-            Log.d("cookie", Values.sessionId ?: "null")
+            Log.d("cookie", appViewModel.sessionId ?: "null")
 
-            if(Values.sessionId != null){
+            // login successful
+            if(appViewModel.sessionId != null){
                 loginState.value = LoginState.loggedIn
+                view?.findNavController()?.navigate(R.id.action_loginFragment_to_nav_home)
             }
         }
         webView.settings.javaScriptEnabled = true
-        webView.loadUrl(Values.SCOMB_LOGIN_PAGE_URL)
+        webView.loadUrl(SCOMB_LOGIN_PAGE_URL)
 
     }
 

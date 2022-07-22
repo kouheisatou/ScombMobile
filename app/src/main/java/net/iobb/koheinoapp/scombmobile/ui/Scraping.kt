@@ -1,7 +1,7 @@
 package net.iobb.koheinoapp.scombmobile.ui
 
-import net.iobb.koheinoapp.scombmobile.Values.SCOMB_HOME_URL
-import net.iobb.koheinoapp.scombmobile.Values.SCOMB_LOGIN_PAGE_URL
+import net.iobb.koheinoapp.scombmobile.SCOMB_HOME_URL
+import net.iobb.koheinoapp.scombmobile.SCOMB_LOGIN_PAGE_URL
 import org.apache.commons.codec.binary.Base64
 import org.jsoup.HttpStatusException
 import org.jsoup.Jsoup
