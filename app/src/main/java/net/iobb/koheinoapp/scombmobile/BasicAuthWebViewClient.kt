@@ -1,5 +1,6 @@
 package net.iobb.koheinoapp.scombmobile
 
+import android.os.Build
 import android.webkit.CookieManager
 import android.webkit.HttpAuthHandler
 import android.webkit.WebView
@@ -20,5 +21,9 @@ class BasicAuthWebViewClient(private val user: String, private val pass: String,
     override fun onPageFinished(view: WebView?, url: String?) {
         cookies = CookieManager.getInstance().getCookie(url).split(";")
         onCookieFetched(cookies)
+    }
+
+    fun removeAllCookies() {
+        CookieManager.getInstance().removeAllCookies(null)
     }
 }

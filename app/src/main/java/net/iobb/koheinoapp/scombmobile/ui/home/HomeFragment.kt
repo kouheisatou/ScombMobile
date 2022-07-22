@@ -7,16 +7,21 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_home.*
 import net.iobb.koheinoapp.scombmobile.databinding.FragmentHomeBinding
 import net.iobb.koheinoapp.scombmobile.BasicAuthWebViewClient
 import net.iobb.koheinoapp.scombmobile.Values.SCOMB_LOGIN_PAGE_URL
 import net.iobb.koheinoapp.scombmobile.Values.sessionId
+import java.net.CookieManager
 
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
+
+    private val loginState = MutableLiveData(false)
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -38,20 +43,48 @@ class HomeFragment : Fragment() {
 
 
     override fun onStart() {
-        webView.webViewClient = BasicAuthWebViewClient("af20023", "#L4oR3xRhEa7"){
+        loginButton.setOnClickListener {
+            if(idTextView.text.toString() != "" || passwordTextView.text.toString() != ""){
+                login(idTextView.text.toString(), passwordTextView.text.toString())
+            }else{
+                Snackbar.make(it, "empty password or username", Snackbar.LENGTH_SHORT)
+            }
+        }
+        logoutButton.setOnClickListener {
+            logout()
+        }
+        loginState.observe(viewLifecycleOwner){
+            if(it){
+                loginLL.isVisible = false
+                logoutLL.isVisible = true
+            }else{
+                loginLL.isVisible = true
+                logoutLL.isVisible = false
+            }
+        }
+        super.onStart()
+    }
+
+    fun logout(){
+        sessionId = null
+        (webView.webViewClient as BasicAuthWebViewClient).removeAllCookies()
+        loginState.value = false
+    }
+
+    fun login(user: String, pass: String){
+        webView.webViewClient = BasicAuthWebViewClient(user, pass){
             if(it.getOrNull(1)?.matches(Regex(".*SESSION=.*")) == true){
                 sessionId = it[1].split(Regex(".*SESSION="))[1]
             }
             Log.d("cookie", sessionId ?: "null")
 
             if(sessionId != null){
-                webView.isVisible = false
+                loginState.value = true
             }
         }
         webView.settings.javaScriptEnabled = true
         webView.loadUrl(SCOMB_LOGIN_PAGE_URL)
 
-        super.onStart()
     }
 
     override fun onDestroyView() {
