@@ -5,6 +5,7 @@ import android.webkit.CookieManager
 import android.webkit.HttpAuthHandler
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import java.lang.Exception
 
 
 class BasicAuthWebViewClient(private val user: String, private val pass: String, private val onCookieFetched: (cookies: List<String>) -> Unit) : WebViewClient() {
@@ -19,8 +20,12 @@ class BasicAuthWebViewClient(private val user: String, private val pass: String,
     }
 
     override fun onPageFinished(view: WebView?, url: String?) {
-        cookies = CookieManager.getInstance().getCookie(url).split(";")
-        onCookieFetched(cookies)
+        try{
+            cookies = CookieManager.getInstance().getCookie(url).split(";")
+            onCookieFetched(cookies)
+        }catch (e: Exception){
+
+        }
     }
 
     fun removeAllCookies() {
