@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import net.iobb.koheinoapp.scombmobile.ui.login.User
 import net.iobb.koheinoapp.scombmobile.ui.login.UserDao
 
-@Database(entities = [User::class], version = 1, exportSchema = false)
+@Database(entities = [User::class], version = 2, exportSchema = false)
 abstract class AppDatabase : RoomDatabase(){
     abstract fun userDao(): UserDao
 }

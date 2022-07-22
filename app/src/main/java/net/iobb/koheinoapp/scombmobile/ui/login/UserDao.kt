@@ -8,8 +8,8 @@ import androidx.room.Query
 @Dao
 interface UserDao {
 
-    @Query("SELECT * FROM user;")
-    fun loadAllUser(): Array<User>
+    @Query("SELECT * FROM user LIMIT 1;")
+    fun getUser(): User?
 
     @Query("DELETE FROM user;")
     fun removeAllUser()

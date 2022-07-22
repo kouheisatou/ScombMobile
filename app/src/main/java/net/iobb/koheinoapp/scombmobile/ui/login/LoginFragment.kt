@@ -9,13 +9,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import androidx.core.view.isVisible
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.findNavController
 import androidx.room.Room
 import kotlinx.android.synthetic.main.fragment_login.*
 import net.iobb.koheinoapp.scombmobile.*
-import java.io.*
 
 class LoginFragment : Fragment() {
     private lateinit var viewModel: LoginViewModel
@@ -52,11 +52,8 @@ class LoginFragment : Fragment() {
         ).allowMainThreadQueries().build()
 
         // recover saved id and pass from db
-        idTextView.setText(db.userDao().loadAllUser().getOrNull(0)?.username ?: "")
-        passwordTextView.setText(db.userDao().loadAllUser().getOrNull(0)?.password ?: "")
-        if(idTextView.text.toString() != "" && passwordTextView.text.toString() != ""){
-            savePassCheckBox.isChecked = true
-        }
+        idTextView.setText(db.userDao().getUser()?.username ?: "")
+        passwordTextView.setText(db.userDao().getUser()?.password ?: "")
 
         loginButton.setOnClickListener {
             if(idTextView.text.toString() != "" && passwordTextView.text.toString() != ""){
@@ -66,17 +63,15 @@ class LoginFragment : Fragment() {
         logoutButton.setOnClickListener {
             logout()
         }
-        savePassCheckBox.setOnClickListener {
-            // if checked, add user to db
-            if((it as CheckBox).isChecked){
-                db.userDao().insertUser(User(idTextView.text.toString(), passwordTextView.text.toString()))
-                for(item in db.userDao().loadAllUser()){
-                    Log.d("UserDB", item.toString())
-                }
-            }else{
-                db.userDao().removeAllUser()
-            }
+        idTextView.addTextChangedListener {
+            db.userDao().removeAllUser()
+            db.userDao().insertUser(User(idTextView.text.toString(), passwordTextView.text.toString()))
         }
+        passwordTextView.addTextChangedListener {
+            db.userDao().removeAllUser()
+            db.userDao().insertUser(User(idTextView.text.toString(), passwordTextView.text.toString()))
+        }
+
         loginState.observe(viewLifecycleOwner){
             when(loginState.value){
                 LoginState.loggedOut -> {
