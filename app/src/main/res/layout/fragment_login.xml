@@ -29,6 +29,12 @@
             android:hint="Password"
             android:inputType="textPassword" />
 
+        <CheckBox
+            android:id="@+id/savePassCheckBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Save StudentID and Password"/>
+
         <Button
             android:id="@+id/loginButton"
             android:layout_width="match_parent"

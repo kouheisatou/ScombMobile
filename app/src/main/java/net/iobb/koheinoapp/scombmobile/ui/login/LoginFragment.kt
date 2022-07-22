@@ -7,15 +7,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.findNavController
+import androidx.room.Room
 import kotlinx.android.synthetic.main.fragment_login.*
-import net.iobb.koheinoapp.scombmobile.AppViewModel
-import net.iobb.koheinoapp.scombmobile.BasicAuthWebViewClient
-import net.iobb.koheinoapp.scombmobile.R
-import net.iobb.koheinoapp.scombmobile.SCOMB_LOGIN_PAGE_URL
+import net.iobb.koheinoapp.scombmobile.*
+import java.io.*
 
 class LoginFragment : Fragment() {
     private lateinit var viewModel: LoginViewModel
@@ -44,13 +44,38 @@ class LoginFragment : Fragment() {
 
 
     override fun onStart() {
+
+        val db = Room.databaseBuilder(
+            requireContext(),
+            AppDatabase::class.java,
+            "ScombMobileDB"
+        ).allowMainThreadQueries().build()
+
+        // recover saved id and pass from db
+        idTextView.setText(db.userDao().loadAllUser().getOrNull(0)?.username ?: "")
+        passwordTextView.setText(db.userDao().loadAllUser().getOrNull(0)?.password ?: "")
+        if(idTextView.text.toString() != "" && passwordTextView.text.toString() != ""){
+            savePassCheckBox.isChecked = true
+        }
+
         loginButton.setOnClickListener {
-            if(idTextView.text.toString() != "" || passwordTextView.text.toString() != ""){
+            if(idTextView.text.toString() != "" && passwordTextView.text.toString() != ""){
                 login(idTextView.text.toString(), passwordTextView.text.toString())
             }
         }
         logoutButton.setOnClickListener {
             logout()
+        }
+        savePassCheckBox.setOnClickListener {
+            // if checked, add user to db
+            if((it as CheckBox).isChecked){
+                db.userDao().insertUser(User(idTextView.text.toString(), passwordTextView.text.toString()))
+                for(item in db.userDao().loadAllUser()){
+                    Log.d("UserDB", item.toString())
+                }
+            }else{
+                db.userDao().removeAllUser()
+            }
         }
         loginState.observe(viewLifecycleOwner){
             when(loginState.value){
@@ -94,6 +119,7 @@ class LoginFragment : Fragment() {
             // login successful
             if(appViewModel.sessionId != null){
                 loginState.value = LoginState.loggedIn
+
                 view?.findNavController()?.navigate(R.id.action_loginFragment_to_nav_home)
             }
         }
