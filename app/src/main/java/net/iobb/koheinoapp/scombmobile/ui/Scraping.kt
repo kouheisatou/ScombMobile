@@ -1,5 +1,7 @@
 package net.iobb.koheinoapp.scombmobile.ui
 
+import net.iobb.koheinoapp.scombmobile.Values.SCOMB_HOME_URL
+import net.iobb.koheinoapp.scombmobile.Values.SCOMB_LOGIN_PAGE_URL
 import org.apache.commons.codec.binary.Base64
 import org.jsoup.HttpStatusException
 import org.jsoup.Jsoup
@@ -11,8 +13,6 @@ private const val HEADER_ACCEPT = "text/html,application/xhtml+xml,application/x
 private const val HEADER_ACCEPT_LANG = "ja,en-US;q=0.7,en;q=0.3"
 private const val HEADER_ACCEPT_ENCODING = "gzip, deflate, br"
 private const val HEADER_REFERER = "https://www.xxxxx/yyyy"
-private const val LOGIN_PAGE_URL = "https://scombz.shibaura-it.ac.jp/saml/login?idp=http://adfs.sic.shibaura-it.ac.jp/adfs/services/trust"
-private const val SCOMB_HOME_URL = "https://scombz.shibaura-it.ac.jp/portal/home"
 
 fun main() {
 //    basicAuthLogin(getScombSamlRequestUrl() ?: return, "user", "password")
@@ -28,7 +28,7 @@ fun getScombSamlRequestUrl(): String?{
     var loginUrl: String? = null
 
     try {
-        Jsoup.connect(LOGIN_PAGE_URL)
+        Jsoup.connect(SCOMB_LOGIN_PAGE_URL)
             .userAgent(USER_AGENT)
             .header("Accept", HEADER_ACCEPT)
             .header("Accept-Language", HEADER_ACCEPT_LANG)

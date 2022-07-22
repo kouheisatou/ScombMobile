@@ -1,14 +1,18 @@
 package net.iobb.koheinoapp.scombmobile.ui.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import kotlinx.android.synthetic.main.fragment_home.*
 import net.iobb.koheinoapp.scombmobile.databinding.FragmentHomeBinding
 import net.iobb.koheinoapp.scombmobile.BasicAuthWebViewClient
+import net.iobb.koheinoapp.scombmobile.Values.SCOMB_LOGIN_PAGE_URL
+import net.iobb.koheinoapp.scombmobile.Values.sessionId
 
 class HomeFragment : Fragment() {
 
@@ -34,10 +38,19 @@ class HomeFragment : Fragment() {
 
 
     override fun onStart() {
-//        webView.settings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
-        webView.webViewClient = BasicAuthWebViewClient("af20023", "#L4oR3xRhEa7")
+        webView.webViewClient = BasicAuthWebViewClient("af20023", "#L4oR3xRhEa7"){
+            if(it.getOrNull(1)?.matches(Regex(".*SESSION=.*")) == true){
+                sessionId = it[1].split(Regex(".*SESSION="))[1]
+            }
+            Log.d("cookie", sessionId ?: "null")
+
+            if(sessionId != null){
+                webView.isVisible = false
+            }
+        }
         webView.settings.javaScriptEnabled = true
-        webView.loadUrl("https://scombz.shibaura-it.ac.jp/saml/login?idp=http://adfs.sic.shibaura-it.ac.jp/adfs/services/trust")
+        webView.loadUrl(SCOMB_LOGIN_PAGE_URL)
+
         super.onStart()
     }
 
