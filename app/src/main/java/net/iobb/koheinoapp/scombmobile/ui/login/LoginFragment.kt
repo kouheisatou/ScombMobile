@@ -12,9 +12,11 @@ import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.room.Room
 import kotlinx.android.synthetic.main.fragment_login.*
+import kotlinx.coroutines.launch
 import net.iobb.koheinoapp.scombmobile.*
 
 class LoginFragment : Fragment() {
@@ -118,6 +120,7 @@ class LoginFragment : Fragment() {
                 view?.findNavController()?.navigate(R.id.action_loginFragment_to_nav_home)
             }
         }
+        (webView.webViewClient as BasicAuthWebViewClient).removeAllCookies()
         webView.settings.javaScriptEnabled = true
         webView.loadUrl(SCOMB_LOGIN_PAGE_URL)
 
