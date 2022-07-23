@@ -18,6 +18,7 @@ import kotlinx.android.synthetic.main.fragment_login.*
 import net.iobb.koheinoapp.scombmobile.*
 import org.jsoup.Jsoup
 import org.jsoup.parser.Parser
+import java.lang.Exception
 
 class LoginFragment : Fragment() {
     private lateinit var viewModel: LoginViewModel
@@ -56,9 +57,14 @@ class LoginFragment : Fragment() {
         idTextView.setText(db.userDao().getUser()?.username ?: "")
         passwordTextView.setText(db.userDao().getUser()?.password ?: "")
 
+        // auto login
+        if(db.settingDao().getSetting("enabled_auto_login")?.settingValue == "true"){
+            login(idTextView.text.toString(), passwordTextView.text.toString())
+        }
+
         loginButton.setOnClickListener {
             if(idTextView.text.toString() != "" && passwordTextView.text.toString() != ""){
-                login(idTextView.text.toString(), passwordTextView.text.toString(), true)
+                login(idTextView.text.toString(), passwordTextView.text.toString())
             }
         }
         logoutButton.setOnClickListener {
@@ -108,14 +114,18 @@ class LoginFragment : Fragment() {
 
     fun logout(){
         appViewModel.sessionId = null
-        (webView.webViewClient as BasicAuthWebViewClient).removeAllCookies()
+        try{
+            (webView.webViewClient as BasicAuthWebViewClient).removeAllCookies()
+        }catch (e: Exception){
+            e.printStackTrace()
+        }
         appViewModel.userId = null
         appViewModel.password = null
         loginState.value = LoginState.LoggedOut
         webView.clearCache(true)
     }
 
-    fun login(user: String, pass: String, autoLogin: Boolean){
+    fun login(user: String, pass: String){
         loginState.value = LoginState.InAuth
 
         // javascript for auto login
