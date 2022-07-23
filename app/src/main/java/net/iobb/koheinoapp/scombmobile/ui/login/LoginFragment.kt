@@ -1,23 +1,21 @@
 package net.iobb.koheinoapp.scombmobile.ui.login
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.room.Room
 import kotlinx.android.synthetic.main.fragment_login.*
-import kotlinx.coroutines.launch
 import net.iobb.koheinoapp.scombmobile.*
+
 
 class LoginFragment : Fragment() {
     private lateinit var viewModel: LoginViewModel
@@ -59,7 +57,8 @@ class LoginFragment : Fragment() {
 
         loginButton.setOnClickListener {
             if(idTextView.text.toString() != "" && passwordTextView.text.toString() != ""){
-                login(idTextView.text.toString(), passwordTextView.text.toString())
+//                login(idTextView.text.toString(), passwordTextView.text.toString())
+                autologin(idTextView.text.toString(), passwordTextView.text.toString())
             }
         }
         logoutButton.setOnClickListener {
@@ -107,9 +106,9 @@ class LoginFragment : Fragment() {
 
     fun login(user: String, pass: String){
         loginState.value = LoginState.inAuth
-        webView.webViewClient = BasicAuthWebViewClient(user, pass){
-            if(it.getOrNull(1)?.matches(Regex(".*SESSION=.*")) == true){
-                appViewModel.sessionId = it[1].split(Regex(".*SESSION="))[1]
+        webView.webViewClient = BasicAuthWebViewClient(user, pass, webView){ cookie, html ->
+            if(cookie.getOrNull(1)?.matches(Regex(".*SESSION=.*")) == true){
+                appViewModel.sessionId = cookie[1].split(Regex(".*SESSION="))[1]
             }
             Log.d("cookie", appViewModel.sessionId ?: "null")
 
@@ -123,7 +122,34 @@ class LoginFragment : Fragment() {
         (webView.webViewClient as BasicAuthWebViewClient).removeAllCookies()
         webView.settings.javaScriptEnabled = true
         webView.loadUrl(SCOMB_LOGIN_PAGE_URL)
-
     }
 
+    fun autologin(user: String, pass: String){
+        loginState.value = LoginState.inAuth
+
+        // javascript for auto login
+        webView.settings.javaScriptEnabled = true
+
+        webView.webViewClient = BasicAuthWebViewClient(user, pass, webView){ cookie, html ->
+            if(cookie.getOrNull(1)?.matches(Regex(".*SESSION=.*")) == true){
+                appViewModel.sessionId = cookie[1].split(Regex(".*SESSION="))[1]
+            }
+            Log.d("cookie", appViewModel.sessionId ?: "null")
+
+            Log.d("WebViewSrc", html)
+
+            // login successful
+            if(appViewModel.sessionId != null){
+                loginState.value = LoginState.loggedIn
+
+                view?.findNavController()?.navigate(R.id.action_loginFragment_to_nav_home)
+            }
+        }
+
+        // reset sessions
+        (webView.webViewClient as BasicAuthWebViewClient).removeAllCookies()
+
+        // access to login page
+        webView.loadUrl(SCOMB_LOGIN_PAGE_URL)
+    }
 }
