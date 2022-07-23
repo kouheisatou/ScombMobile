@@ -11,7 +11,8 @@ class BasicAuthWebViewClient(
     private val pass: String,
     webView: WebView,
     private val onPageFetched: (cookies: List<String>) -> Unit,
-    onHtmlSrcFetched: (html: String) -> Unit = {}
+    onHtmlSrcFetched: (html: String) -> Unit = {},
+    private val onCookieFetchError: () -> Unit
 ) : WebViewClient() {
 
     private lateinit var cookies: List<String>
@@ -37,6 +38,7 @@ class BasicAuthWebViewClient(
             onPageFetched(cookies)
         }catch (e: Exception){
             e.printStackTrace()
+            onCookieFetchError()
         }
     }
 

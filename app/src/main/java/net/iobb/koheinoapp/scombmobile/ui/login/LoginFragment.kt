@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -72,33 +73,44 @@ class LoginFragment : Fragment() {
             db.userDao().insertUser(User(idTextView.text.toString(), passwordTextView.text.toString()))
         }
 
+        // control views
         loginState.observe(viewLifecycleOwner){
             when(loginState.value){
                 LoginState.LoggedOut -> {
                     loginLL.isVisible = true
                     logoutLL.isVisible = false
                     progressBar.isVisible = false
+                    loginButton.isEnabled = true
+                    idTextView.isFocusable = true
+                    passwordTextView.isFocusable = true
                 }
                 LoginState.LoggedIn -> {
                     loginLL.isVisible = false
                     logoutLL.isVisible = true
                     progressBar.isVisible = false
+                    idTextView.isFocusable = false
+                    passwordTextView.isFocusable = false
                 }
                 LoginState.InAuth -> {
                     progressBar.isVisible = true
                     loginLL.isVisible = true
                     loginButton.isEnabled = false
                     logoutLL.isVisible = false
+                    idTextView.isFocusable = true
+                    passwordTextView.isFocusable = true
                 }
                 else -> {}
             }
         }
+
         super.onStart()
     }
 
     fun logout(){
         appViewModel.sessionId = null
         (webView.webViewClient as BasicAuthWebViewClient).removeAllCookies()
+        appViewModel.userId = null
+        appViewModel.password = null
         loginState.value = LoginState.LoggedOut
         webView.clearCache(true)
     }
@@ -126,10 +138,16 @@ class LoginFragment : Fragment() {
                 if(appViewModel.sessionId != null){
                     loginState.value = LoginState.LoggedIn
 
+                    appViewModel.userId = user
+                    appViewModel.password = pass
+
                     view?.findNavController()?.navigate(R.id.action_loginFragment_to_nav_home)
                 }
-
             },
+            onCookieFetchError = {
+                Toast.makeText(context, "ログイン失敗", Toast.LENGTH_SHORT).show()
+                loginState.value = LoginState.LoggedOut
+            }
         )
 
         // reset sessions
