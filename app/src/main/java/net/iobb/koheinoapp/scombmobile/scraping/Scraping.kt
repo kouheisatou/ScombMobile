@@ -4,7 +4,3 @@ import android.webkit.WebView
 
 class Scraping {
 }
-
-fun getHtml(webView: WebView){
-
-}

@@ -15,7 +15,8 @@ import androidx.navigation.findNavController
 import androidx.room.Room
 import kotlinx.android.synthetic.main.fragment_login.*
 import net.iobb.koheinoapp.scombmobile.*
-
+import org.jsoup.Jsoup
+import org.jsoup.parser.Parser
 
 class LoginFragment : Fragment() {
     private lateinit var viewModel: LoginViewModel
@@ -37,11 +38,10 @@ class LoginFragment : Fragment() {
 
 
     enum class LoginState{
-        loggedIn, loggedOut, inAuth
+        LoggedIn, LoggedOut, InAuth
     }
 
-    private val loginState = MutableLiveData(LoginState.loggedOut)
-
+    private val loginState = MutableLiveData(LoginState.LoggedOut)
 
     override fun onStart() {
 
@@ -57,8 +57,7 @@ class LoginFragment : Fragment() {
 
         loginButton.setOnClickListener {
             if(idTextView.text.toString() != "" && passwordTextView.text.toString() != ""){
-//                login(idTextView.text.toString(), passwordTextView.text.toString())
-                autologin(idTextView.text.toString(), passwordTextView.text.toString())
+                login(idTextView.text.toString(), passwordTextView.text.toString(), true)
             }
         }
         logoutButton.setOnClickListener {
@@ -75,18 +74,18 @@ class LoginFragment : Fragment() {
 
         loginState.observe(viewLifecycleOwner){
             when(loginState.value){
-                LoginState.loggedOut -> {
+                LoginState.LoggedOut -> {
                     loginLL.isVisible = true
                     logoutLL.isVisible = false
-                    webView.isVisible = false
+                    progressBar.isVisible = false
                 }
-                LoginState.loggedIn -> {
+                LoginState.LoggedIn -> {
                     loginLL.isVisible = false
                     logoutLL.isVisible = true
-                    webView.isVisible = false
+                    progressBar.isVisible = false
                 }
-                LoginState.inAuth -> {
-                    webView.isVisible = true
+                LoginState.InAuth -> {
+                    progressBar.isVisible = true
                     loginLL.isVisible = true
                     loginButton.isEnabled = false
                     logoutLL.isVisible = false
@@ -100,51 +99,38 @@ class LoginFragment : Fragment() {
     fun logout(){
         appViewModel.sessionId = null
         (webView.webViewClient as BasicAuthWebViewClient).removeAllCookies()
-        loginState.value = LoginState.loggedOut
+        loginState.value = LoginState.LoggedOut
         webView.clearCache(true)
     }
 
-    fun login(user: String, pass: String){
-        loginState.value = LoginState.inAuth
-        webView.webViewClient = BasicAuthWebViewClient(user, pass, webView){ cookie, html ->
-            if(cookie.getOrNull(1)?.matches(Regex(".*SESSION=.*")) == true){
-                appViewModel.sessionId = cookie[1].split(Regex(".*SESSION="))[1]
-            }
-            Log.d("cookie", appViewModel.sessionId ?: "null")
-
-            // login successful
-            if(appViewModel.sessionId != null){
-                loginState.value = LoginState.loggedIn
-
-                view?.findNavController()?.navigate(R.id.action_loginFragment_to_nav_home)
-            }
-        }
-        (webView.webViewClient as BasicAuthWebViewClient).removeAllCookies()
-        webView.settings.javaScriptEnabled = true
-        webView.loadUrl(SCOMB_LOGIN_PAGE_URL)
-    }
-
-    fun autologin(user: String, pass: String){
-        loginState.value = LoginState.inAuth
+    fun login(user: String, pass: String, autoLogin: Boolean){
+        loginState.value = LoginState.InAuth
 
         // javascript for auto login
         webView.settings.javaScriptEnabled = true
+        webView.webViewClient = BasicAuthWebViewClient(
+            user,
+            pass,
+            webView,
+            onPageFetched = { cookie ->
+                // getSessionID
+                if(cookie.getOrNull(1)?.matches(Regex(".*SESSION=.*")) == true){
+                    appViewModel.sessionId = cookie[1].split(Regex(".*SESSION="))[1]
+                }
+                Log.d("cookie", appViewModel.sessionId ?: "null")
 
-        webView.webViewClient = BasicAuthWebViewClient(user, pass, webView){ cookie, html ->
-            if(cookie.getOrNull(1)?.matches(Regex(".*SESSION=.*")) == true){
-                appViewModel.sessionId = cookie[1].split(Regex(".*SESSION="))[1]
-            }
-            Log.d("cookie", appViewModel.sessionId ?: "null")
+                // skip 2-step verification confirmation script
+                webView.evaluateJavascript("javascript:document.getElementById('$TWO_STEP_VERIFICATION_LOGIN_BUTTON_ID').click();"){}
 
-            Log.d("WebViewSrc", html)
+                // login successful
+                if(appViewModel.sessionId != null){
+                    loginState.value = LoginState.LoggedIn
 
-            // login successful
-            if(appViewModel.sessionId != null){
-                loginState.value = LoginState.loggedIn
+                    view?.findNavController()?.navigate(R.id.action_loginFragment_to_nav_home)
+                }
 
-                view?.findNavController()?.navigate(R.id.action_loginFragment_to_nav_home)
-            }
-        }
+            },
+        )
 
         // reset sessions
         (webView.webViewClient as BasicAuthWebViewClient).removeAllCookies()

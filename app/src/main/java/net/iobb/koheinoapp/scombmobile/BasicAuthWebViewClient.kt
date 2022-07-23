@@ -2,20 +2,24 @@ package net.iobb.koheinoapp.scombmobile
 
 import android.util.Log
 import android.webkit.*
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
+import net.iobb.koheinoapp.scombmobile.ui.login.LoginFragment
 
 class BasicAuthWebViewClient(
     private val user: String,
     private val pass: String,
     webView: WebView,
-    private val onPageFetched: (cookies: List<String>, html: String) -> Unit
+    private val onPageFetched: (cookies: List<String>) -> Unit,
+    onHtmlSrcFetched: (html: String) -> Unit = {}
 ) : WebViewClient() {
 
     private lateinit var cookies: List<String>
-    private var html = ""
 
     init {
         // add javascript that get html
         webView.addJavascriptInterface(JavaScriptInterface, "HTMLOUT")
+        JavaScriptInterface.onHtmlSrcFetched = onHtmlSrcFetched
     }
 
     override fun onReceivedHttpAuthRequest(
@@ -29,8 +33,8 @@ class BasicAuthWebViewClient(
         view?.loadUrl("javascript:window.HTMLOUT.viewSource(document.documentElement.outerHTML);")
         try{
             cookies = CookieManager.getInstance().getCookie(url).split(";")
-            html = JavaScriptInterface.html
-            onPageFetched(cookies, html)
+
+            onPageFetched(cookies)
         }catch (e: Exception){
             e.printStackTrace()
         }
@@ -40,12 +44,13 @@ class BasicAuthWebViewClient(
         CookieManager.getInstance().removeAllCookies(null)
     }
 
+    // javascript for fetch html source
     object JavaScriptInterface {
-        var html = ""
+        lateinit var onHtmlSrcFetched: (html: String) -> Unit
         @JavascriptInterface
         fun viewSource(src: String?) {
-            html = src ?: ""
-            Log.d("WebViewSrc", src ?: "null")
+//            Log.d("WebViewHtmlSrc", src ?: "null")
+            onHtmlSrcFetched(src ?: "")
         }
     }
 }
