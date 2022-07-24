@@ -16,5 +16,8 @@
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="@string/menu_slideshow" />
+        <item
+            android:id="@+id/settingFragment"
+            android:title="設定" />
     </group>
 </menu>

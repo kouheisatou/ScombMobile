@@ -146,17 +146,22 @@ class LoginFragment : Fragment() {
 
                 // login successful
                 if(appViewModel.sessionId != null){
-                    loginState.value = LoginState.LoggedIn
-
                     appViewModel.userId = user
                     appViewModel.password = pass
 
                     view?.findNavController()?.navigate(R.id.action_loginFragment_to_nav_home)
+
+                    loginState.value = LoginState.LoggedIn
                 }
             },
             onCookieFetchError = {
-                Toast.makeText(context, "ログイン失敗", Toast.LENGTH_SHORT).show()
-                loginState.value = LoginState.LoggedOut
+                try {
+                    Toast.makeText(requireContext(), "ログイン失敗", Toast.LENGTH_SHORT).show()
+                }catch (e: Exception){
+                    e.printStackTrace()
+                }finally {
+                    loginState.value = LoginState.LoggedOut
+                }
             }
         )
 
