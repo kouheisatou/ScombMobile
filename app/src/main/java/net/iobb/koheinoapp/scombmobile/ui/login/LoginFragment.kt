@@ -47,6 +47,8 @@ class LoginFragment : Fragment() {
 
     override fun onStart() {
 
+        loginState.value = if(appViewModel.sessionId != null){LoginState.LoggedIn }else{LoginState.LoggedOut }
+
         val db = Room.databaseBuilder(
             requireContext(),
             AppDatabase::class.java,
@@ -58,7 +60,7 @@ class LoginFragment : Fragment() {
         passwordTextView.setText(db.userDao().getUser()?.password ?: "")
 
         // auto login
-        if(db.settingDao().getSetting("enabled_auto_login")?.settingValue == "true"){
+        if(db.settingDao().getSetting("enabled_auto_login")?.settingValue == "true" && loginState.value == LoginState.LoggedOut){
             login(idTextView.text.toString(), passwordTextView.text.toString())
         }
 
@@ -90,16 +92,12 @@ class LoginFragment : Fragment() {
                     logoutLL.isVisible = false
                     progressBar.isVisible = false
                     loginButton.isEnabled = true
-                    idTextView.isFocusable = true
-                    passwordTextView.isFocusable = true
                     if(dispWebView){ webView.isVisible = false }
                 }
                 LoginState.LoggedIn -> {
                     loginLL.isVisible = false
                     logoutLL.isVisible = true
                     progressBar.isVisible = false
-                    idTextView.isFocusable = false
-                    passwordTextView.isFocusable = false
                     if(dispWebView){ webView.isVisible = false }
                 }
                 LoginState.InAuth -> {
@@ -107,8 +105,6 @@ class LoginFragment : Fragment() {
                     loginLL.isVisible = true
                     loginButton.isEnabled = false
                     logoutLL.isVisible = false
-                    idTextView.isFocusable = false
-                    passwordTextView.isFocusable = false
                     if(dispWebView){ webView.isVisible = true }
                 }
                 else -> {}
@@ -120,14 +116,14 @@ class LoginFragment : Fragment() {
 
     fun logout(){
         appViewModel.sessionId = null
+        appViewModel.userId.value = ""
         try{
             (webView.webViewClient as BasicAuthWebViewClient).removeAllCookies()
         }catch (e: Exception){
             e.printStackTrace()
         }
-        appViewModel.userId = null
-        loginState.value = LoginState.LoggedOut
         webView.clearCache(true)
+        loginState.value = LoginState.LoggedOut
     }
 
     fun login(user: String, pass: String){
@@ -151,7 +147,7 @@ class LoginFragment : Fragment() {
 
                 // login successful
                 if(appViewModel.sessionId != null){
-                    appViewModel.userId = user
+                    appViewModel.userId.value = user
 
                     view?.findNavController()?.navigate(R.id.action_loginFragment_to_nav_home)
 

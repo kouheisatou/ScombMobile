@@ -72,7 +72,7 @@ class HomeFragment : Fragment() {
                     // on logged out
                     if(webView.url == SCOMB_LOGGED_OUT_PAGE_URL){
                         webView.clearCache(true)
-                        appViewModel.userId = null
+                        appViewModel.userId.value = ""
                         appViewModel.sessionId = null
                         view?.findNavController()?.navigate(R.id.action_nav_home_to_loginFragment)
                     }
