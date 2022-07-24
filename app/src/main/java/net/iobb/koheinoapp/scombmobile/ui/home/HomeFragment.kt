@@ -1,11 +1,11 @@
 package net.iobb.koheinoapp.scombmobile.ui.home
 
+import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebViewClient
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.fragment_home.webView
 import kotlinx.android.synthetic.main.fragment_login.*
 import net.iobb.koheinoapp.scombmobile.*
 import net.iobb.koheinoapp.scombmobile.databinding.FragmentHomeBinding
-import net.iobb.koheinoapp.scombmobile.ui.login.LoginFragment
+
 
 class HomeFragment : Fragment() {
 
@@ -43,6 +43,21 @@ class HomeFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        val callback: OnBackPressedCallback = object : OnBackPressedCallback(
+            true
+        ) {
+            override fun handleOnBackPressed() {
+                webView.goBack()
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(
+            this,
+            callback
+        )
     }
 
     override fun onStart() {
