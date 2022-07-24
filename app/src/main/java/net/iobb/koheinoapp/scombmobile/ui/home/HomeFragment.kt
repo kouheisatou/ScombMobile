@@ -49,7 +49,17 @@ class HomeFragment : Fragment() {
         if(appViewModel.sessionId == null){
             view?.findNavController()?.navigate(R.id.action_nav_home_to_loginFragment)
         }else{
-            webView.webViewClient = WebViewClient()
+            webView.webViewClient = BasicAuthWebViewClient(
+                "",
+                "" ,
+                webView,
+                onPageFetched = {
+                    if(webView.url == SCOMB_LOGGED_OUT_PAGE_URL){
+                        view?.findNavController()?.navigate(R.id.action_nav_home_to_loginFragment)
+                    }
+                },
+                onHtmlSrcFetched = {},
+                onCookieFetchError = {})
             webView.settings.javaScriptEnabled = true
             webView.loadUrl(SCOMB_HOME_URL)
         }
