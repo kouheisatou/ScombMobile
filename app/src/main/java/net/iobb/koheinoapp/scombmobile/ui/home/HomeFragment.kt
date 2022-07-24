@@ -62,7 +62,7 @@ class HomeFragment : Fragment() {
 
     override fun onStart() {
         if(appViewModel.sessionId == null){
-            view?.findNavController()?.navigate(R.id.action_nav_home_to_loginFragment)
+            view?.findNavController()?.navigate(R.id.loginFragment)
         }else{
             webView.webViewClient = BasicAuthWebViewClient(
                 "",
