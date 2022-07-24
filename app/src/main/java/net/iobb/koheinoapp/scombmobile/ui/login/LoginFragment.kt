@@ -79,6 +79,9 @@ class LoginFragment : Fragment() {
             db.userDao().insertUser(User(idTextView.text.toString(), passwordTextView.text.toString()))
         }
 
+        // display WebView in auth
+        val dispWebView = false
+
         // control views
         loginState.observe(viewLifecycleOwner){
             when(loginState.value){
@@ -89,6 +92,7 @@ class LoginFragment : Fragment() {
                     loginButton.isEnabled = true
                     idTextView.isFocusable = true
                     passwordTextView.isFocusable = true
+                    if(dispWebView){ webView.isVisible = false }
                 }
                 LoginState.LoggedIn -> {
                     loginLL.isVisible = false
@@ -96,14 +100,16 @@ class LoginFragment : Fragment() {
                     progressBar.isVisible = false
                     idTextView.isFocusable = false
                     passwordTextView.isFocusable = false
+                    if(dispWebView){ webView.isVisible = false }
                 }
                 LoginState.InAuth -> {
                     progressBar.isVisible = true
                     loginLL.isVisible = true
                     loginButton.isEnabled = false
                     logoutLL.isVisible = false
-                    idTextView.isFocusable = true
-                    passwordTextView.isFocusable = true
+                    idTextView.isFocusable = false
+                    passwordTextView.isFocusable = false
+                    if(dispWebView){ webView.isVisible = true }
                 }
                 else -> {}
             }
@@ -120,7 +126,6 @@ class LoginFragment : Fragment() {
             e.printStackTrace()
         }
         appViewModel.userId = null
-        appViewModel.password = null
         loginState.value = LoginState.LoggedOut
         webView.clearCache(true)
     }
@@ -147,7 +152,6 @@ class LoginFragment : Fragment() {
                 // login successful
                 if(appViewModel.sessionId != null){
                     appViewModel.userId = user
-                    appViewModel.password = pass
 
                     view?.findNavController()?.navigate(R.id.action_loginFragment_to_nav_home)
 

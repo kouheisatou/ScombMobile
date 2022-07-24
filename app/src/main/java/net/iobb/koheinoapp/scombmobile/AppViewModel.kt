@@ -13,5 +13,4 @@ class AppViewModel : ViewModel(){
 
     var sessionId: String? = null
     var userId: String? = null
-    var password: String? = null
 }
