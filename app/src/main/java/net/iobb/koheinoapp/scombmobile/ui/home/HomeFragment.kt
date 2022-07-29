@@ -6,13 +6,17 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.TableRow
 import androidx.activity.OnBackPressedCallback
+import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.coroutines.launch
 import net.iobb.koheinoapp.scombmobile.*
@@ -55,18 +59,27 @@ class HomeFragment : Fragment() {
             viewModel.fetch()
         }
 
-        viewModel.text.observe(viewLifecycleOwner){
-            textView.text = it
-        }
         viewModel.page.networkState.observe(viewLifecycleOwner){
             when(it){
                 Page.NetworkState.Finished -> {
                     progressBar.isVisible = false
-                    textView.isVisible = true
+                    timeTable.isVisible = true
                 }
                 Page.NetworkState.Loading -> {
                     progressBar.isVisible = true
-                    textView.isVisible = false
+                    timeTable.isVisible = false
+                }
+                Page.NetworkState.NotPermitted -> {
+                    this.findNavController().navigate(R.id.loginFragment)
+                }
+            }
+        }
+        viewModel.timeTable.observe(viewLifecycleOwner){
+            for(row in it.withIndex()){
+                val tableRow = timeTable[row.index + 1] as TableRow
+                for(cell in row.value.withIndex()){
+                    val cellView = (tableRow[cell.index + 1] as LinearLayout)
+                    cell.value?.genView(requireContext(), cellView)
                 }
             }
         }

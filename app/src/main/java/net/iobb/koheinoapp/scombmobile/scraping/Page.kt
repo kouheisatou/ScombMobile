@@ -18,10 +18,10 @@ private const val HEADER_REFERER = "https://www.xxxxx/yyyy"
 class Page(val url: String) {
 
     enum class NetworkState {
-        Finished, Loading
+        Finished, Loading, NotPermitted
     }
 
-    var document: Document? = null
+    lateinit var document: Document
     var networkState = MutableLiveData(NetworkState.Finished)
 
     fun fetch(cookieId: String?){
@@ -36,6 +36,9 @@ class Page(val url: String) {
                 .timeout(10 * 1000)
                 .cookie("SESSION", cookieId ?: "")
                 .get()
+            if(document.baseUri() == SCOMB_LOGGED_OUT_PAGE_URL){
+                networkState.postValue(NetworkState.NotPermitted)
+            }
         } catch (e: HttpStatusException) {
             e.printStackTrace()
         }finally {

@@ -1,28 +1,57 @@
 package net.iobb.koheinoapp.scombmobile.ui.home
 
-import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import net.iobb.koheinoapp.scombmobile.AppViewModel
-import net.iobb.koheinoapp.scombmobile.SCOMB_HOME_URL
+import net.iobb.koheinoapp.scombmobile.*
 import net.iobb.koheinoapp.scombmobile.scraping.Page
 
 class HomeViewModel : ViewModel() {
 
 
-    val page = Page(SCOMB_HOME_URL)
+    val page = Page(SCOMB_TIMETABLE_URL)
     lateinit var appViewModel: AppViewModel
-    val text = MutableLiveData("")
+    // 時間割二次元配列 (7(1-7限) * 6(月-土の6日))
+    val timeTable = MutableLiveData<Array<Array<ClassCell?>>>(
+        Array(7){
+            Array(6){
+                null
+            }
+        }
+    )
 
     fun fetch(){
         viewModelScope.launch(Dispatchers.IO) {
+            val newTimetable: Array<Array<ClassCell?>> = Array(7){ Array(6){ null } }
+
             page.fetch(appViewModel.sessionId)
-            text.postValue(page.document?.text() ?: "")
+
+            val tableElement = page.document.getElementsByClass(TIMETABLE_ROW_CSS_CLASS_NM)
+
+            for(row in tableElement.withIndex()){
+                for(cell in row.value.getElementsByClass(TIMETABLE_CELL_CSS_CLASS_NM).withIndex()){
+                    if(cell.value.allElements.isNotEmpty()){
+
+                        val cellHeader = cell.value.getElementsByClass(TIMETABLE_CELL_HEADER_CSS_CLASS_NM) ?: continue
+                        val id = cellHeader.getOrNull(0)?.attr("id") ?: continue
+                        val name = cellHeader.getOrNull(0)?.text() ?: continue
+
+                        val cellDetail = cell.value.getElementsByClass(TIMETABLE_CELL_DETAIL_CSS_CLASS_NM).getOrNull(0)?.child(0) ?: continue
+                        val room = cellDetail.attr(TIMETABLE_ROOM_ATTR_KEY) ?: continue
+
+                        val teachers = mutableListOf<String>()
+                        for(teacher in cellDetail.children()){
+                            teachers.add(teacher.text().replace(", ", ""))
+                        }
+
+                        newTimetable[row.index][cell.index] = ClassCell(id, name, teachers, room)
+                    }
+                }
+            }
+
+            timeTable.postValue(newTimetable)
         }
     }
 }
