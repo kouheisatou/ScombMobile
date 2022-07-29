@@ -39,4 +39,8 @@
         android:name="net.iobb.koheinoapp.scombmobile.ui.settings.SettingFragment"
         android:label="fragment_setting"
         tools:layout="@layout/fragment_setting" />
+    <fragment
+        android:id="@+id/webScombFragment"
+        android:name="net.iobb.koheinoapp.scombmobile.ui.webscomb.WebScombFragment"
+        android:label="WebScombFragment" />
 </navigation>

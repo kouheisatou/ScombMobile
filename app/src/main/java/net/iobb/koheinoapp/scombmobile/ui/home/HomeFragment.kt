@@ -2,28 +2,30 @@ package net.iobb.koheinoapp.scombmobile.ui.home
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import kotlinx.android.synthetic.main.fragment_home.*
-import kotlinx.android.synthetic.main.fragment_home.webView
-import kotlinx.android.synthetic.main.fragment_login.*
+import kotlinx.coroutines.launch
 import net.iobb.koheinoapp.scombmobile.*
 import net.iobb.koheinoapp.scombmobile.databinding.FragmentHomeBinding
+import net.iobb.koheinoapp.scombmobile.scraping.Page
 
 
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val appViewModel: AppViewModel by activityViewModels()
+    private lateinit var viewModel: HomeViewModel
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -31,8 +33,8 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val homeViewModel =
-            ViewModelProvider(this).get(HomeViewModel::class.java)
+        viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
+        viewModel.appViewModel = appViewModel
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -45,43 +47,30 @@ class HomeFragment : Fragment() {
         _binding = null
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        val callback: OnBackPressedCallback = object : OnBackPressedCallback(
-            true
-        ) {
-            override fun handleOnBackPressed() {
-                webView.goBack()
-            }
-        }
-        requireActivity().onBackPressedDispatcher.addCallback(
-            this,
-            callback
-        )
-    }
-
     override fun onStart() {
+        Log.d("session_id", appViewModel.sessionId?: "null")
         if(appViewModel.sessionId == null){
             view?.findNavController()?.navigate(R.id.loginFragment)
         }else{
-            webView.webViewClient = BasicAuthWebViewClient(
-                "",
-                "" ,
-                webView,
-                onPageFetched = {
-                    // on logged out
-                    if(webView.url == SCOMB_LOGGED_OUT_PAGE_URL){
-                        webView.clearCache(true)
-                        appViewModel.userId.value = ""
-                        appViewModel.sessionId = null
-                        view?.findNavController()?.navigate(R.id.action_nav_home_to_loginFragment)
-                    }
-                },
-                onHtmlSrcFetched = {},
-                onCookieFetchError = {})
-            webView.settings.javaScriptEnabled = true
-            webView.loadUrl(SCOMB_HOME_URL)
+            viewModel.fetch()
         }
+
+        viewModel.text.observe(viewLifecycleOwner){
+            textView.text = it
+        }
+        viewModel.page.networkState.observe(viewLifecycleOwner){
+            when(it){
+                Page.NetworkState.Finished -> {
+                    progressBar.isVisible = false
+                    textView.isVisible = true
+                }
+                Page.NetworkState.Loading -> {
+                    progressBar.isVisible = true
+                    textView.isVisible = false
+                }
+            }
+        }
+
         super.onStart()
     }
 }
