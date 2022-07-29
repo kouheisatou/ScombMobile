@@ -18,11 +18,11 @@ private const val HEADER_REFERER = "https://www.xxxxx/yyyy"
 class Page(val url: String) {
 
     enum class NetworkState {
-        Finished, Loading, NotPermitted
+        Finished, Loading, NotPermitted, Initialized
     }
 
     lateinit var document: Document
-    var networkState = MutableLiveData(NetworkState.Finished)
+    var networkState = MutableLiveData(NetworkState.Initialized)
 
     fun fetch(cookieId: String?){
         networkState.postValue(NetworkState.Loading)

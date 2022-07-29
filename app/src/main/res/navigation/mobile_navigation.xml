@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_nav_home_to_loginFragment"
             app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_nav_home_to_classDetailFragment"
+            app:destination="@id/classDetailFragment" />
     </fragment>
 
     <fragment
@@ -43,4 +46,13 @@
         android:id="@+id/webScombFragment"
         android:name="net.iobb.koheinoapp.scombmobile.ui.webscomb.WebScombFragment"
         android:label="WebScombFragment" />
+    <fragment
+        android:id="@+id/classDetailFragment"
+        android:name="net.iobb.koheinoapp.scombmobile.ui.classdetail.ClassDetailFragment"
+        android:label="fragment_class_detail"
+        tools:layout="@layout/fragment_class_detail" >
+        <argument
+            android:name="classId"
+            app:argType="string" />
+    </fragment>
 </navigation>

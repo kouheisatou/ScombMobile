@@ -7,6 +7,7 @@ const val SCOMB_LOGIN_PAGE_URL = "https://scombz.shibaura-it.ac.jp/saml/login?id
 const val SCOMB_HOME_URL = "https://scombz.shibaura-it.ac.jp/portal/home"
 const val SCOMB_LOGGED_OUT_PAGE_URL = "https://scombz.shibaura-it.ac.jp/login"
 const val SCOMB_TIMETABLE_URL = "https://scombz.shibaura-it.ac.jp/lms/timetable"
+const val CLASS_PAGE_URL = "https://scombz.shibaura-it.ac.jp/lms/course?idnumber="
 
 // Scombに2段階認証が未設定でログインしようとすると出る"2要素認証は無効になっています。"確認画面の"次へ"ボタンのhtmlのid
 const val TWO_STEP_VERIFICATION_LOGIN_BUTTON_ID = "continueButton"
@@ -22,6 +23,10 @@ const val TIMETABLE_CELL_HEADER_CSS_CLASS_NM = "timetable-course-top-btn"
 const val TIMETABLE_CELL_DETAIL_CSS_CLASS_NM = "div-table-cell-detail"
 /** 教室名のattributeキー **/
 const val TIMETABLE_ROOM_ATTR_KEY = "title"
+
+// --------授業ページCSS---------
+/** 概要のCSS **/
+const val CLASS_OVERVIEW_CSS_CLASS_NM = "bodyEditor"
 
 class AppViewModel : ViewModel(){
 

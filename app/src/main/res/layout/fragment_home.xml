@@ -37,48 +37,48 @@
             <TableRow android:layout_height="wrap_content">
 
                 <TextView
-
+                    android:gravity="center_horizontal"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:text="" />
 
                 <TextView
-
+                    android:gravity="center_horizontal"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="月" />
 
                 <TextView
-
+                    android:gravity="center_horizontal"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="火" />
 
                 <TextView
-
+                    android:gravity="center_horizontal"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="水" />
 
                 <TextView
-
+                    android:gravity="center_horizontal"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="木" />
 
                 <TextView
-
+                    android:gravity="center_horizontal"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="金" />
 
                 <TextView
-
+                    android:gravity="center_horizontal"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -90,6 +90,7 @@
                 android:minHeight="100dp">
 
                 <TextView
+                    android:gravity="center_vertical"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:text="1限" />
@@ -130,7 +131,7 @@
                 android:minHeight="100dp">
 
                 <TextView
-
+                    android:gravity="center_vertical"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:text="2限" />
@@ -171,7 +172,7 @@
                 android:minHeight="100dp">
 
                 <TextView
-
+                    android:gravity="center_vertical"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:text="3限" />
@@ -212,7 +213,7 @@
                 android:minHeight="100dp">
 
                 <TextView
-
+                    android:gravity="center_vertical"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:text="4限" />
@@ -253,7 +254,7 @@
                 android:minHeight="100dp">
 
                 <TextView
-
+                    android:gravity="center_vertical"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:text="5限" />
@@ -294,7 +295,7 @@
                 android:minHeight="100dp">
 
                 <TextView
-
+                    android:gravity="center_vertical"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:text="6限" />
@@ -335,7 +336,7 @@
                 android:minHeight="100dp">
 
                 <TextView
-
+                    android:gravity="center_vertical"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:text="7限" />

@@ -140,7 +140,7 @@ class LoginFragment : Fragment() {
                 if(cookie.getOrNull(1)?.matches(Regex(".*SESSION=.*")) == true){
                     appViewModel.sessionId = cookie[1].split(Regex(".*SESSION="))[1]
                 }
-                Log.d("cookie", appViewModel.sessionId ?: "null")
+                Log.d("session_id", appViewModel.sessionId ?: "null")
 
                 // skip 2-step verification confirmation script
                 webView.evaluateJavascript("javascript:document.getElementById('$TWO_STEP_VERIFICATION_LOGIN_BUTTON_ID').click();"){}

@@ -21,15 +21,20 @@ class HomeViewModel : ViewModel() {
             }
         }
     )
+    var isInitalized = false
 
     fun fetch(){
+        if(isInitalized) return
+
         viewModelScope.launch(Dispatchers.IO) {
             val newTimetable: Array<Array<ClassCell?>> = Array(7){ Array(6){ null } }
 
+            // get from web
             page.fetch(appViewModel.sessionId)
 
             val tableElement = page.document.getElementsByClass(TIMETABLE_ROW_CSS_CLASS_NM)
 
+            // extract html
             for(row in tableElement.withIndex()){
                 for(cell in row.value.getElementsByClass(TIMETABLE_CELL_CSS_CLASS_NM).withIndex()){
                     if(cell.value.allElements.isNotEmpty()){
@@ -53,6 +58,7 @@ class HomeViewModel : ViewModel() {
             }
 
             timeTable.postValue(newTimetable)
+            isInitalized = true
         }
     }
 }

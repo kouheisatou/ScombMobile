@@ -52,16 +52,13 @@ class HomeFragment : Fragment() {
     }
 
     override fun onStart() {
-        Log.d("session_id", appViewModel.sessionId?: "null")
-        if(appViewModel.sessionId == null){
-            view?.findNavController()?.navigate(R.id.loginFragment)
-        }else{
-            viewModel.fetch()
-        }
-
         viewModel.page.networkState.observe(viewLifecycleOwner){
             when(it){
                 Page.NetworkState.Finished -> {
+                    progressBar.isVisible = false
+                    timeTable.isVisible = true
+                }
+                Page.NetworkState.Initialized -> {
                     progressBar.isVisible = false
                     timeTable.isVisible = true
                 }
@@ -82,6 +79,12 @@ class HomeFragment : Fragment() {
                     cell.value?.genView(requireContext(), cellView)
                 }
             }
+        }
+
+        if(appViewModel.sessionId == null){
+            view?.findNavController()?.navigate(R.id.loginFragment)
+        }else{
+            viewModel.fetch()
         }
 
         super.onStart()
