@@ -43,6 +43,7 @@ class HomeViewModel : ViewModel() {
 
                         val teachers = mutableListOf<String>()
                         for(teacher in cellDetail.children()){
+                            if(teacher.text() == "【教室】") continue
                             teachers.add(teacher.text().replace(", ", ""))
                         }
 

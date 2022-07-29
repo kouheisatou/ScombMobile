@@ -3,6 +3,7 @@ package net.iobb.koheinoapp.scombmobile.ui.home
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.class_cell.view.*
 import net.iobb.koheinoapp.scombmobile.R
 
@@ -20,7 +21,11 @@ class ClassCell(
         val view = View.inflate(context, R.layout.class_cell, attachTo)
 
         view.titleTextView.text = name
-//        view.roomTextView.text = room
+
+        view.titleTextView.setOnLongClickListener { v ->
+            Snackbar.make(v, "教室 : $room", Snackbar.LENGTH_LONG).show()
+            true
+        }
 
         return view
     }
