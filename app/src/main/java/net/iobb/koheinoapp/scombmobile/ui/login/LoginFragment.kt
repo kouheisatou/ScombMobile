@@ -1,19 +1,19 @@
 package net.iobb.koheinoapp.scombmobile.ui.login
 
 import android.annotation.SuppressLint
+import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.room.Room
 import kotlinx.android.synthetic.main.fragment_login.*
 import net.iobb.koheinoapp.scombmobile.*
@@ -38,12 +38,9 @@ class LoginFragment : Fragment() {
     }
 
 
-
-    private val loginState = MutableLiveData(LoginState.LoggedOut)
-
     override fun onStart() {
 
-        loginState.value = if(appViewModel.sessionId != null){LoginState.LoggedIn }else{LoginState.LoggedOut }
+        webView.loginState.value = if(appViewModel.sessionId != null){LoginState.LoggedIn }else{LoginState.LoggedOut }
 
         val db = Room.databaseBuilder(
             requireContext(),
@@ -56,7 +53,7 @@ class LoginFragment : Fragment() {
         passwordTextView.setText(db.userDao().getUser()?.password ?: "")
 
         // auto login
-        if(db.settingDao().getSetting("enabled_auto_login")?.settingValue == "true" && loginState.value == LoginState.LoggedOut){
+        if(db.settingDao().getSetting("enabled_auto_login")?.settingValue == "true" && appViewModel.sessionId == null){
             login(idTextView.text.toString(), passwordTextView.text.toString())
         }
 
@@ -81,8 +78,8 @@ class LoginFragment : Fragment() {
         val dispWebView = false
 
         // control views
-        loginState.observe(viewLifecycleOwner){
-            when(loginState.value){
+        webView.loginState.observe(viewLifecycleOwner){
+            when(it){
                 LoginState.LoggedOut -> {
                     loginLL.isVisible = true
                     logoutLL.isVisible = false
@@ -95,6 +92,10 @@ class LoginFragment : Fragment() {
                     logoutLL.isVisible = true
                     progressBar.isVisible = false
                     if(dispWebView){ webView.isVisible = false }
+
+                    appViewModel.sessionId = webView.sessionId ?: return@observe
+                    appViewModel.userId.value = webView.loginUser ?: return@observe
+                    this.findNavController().navigate(R.id.action_loginFragment_to_nav_home)
                 }
                 LoginState.InAuth -> {
                     progressBar.isVisible = true
@@ -110,61 +111,15 @@ class LoginFragment : Fragment() {
         super.onStart()
     }
 
-    fun logout(){
+    private fun logout(){
         appViewModel.sessionId = null
         appViewModel.userId.value = ""
-        try{
-            (webView.webViewClient as BasicAuthWebViewClient).removeAllCookies()
-        }catch (e: Exception){
-            e.printStackTrace()
-        }
-        webView.clearCache(true)
-        loginState.value = LoginState.LoggedOut
+        webView.logout()
     }
 
     @SuppressLint("SetJavaScriptEnabled")
     fun login(user: String, pass: String){
-        loginState.value = LoginState.InAuth
-
-        // javascript for auto login
-        webView.settings.javaScriptEnabled = true
-        webView.webViewClient = BasicAuthWebViewClient(
-            user,
-            pass,
-            onPageFetched = { cookie ->
-                // getSessionID
-                if(cookie.getOrNull(1)?.matches(Regex(".*$SESSION_COOKIE_ID=.*")) == true){
-                    appViewModel.sessionId = cookie[1].split(Regex(".*$SESSION_COOKIE_ID="))[1]
-                }
-                Log.d("session_id", appViewModel.sessionId ?: "null")
-
-                // skip 2-step verification confirmation script
-                webView.evaluateJavascript("javascript:document.getElementById('$TWO_STEP_VERIFICATION_LOGIN_BUTTON_ID').click();"){}
-
-                // login successful
-                if(appViewModel.sessionId != null){
-                    appViewModel.userId.value = user
-
-                    view?.findNavController()?.navigate(R.id.action_loginFragment_to_nav_home)
-
-                    loginState.value = LoginState.LoggedIn
-                }
-            },
-            onCookieFetchError = {
-                try {
-                    Toast.makeText(requireContext(), "ログイン失敗", Toast.LENGTH_SHORT).show()
-                }catch (e: Exception){
-                    e.printStackTrace()
-                }finally {
-                    loginState.value = LoginState.LoggedOut
-                }
-            }
-        )
-
-        // reset sessions
-        (webView.webViewClient as BasicAuthWebViewClient).removeAllCookies()
-
-        // access to login page
-        webView.loadUrl(SCOMB_LOGIN_PAGE_URL)
+        webView.addJavascript("javascript:document.getElementById('$TWO_STEP_VERIFICATION_LOGIN_BUTTON_ID').click();")
+        webView.login(SCOMB_LOGIN_PAGE_URL, user, pass)
     }
 }

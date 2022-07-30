@@ -1,5 +1,6 @@
 package net.iobb.koheinoapp.scombmobile
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.widget.TextView
@@ -12,6 +13,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.gargoylesoftware.htmlunit.android.Main
 import com.google.android.material.navigation.NavigationView
 import net.iobb.koheinoapp.scombmobile.common.AppViewModel
 import net.iobb.koheinoapp.scombmobile.databinding.ActivityMainBinding
@@ -68,5 +70,11 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    fun restart(){
+        val intent = Intent(baseContext, MainActivity::class.java)
+        finish()
+        startActivity(intent)
     }
 }
