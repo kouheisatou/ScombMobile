@@ -54,7 +54,7 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
 
     // jsoup
     implementation("org.jsoup:jsoup:1.15.2")
@@ -71,4 +71,7 @@ dependencies {
 //    implementation("net.sourceforge.htmlunit:htmlunit:2.63.0")
 //    implementation 'xyz.nulldev.huandroid:huandroid:2.30.01'
     implementation "net.sourceforge.htmlunit:htmlunit-android:2.63.0"
+
+    // color picker
+    implementation 'io.github.eltos:simpledialogfragments:3.6.1'
 }

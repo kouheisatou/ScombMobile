@@ -1,5 +1,6 @@
 package net.iobb.koheinoapp.scombmobile.ui.home
 
+import androidx.annotation.ColorInt
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -21,6 +22,9 @@ class HomeViewModel : ViewModel() {
         }
     )
     var isInitalized = false
+    val timetableListenerState = MutableLiveData(HomeFragment.ListenerState.Initialize)
+    @ColorInt
+    var selectedColor: Int? = null
 
     fun fetch(){
         if(isInitalized) return

@@ -1,6 +1,7 @@
 package net.iobb.koheinoapp.scombmobile.ui.home
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -19,20 +20,14 @@ class ClassCell(
         return "id=$id, name=$name, teachers=$teachers, room=$room"
     }
 
+    lateinit var view: View
+    lateinit var defaultBackground: Drawable
+
     fun genView(context: Context, attachTo: ViewGroup): View{
-        val view = View.inflate(context, R.layout.class_cell, attachTo)
+        view = View.inflate(context, R.layout.class_cell, attachTo)
+        defaultBackground = view.classNameBtn.background
 
         view.classNameBtn.text = name
-
-        view.classNameBtn.setOnLongClickListener { v ->
-            Snackbar.make(v, "教室 : $room", Snackbar.LENGTH_LONG).show()
-            true
-        }
-
-        view.classNameBtn.setOnClickListener {
-            val action = HomeFragmentDirections.actionNavHomeToClassDetailFragment(id)
-            it.findNavController().navigate(action)
-        }
 
         return view
     }
