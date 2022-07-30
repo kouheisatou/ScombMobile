@@ -54,19 +54,23 @@ class HomeFragment : Fragment(), SimpleDialog.OnDialogResultListener {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.timetable_color_selector, menu)
+        menu.findItem(R.id.palette).isVisible = false
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.colorSettings -> {
-                openColorSettingDialog()
+                viewModel.timetableListenerState.value = ListenerState.ColorSelect
+                if(viewModel.selectedColor == null){
+                    openColorSettingDialog()
+                }
             }
-            R.id.showColorPalette -> {
-                openColorSettingDialog()
-            }
-            R.id.disableColorPickerMode -> {
+            R.id.disableColorSettingMode -> {
                 viewModel.timetableListenerState.value = ListenerState.Normal
+            }
+            R.id.palette -> {
+                openColorSettingDialog()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -117,16 +121,14 @@ class HomeFragment : Fragment(), SimpleDialog.OnDialogResultListener {
             viewModel.timetableListenerState.value = ListenerState.Normal
         }
         viewModel.timetableListenerState.observe(viewLifecycleOwner){ state ->
-            if(state != ListenerState.ColorSelect) {
-                viewModel.selectedColor = null
-            }
             Log.d("listener_state", state.toString())
             when(state){
                 ListenerState.Initialize -> {}
                 ListenerState.Normal -> {
                     val menu = (activity as MainActivity).binding.appBarMain.toolbar.menu
-                    menu.findItem(R.id.disableColorPickerMode)?.isVisible = false
-                    menu.findItem(R.id.showColorPalette)?.title = "色設定モード"
+                    menu.findItem(R.id.colorSettings)?.isVisible = true
+                    menu.findItem(R.id.disableColorSettingMode)?.isVisible = false
+                    menu.findItem(R.id.palette)?.isVisible = false
 
                     applyToAllCell { classCell, _, _ ->
                         classCell ?: return@applyToAllCell
@@ -144,15 +146,15 @@ class HomeFragment : Fragment(), SimpleDialog.OnDialogResultListener {
                 }
                 ListenerState.ColorSelect -> {
                     val menu = (activity as MainActivity).binding.appBarMain.toolbar.menu
-                    menu.findItem(R.id.disableColorPickerMode)?.isVisible = true
-                    menu.findItem(R.id.showColorPalette)?.title = "パレットを表示"
+                    menu.findItem(R.id.colorSettings)?.isVisible = false
+                    menu.findItem(R.id.disableColorSettingMode)?.isVisible = true
+                    menu.findItem(R.id.palette)?.isVisible = true
 
                     Toast.makeText(requireContext(), "タップで色を設定\n長押しでデフォルト色に戻す", Toast.LENGTH_SHORT).show()
 
                     applyToAllCell { classCell, _, _ ->
                         classCell ?: return@applyToAllCell
                         classCell.view.classNameBtn.setOnClickListener {
-                            Log.d("selected_color", viewModel.selectedColor?.toString() ?: "null")
                             classCell.setCustomColor(viewModel.selectedColor ?: return@setOnClickListener)
                         }
 
@@ -163,7 +165,6 @@ class HomeFragment : Fragment(), SimpleDialog.OnDialogResultListener {
                     }
                 }
                 ListenerState.AttendanceCount -> {
-                    viewModel.selectedColor = null
                 }
             }
         }
@@ -193,7 +194,6 @@ class HomeFragment : Fragment(), SimpleDialog.OnDialogResultListener {
     override fun onResult(dialogTag: String, which: Int, extras: Bundle): Boolean {
         if(which == Dialog.BUTTON_POSITIVE){
             viewModel.selectedColor = extras.getIntArray(SimpleColorDialog.COLORS)!![0]
-            viewModel.timetableListenerState.value = ListenerState.ColorSelect
         }
         return false
     }

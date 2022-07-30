@@ -5,6 +5,7 @@ import org.jsoup.HttpStatusException
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import java.lang.Exception
+import java.util.*
 
 private const val USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36"
 private const val HEADER_ACCEPT = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
@@ -16,7 +17,11 @@ fun main() {
 //    basicAuthLogin(getScombSamlRequestUrl() ?: return, "user", "password")
 //    getScombSamlRequestUrl()
 //    cookieLogin(SCOMB_HOME_URL, "NTgxZjQ5MWUtYzAxMS00M2FkLWJhMzktMDhiNzYwOTRjNGU2")
-    cookieLogin(CLASS_PAGE_URL + "202201SU0086501001", "OGFhOTZhZmEtNTlmNS00MGIxLTllZDItODgyNzcwZDM2ZjIy")
+//    cookieLogin(CLASS_PAGE_URL + "202201SU0086501001", "OGFhOTZhZmEtNTlmNS00MGIxLTllZDItODgyNzcwZDM2ZjIy")
+
+    val yesterday = Calendar.getInstance()
+    yesterday.add(Calendar.HOUR, TIMETABLE_EFFECTIVE_TIME)
+    println(yesterday.timeInMillis)
 }
 
 /**

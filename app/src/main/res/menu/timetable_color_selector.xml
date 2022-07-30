@@ -2,11 +2,14 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:title="色設定"
-        android:visible="false"
+    <item
+        android:id="@+id/palette"
+        android:title=""
+        android:icon="@drawable/palette"
+        app:showAsAction="always" />
+
+    <item android:title="色設定モード"
         android:id="@+id/colorSettings"/>
-    <item android:title="カラーパレット表示"
-        android:id="@+id/showColorPalette"/>
-    <item android:title="色設定モード解除"
-        android:id="@+id/disableColorPickerMode"/>
+    <item android:title="色設定モードから抜ける"
+        android:id="@+id/disableColorSettingMode"/>
 </menu>

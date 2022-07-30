@@ -98,7 +98,7 @@ class HomeViewModel : ViewModel() {
 
 
             val yesterday = Calendar.getInstance()
-            yesterday.add(Calendar.HOUR, TIMETABLE_EFFECTIVE_TIME)
+            yesterday.add(Calendar.HOUR, -1 * TIMETABLE_EFFECTIVE_TIME)
 
             // get classes fetched in 24h
             val in24h = mutableListOf<ClassCell>()
