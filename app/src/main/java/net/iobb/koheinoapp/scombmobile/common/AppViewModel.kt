@@ -14,6 +14,11 @@ const val SESSION_COOKIE_ID = "SESSION"
 // Scombに2段階認証が未設定でログインしようとすると出る"2要素認証は無効になっています。"確認画面の"次へ"ボタンのhtmlのid
 const val TWO_STEP_VERIFICATION_LOGIN_BUTTON_ID = "continueButton"
 
+/** サイトのヘッダー要素ID **/
+const val HEADER_ELEMENT_ID = "page_head"
+/** サイトのフッター要素ID **/
+const val FOOTER_ELEMENT_ID = "page_foot"
+
 // --------時間割CSS----------
 /** 時間割のテーブル1行のCSSクラス名 **/
 const val TIMETABLE_ROW_CSS_CLASS_NM = "div-table-data-row"

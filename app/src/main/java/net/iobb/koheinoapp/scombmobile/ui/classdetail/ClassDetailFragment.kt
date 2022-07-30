@@ -13,11 +13,8 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import kotlinx.android.synthetic.main.fragment_class_detail.*
 import kotlinx.android.synthetic.main.fragment_class_detail.progressBar
-import net.iobb.koheinoapp.scombmobile.common.AppViewModel
-import net.iobb.koheinoapp.scombmobile.common.CLASS_PAGE_URL
 import net.iobb.koheinoapp.scombmobile.R
-import net.iobb.koheinoapp.scombmobile.common.NetworkState
-import net.iobb.koheinoapp.scombmobile.common.Page
+import net.iobb.koheinoapp.scombmobile.common.*
 
 class ClassDetailFragment : Fragment() {
 
@@ -47,7 +44,12 @@ class ClassDetailFragment : Fragment() {
             view?.findNavController()?.navigate(R.id.loginFragment)
             return
         }else{
-            webView.loadUrl("$CLASS_PAGE_URL${args.classId}",)
+            webView.loadUrl(
+                "$CLASS_PAGE_URL${args.classId}",
+                null,
+                "document.getElementById('$HEADER_ELEMENT_ID').remove();",
+                "document.getElementById('$FOOTER_ELEMENT_ID').remove();"
+            )
         }
 
         webView.networkState.observe(viewLifecycleOwner){
