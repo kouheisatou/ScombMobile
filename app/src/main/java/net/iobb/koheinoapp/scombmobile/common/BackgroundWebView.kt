@@ -1,8 +1,7 @@
-package net.iobb.koheinoapp.scombmobile.scraping
+package net.iobb.koheinoapp.scombmobile.common
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import android.webkit.JavascriptInterface
 import android.webkit.ValueCallback
 import android.webkit.WebView
@@ -11,6 +10,7 @@ import android.webkit.WebViewClient
 class BackgroundWebView(
     context: Context,
     url: String,
+    val onHtmlSrcFetched: (html: String) -> Unit
 ) : WebView(context) {
 
     private val loadUrl = url
@@ -20,9 +20,7 @@ class BackgroundWebView(
         settings.javaScriptEnabled = true
         webViewClient = BackgroundWebViewClient(
             this,
-            onHtmlSrcFetched = { html ->
-                Log.d("fetched_html", html)
-            }
+            onHtmlSrcFetched = onHtmlSrcFetched
         )
         loadUrl(loadUrl)
 

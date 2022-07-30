@@ -1,5 +1,6 @@
 package net.iobb.koheinoapp.scombmobile.ui.login
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,8 +17,7 @@ import androidx.navigation.findNavController
 import androidx.room.Room
 import kotlinx.android.synthetic.main.fragment_login.*
 import net.iobb.koheinoapp.scombmobile.*
-import org.jsoup.Jsoup
-import org.jsoup.parser.Parser
+import net.iobb.koheinoapp.scombmobile.common.*
 import java.lang.Exception
 
 class LoginFragment : Fragment() {
@@ -38,10 +38,6 @@ class LoginFragment : Fragment() {
     }
 
 
-
-    enum class LoginState{
-        LoggedIn, LoggedOut, InAuth
-    }
 
     private val loginState = MutableLiveData(LoginState.LoggedOut)
 
@@ -126,6 +122,7 @@ class LoginFragment : Fragment() {
         loginState.value = LoginState.LoggedOut
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     fun login(user: String, pass: String){
         loginState.value = LoginState.InAuth
 
@@ -134,7 +131,6 @@ class LoginFragment : Fragment() {
         webView.webViewClient = BasicAuthWebViewClient(
             user,
             pass,
-            webView,
             onPageFetched = { cookie ->
                 // getSessionID
                 if(cookie.getOrNull(1)?.matches(Regex(".*$SESSION_COOKIE_ID=.*")) == true){

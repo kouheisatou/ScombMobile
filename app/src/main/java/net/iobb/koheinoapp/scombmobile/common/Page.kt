@@ -1,4 +1,4 @@
-package net.iobb.koheinoapp.scombmobile.scraping
+package net.iobb.koheinoapp.scombmobile.common
 
 import android.annotation.SuppressLint
 import android.util.Log
@@ -8,8 +8,6 @@ import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController
 import com.gargoylesoftware.htmlunit.WebClient
 import com.gargoylesoftware.htmlunit.html.HtmlPage
 import com.gargoylesoftware.htmlunit.util.Cookie
-import net.iobb.koheinoapp.scombmobile.SCOMB_LOGGED_OUT_PAGE_URL
-import net.iobb.koheinoapp.scombmobile.SESSION_COOKIE_ID
 import org.jsoup.HttpStatusException
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -22,10 +20,6 @@ private const val HEADER_ACCEPT_ENCODING = "gzip, deflate, br"
 private const val HEADER_REFERER = "https://www.xxxxx/yyyy"
 
 class Page(val url: String) {
-
-    enum class NetworkState {
-        Finished, Loading, NotPermitted, Initialized
-    }
 
     lateinit var document: Document
     var networkState = MutableLiveData(NetworkState.Initialized)

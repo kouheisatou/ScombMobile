@@ -10,10 +10,11 @@ import android.view.ViewGroup
 import android.webkit.WebViewClient
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import kotlinx.android.synthetic.main.fragment_web_scomb.*
 import net.iobb.koheinoapp.scombmobile.*
+import net.iobb.koheinoapp.scombmobile.common.AppViewModel
+import net.iobb.koheinoapp.scombmobile.common.SCOMB_HOME_URL
 
 class WebScombFragment : Fragment() {
 

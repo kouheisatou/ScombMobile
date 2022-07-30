@@ -9,7 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.room.Room
 import kotlinx.android.synthetic.main.fragment_setting.*
-import net.iobb.koheinoapp.scombmobile.AppDatabase
+import net.iobb.koheinoapp.scombmobile.common.AppDatabase
 import net.iobb.koheinoapp.scombmobile.R
 
 class SettingFragment : Fragment() {

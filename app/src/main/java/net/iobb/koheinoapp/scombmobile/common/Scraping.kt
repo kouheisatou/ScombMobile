@@ -1,7 +1,5 @@
-package net.iobb.koheinoapp.scombmobile.scraping
+package net.iobb.koheinoapp.scombmobile.common
 
-import net.iobb.koheinoapp.scombmobile.CLASS_PAGE_URL
-import net.iobb.koheinoapp.scombmobile.SCOMB_LOGIN_PAGE_URL
 import org.apache.commons.net.util.Base64
 import org.jsoup.HttpStatusException
 import org.jsoup.Jsoup

@@ -13,49 +13,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
+    <net.iobb.koheinoapp.scombmobile.common.StatefulWebView
+        android:id="@+id/webView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/classTitleTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TextView" />
-        <TextView
-            android:id="@+id/teacherTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TextView" />
-        <TextView
-            android:id="@+id/classOverviewTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TextView" />
-
-        <LinearLayout
-            android:id="@+id/tasksContainer"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/lessenContainer"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/questionnaireContainer"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        </LinearLayout>
-
-    </LinearLayout>
+        android:layout_height="match_parent"/>
 
 </FrameLayout>

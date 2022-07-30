@@ -1,27 +1,24 @@
 package net.iobb.koheinoapp.scombmobile.ui.home
 
-import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TableRow
-import androidx.activity.OnBackPressedCallback
 import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import kotlinx.android.synthetic.main.fragment_home.*
-import kotlinx.coroutines.launch
 import net.iobb.koheinoapp.scombmobile.*
+import net.iobb.koheinoapp.scombmobile.common.AppViewModel
+import net.iobb.koheinoapp.scombmobile.common.NetworkState
 import net.iobb.koheinoapp.scombmobile.databinding.FragmentHomeBinding
-import net.iobb.koheinoapp.scombmobile.scraping.Page
+import net.iobb.koheinoapp.scombmobile.common.Page
 
 
 class HomeFragment : Fragment() {
@@ -54,19 +51,19 @@ class HomeFragment : Fragment() {
     override fun onStart() {
         viewModel.page.networkState.observe(viewLifecycleOwner){
             when(it){
-                Page.NetworkState.Finished -> {
+                NetworkState.Finished -> {
                     progressBar.isVisible = false
                     timeTable.isVisible = true
                 }
-                Page.NetworkState.Initialized -> {
+                NetworkState.Initialized -> {
                     progressBar.isVisible = false
                     timeTable.isVisible = true
                 }
-                Page.NetworkState.Loading -> {
+                NetworkState.Loading -> {
                     progressBar.isVisible = true
                     timeTable.isVisible = false
                 }
-                Page.NetworkState.NotPermitted -> {
+                NetworkState.NotPermitted -> {
                     this.findNavController().navigate(R.id.loginFragment)
                 }
             }

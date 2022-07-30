@@ -1,4 +1,4 @@
-package net.iobb.koheinoapp.scombmobile
+package net.iobb.koheinoapp.scombmobile.common
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

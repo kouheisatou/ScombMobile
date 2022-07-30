@@ -5,8 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import net.iobb.koheinoapp.scombmobile.*
-import net.iobb.koheinoapp.scombmobile.scraping.Page
+import net.iobb.koheinoapp.scombmobile.common.*
 
 class HomeViewModel : ViewModel() {
 
@@ -39,11 +38,15 @@ class HomeViewModel : ViewModel() {
                 for(cell in row.value.getElementsByClass(TIMETABLE_CELL_CSS_CLASS_NM).withIndex()){
                     if(cell.value.allElements.isNotEmpty()){
 
-                        val cellHeader = cell.value.getElementsByClass(TIMETABLE_CELL_HEADER_CSS_CLASS_NM) ?: continue
+                        val cellHeader = cell.value.getElementsByClass(
+                            TIMETABLE_CELL_HEADER_CSS_CLASS_NM
+                        ) ?: continue
                         val id = cellHeader.getOrNull(0)?.attr("id") ?: continue
                         val name = cellHeader.getOrNull(0)?.text() ?: continue
 
-                        val cellDetail = cell.value.getElementsByClass(TIMETABLE_CELL_DETAIL_CSS_CLASS_NM).getOrNull(0)?.child(0) ?: continue
+                        val cellDetail = cell.value.getElementsByClass(
+                            TIMETABLE_CELL_DETAIL_CSS_CLASS_NM
+                        ).getOrNull(0)?.child(0) ?: continue
                         val room = cellDetail.attr(TIMETABLE_ROOM_ATTR_KEY) ?: continue
 
                         val teachers = mutableListOf<String>()
