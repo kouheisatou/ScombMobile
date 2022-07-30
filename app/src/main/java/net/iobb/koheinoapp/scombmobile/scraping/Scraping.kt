@@ -1,8 +1,8 @@
-package net.iobb.koheinoapp.scombmobile.ui
+package net.iobb.koheinoapp.scombmobile.scraping
 
-import net.iobb.koheinoapp.scombmobile.SCOMB_HOME_URL
+import net.iobb.koheinoapp.scombmobile.CLASS_PAGE_URL
 import net.iobb.koheinoapp.scombmobile.SCOMB_LOGIN_PAGE_URL
-import org.apache.commons.codec.binary.Base64
+import org.apache.commons.net.util.Base64
 import org.jsoup.HttpStatusException
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -17,7 +17,8 @@ private const val HEADER_REFERER = "https://www.xxxxx/yyyy"
 fun main() {
 //    basicAuthLogin(getScombSamlRequestUrl() ?: return, "user", "password")
 //    getScombSamlRequestUrl()
-    cookieLogin(SCOMB_HOME_URL, "NTgxZjQ5MWUtYzAxMS00M2FkLWJhMzktMDhiNzYwOTRjNGU2")
+//    cookieLogin(SCOMB_HOME_URL, "NTgxZjQ5MWUtYzAxMS00M2FkLWJhMzktMDhiNzYwOTRjNGU2")
+    cookieLogin(CLASS_PAGE_URL + "202201SU0086501001", "OGFhOTZhZmEtNTlmNS00MGIxLTllZDItODgyNzcwZDM2ZjIy")
 }
 
 /**

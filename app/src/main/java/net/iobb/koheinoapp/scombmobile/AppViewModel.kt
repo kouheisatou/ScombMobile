@@ -9,6 +9,8 @@ const val SCOMB_LOGGED_OUT_PAGE_URL = "https://scombz.shibaura-it.ac.jp/login"
 const val SCOMB_TIMETABLE_URL = "https://scombz.shibaura-it.ac.jp/lms/timetable"
 const val CLASS_PAGE_URL = "https://scombz.shibaura-it.ac.jp/lms/course?idnumber="
 
+const val SESSION_COOKIE_ID = "SESSION"
+
 // Scombに2段階認証が未設定でログインしようとすると出る"2要素認証は無効になっています。"確認画面の"次へ"ボタンのhtmlのid
 const val TWO_STEP_VERIFICATION_LOGIN_BUTTON_ID = "continueButton"
 

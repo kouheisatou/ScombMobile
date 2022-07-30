@@ -137,8 +137,8 @@ class LoginFragment : Fragment() {
             webView,
             onPageFetched = { cookie ->
                 // getSessionID
-                if(cookie.getOrNull(1)?.matches(Regex(".*SESSION=.*")) == true){
-                    appViewModel.sessionId = cookie[1].split(Regex(".*SESSION="))[1]
+                if(cookie.getOrNull(1)?.matches(Regex(".*$SESSION_COOKIE_ID=.*")) == true){
+                    appViewModel.sessionId = cookie[1].split(Regex(".*$SESSION_COOKIE_ID="))[1]
                 }
                 Log.d("session_id", appViewModel.sessionId ?: "null")
 
