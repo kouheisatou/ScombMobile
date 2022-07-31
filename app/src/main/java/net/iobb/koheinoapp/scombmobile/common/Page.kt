@@ -33,11 +33,15 @@ class Page(val url: String) {
                 .get()
             if(document.baseUri() == SCOMB_LOGGED_OUT_PAGE_URL){
                 networkState.postValue(NetworkState.NotPermitted)
+            }else{
+                networkState.postValue(NetworkState.Finished)
             }
         } catch (e: HttpStatusException) {
             e.printStackTrace()
-        }finally {
-            networkState.postValue(NetworkState.Finished)
         }
+    }
+
+    fun reset(){
+        networkState.postValue(NetworkState.Initialized)
     }
 }

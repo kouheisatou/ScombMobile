@@ -95,12 +95,13 @@ class HomeFragment : Fragment(), SimpleDialog.OnDialogResultListener {
     }
 
     override fun onPause() {
-        viewModel.timetableListenerState.value = ListenerState.Normal
+        viewModel.page.reset()
         super.onPause()
     }
 
     override fun onStart() {
         super.onStart()
+        viewModel.page.reset()
 
         viewModel.page.networkState.observe(viewLifecycleOwner){
             when(it){

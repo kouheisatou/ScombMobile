@@ -1,6 +1,7 @@
 package net.iobb.koheinoapp.scombmobile.ui.task.list
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -10,6 +11,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import kotlinx.android.synthetic.main.fragment_item_list.*
@@ -29,13 +31,21 @@ class TaskListFragment : Fragment() {
         super.onCreate(savedInstanceState)
     }
 
+    override fun onPause() {
+        viewModel.page.reset()
+        super.onPause()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_item_list, container, false)
 
+        viewModel.page.reset()
+
         viewModel.page.networkState.observe(viewLifecycleOwner) {
+            Log.d("network_status", viewModel.page.networkState.value.toString())
             when(it) {
                 NetworkState.Initialized -> {
                     progressBar.isVisible = true
@@ -47,24 +57,25 @@ class TaskListFragment : Fragment() {
                     list.isVisible = false
                 }
                 NetworkState.Finished -> {
-
                     progressBar.isVisible = false
                     list.isVisible = true
-
-                    viewModel.constructTasks()
-
-                    // construct list view
-                    if (view.list is RecyclerView) {
-                        val dividerItemDecoration = DividerItemDecoration(requireContext(), LinearLayoutManager(requireContext()).orientation)
-                        view.list.addItemDecoration(dividerItemDecoration)
-                        with(view.list) {
-                            layoutManager = LinearLayoutManager(context)
-                            adapter = TaskRecyclerViewAdapter(viewModel.tasks)
-                        }
-                    }
                 }
                 NetworkState.NotPermitted -> {
                     findNavController().navigate(R.id.loginFragment)
+                }
+            }
+        }
+        viewModel.tasks.observe(viewLifecycleOwner){
+            if(it.isNotEmpty()){
+
+                // construct list view
+                if (list is RecyclerView) {
+                    val dividerItemDecoration = DividerItemDecoration(requireContext(), LinearLayoutManager(requireContext()).orientation)
+                    list.addItemDecoration(dividerItemDecoration)
+                    with(list) {
+                        layoutManager = LinearLayoutManager(context)
+                        adapter = TaskRecyclerViewAdapter(viewModel.tasks.value?.toList() ?: return@with)
+                    }
                 }
             }
         }

@@ -41,8 +41,6 @@ class LoginFragment : Fragment() {
 
     override fun onStart() {
 
-        webView.loginState.value = if(appViewModel.sessionId != null){LoginState.LoggedIn }else{LoginState.LoggedOut }
-
         val db = Room.databaseBuilder(
             requireContext(),
             AppDatabase::class.java,
@@ -54,7 +52,7 @@ class LoginFragment : Fragment() {
         passwordTextView.setText(db.userDao().getUser()?.password ?: "")
 
         // auto login
-        if(db.settingDao().getSetting("enabled_auto_login")?.settingValue == "true" && appViewModel.sessionId == null){
+        if(db.settingDao().getSetting("enabled_auto_login")?.settingValue == "true"){
             login(idTextView.text.toString(), passwordTextView.text.toString())
         }
 
