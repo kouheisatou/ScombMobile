@@ -46,4 +46,9 @@
             android:id="@+id/action_taskFragment_to_classDetailFragment"
             app:destination="@id/classDetailFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/taskCalendarFragment"
+        android:name="net.iobb.koheinoapp.scombmobile.ui.task.calendar.TaskCalendarFragment"
+        android:label="締切カレンダー"
+        tools:layout="@layout/fragment_calendar" />
 </navigation>

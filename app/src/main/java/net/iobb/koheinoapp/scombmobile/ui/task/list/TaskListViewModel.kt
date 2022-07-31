@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.iobb.koheinoapp.scombmobile.common.*
+import net.iobb.koheinoapp.scombmobile.ui.task.Task
 import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
@@ -18,6 +19,7 @@ class TaskListViewModel : ViewModel() {
     val tasks = MutableLiveData(mutableListOf<Task>())
 
     fun fetchTasks(context: Context){
+        if(page.networkState.value == NetworkState.Finished) return
         viewModelScope.launch(Dispatchers.IO) {
             page.fetch(appViewModel.sessionId)
 

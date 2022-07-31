@@ -48,79 +48,24 @@ class HomeFragment : Fragment(), SimpleDialog.OnDialogResultListener {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        return root
-    }
-
-    enum class ListenerState{
-        Normal, ColorSelect, AttendanceCount, Initialize
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.timetable_color_selector, menu)
-        val isInColorSetting = viewModel.timetableListenerState.value == ListenerState.ColorSelect
-
-        menu.findItem(R.id.colorSettings)?.isVisible = !isInColorSetting
-        menu.findItem(R.id.disableColorSettingMode)?.isVisible = isInColorSetting
-        menu.findItem(R.id.palette)?.isVisible = isInColorSetting
-
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.colorSettings -> {
-                viewModel.timetableListenerState.value = ListenerState.ColorSelect
-            }
-            R.id.disableColorSettingMode -> {
-                viewModel.timetableListenerState.value = ListenerState.Normal
-            }
-            R.id.palette -> {
-                openColorSettingDialog()
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
-    fun openColorSettingDialog(){
-        SimpleColorDialog.build()
-            .title("色を選択")
-            .colors(requireContext(), SimpleColorDialog.MATERIAL_COLOR_PALLET_LIGHT)
-            .allowCustom(false)
-            .show(this, "color_dialog")
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
-    override fun onPause() {
-        viewModel.page.reset()
-        super.onPause()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        viewModel.page.reset()
-
         viewModel.page.networkState.observe(viewLifecycleOwner){
             when(it){
                 NetworkState.Loading -> {
-                    progressBar.isVisible = true
-                    timeTable.isVisible = false
+                    binding.progressBar.isVisible = true
+                    binding.timeTable.isVisible = false
                 }
                 NetworkState.NotPermitted -> {
                     findNavController().navigate(R.id.loginFragment)
                 }
                 else -> {
-                    progressBar.isVisible = false
-                    timeTable.isVisible = true
+                    binding.progressBar.isVisible = false
+                    binding.timeTable.isVisible = true
                 }
             }
         }
         viewModel.timeTable.observe(viewLifecycleOwner){
             applyToAllCell { classCell, row, col ->
-                val tableRow = timeTable[row + 1] as TableRow
+                val tableRow = binding.timeTable[row + 1] as TableRow
                 val cellView = tableRow[col + 1] as LinearLayout
                 classCell?.genView(requireContext(), cellView)
             }
@@ -181,12 +126,56 @@ class HomeFragment : Fragment(), SimpleDialog.OnDialogResultListener {
 
 
         if(appViewModel.sessionId == null){
-            view?.findNavController()?.navigate(R.id.loginFragment)
-            return
+            findNavController().navigate(R.id.loginFragment)
+            return root
         }
 
         viewModel.fetch(requireContext())
 
+        return root
+    }
+
+    enum class ListenerState{
+        Normal, ColorSelect, AttendanceCount, Initialize
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.timetable_color_selector, menu)
+        val isInColorSetting = viewModel.timetableListenerState.value == ListenerState.ColorSelect
+
+        menu.findItem(R.id.colorSettings)?.isVisible = !isInColorSetting
+        menu.findItem(R.id.disableColorSettingMode)?.isVisible = isInColorSetting
+        menu.findItem(R.id.palette)?.isVisible = isInColorSetting
+
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.colorSettings -> {
+                viewModel.timetableListenerState.value = ListenerState.ColorSelect
+            }
+            R.id.disableColorSettingMode -> {
+                viewModel.timetableListenerState.value = ListenerState.Normal
+            }
+            R.id.palette -> {
+                openColorSettingDialog()
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    fun openColorSettingDialog(){
+        SimpleColorDialog.build()
+            .title("色を選択")
+            .colors(requireContext(), SimpleColorDialog.MATERIAL_COLOR_PALLET_LIGHT)
+            .allowCustom(false)
+            .show(this, "color_dialog")
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     fun applyToAllCell(applyProcess: (classCell: ClassCell?, row: Int, col: Int) -> Unit){

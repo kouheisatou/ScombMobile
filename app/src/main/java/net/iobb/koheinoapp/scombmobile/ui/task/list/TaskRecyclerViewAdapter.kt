@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.navigation.findNavController
 import net.iobb.koheinoapp.scombmobile.common.SCOMBZ_DOMAIN
 import net.iobb.koheinoapp.scombmobile.databinding.FragmentItemBinding
+import net.iobb.koheinoapp.scombmobile.ui.task.Task
 import java.util.*
 
 class TaskRecyclerViewAdapter(

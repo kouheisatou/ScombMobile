@@ -32,18 +32,11 @@ class TaskListFragment : Fragment() {
         super.onCreate(savedInstanceState)
     }
 
-    override fun onPause() {
-        viewModel.page.reset()
-        super.onPause()
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_item_list, container, false)
-
-        viewModel.page.reset()
 
         view.swipeLayout.setOnRefreshListener {
             viewModel.tasks.value = mutableListOf()
@@ -53,7 +46,6 @@ class TaskListFragment : Fragment() {
         view.list.addItemDecoration(dividerItemDecoration)
 
         viewModel.page.networkState.observe(viewLifecycleOwner) {
-            Log.d("network_status", viewModel.page.networkState.value.toString())
             when(it) {
                 NetworkState.Initialized -> {
                     progressBar.isVisible = true

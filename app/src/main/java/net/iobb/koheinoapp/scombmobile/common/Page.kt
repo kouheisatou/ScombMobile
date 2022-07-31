@@ -31,6 +31,7 @@ class Page(val url: String) {
                 .timeout(10 * 1000)
                 .cookie("SESSION", cookieId ?: "")
                 .get()
+
             if(document.baseUri() == SCOMB_LOGGED_OUT_PAGE_URL){
                 networkState.postValue(NetworkState.NotPermitted)
             }else{

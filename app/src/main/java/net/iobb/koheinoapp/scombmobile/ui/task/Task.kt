@@ -1,4 +1,4 @@
-package net.iobb.koheinoapp.scombmobile.ui.task.list
+package net.iobb.koheinoapp.scombmobile.ui.task
 
 class Task(
     val title: String,

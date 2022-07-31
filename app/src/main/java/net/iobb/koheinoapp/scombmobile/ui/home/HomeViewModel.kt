@@ -92,10 +92,10 @@ class HomeViewModel : ViewModel() {
     }
 
     fun fetch(context: Context){
+        if(page.networkState.value == NetworkState.Finished) return
         viewModelScope.launch(Dispatchers.IO) {
 
             var classes = fetchFromDB(context)
-
 
             val yesterday = Calendar.getInstance()
             yesterday.add(Calendar.HOUR, -1 * TIMETABLE_EFFECTIVE_TIME)
@@ -132,6 +132,8 @@ class HomeViewModel : ViewModel() {
                 s += "{${it.name}, ${it.customColorInt}}, "
             }
             Log.d("timetable", s)
+
+            page.networkState.postValue(NetworkState.Finished)
         }
 
     }
