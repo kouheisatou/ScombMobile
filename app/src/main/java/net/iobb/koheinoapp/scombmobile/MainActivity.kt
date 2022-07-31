@@ -2,11 +2,9 @@ package net.iobb.koheinoapp.scombmobile
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -37,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow, R.id.settingFragment, R.id.loginFragment, R.id.webScombFragment, R.id.taskFragment
+                R.id.nav_home, R.id.nav_settingFragment, R.id.loginFragment, R.id.nav_webScombFragment, R.id.nav_taskFragment
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)

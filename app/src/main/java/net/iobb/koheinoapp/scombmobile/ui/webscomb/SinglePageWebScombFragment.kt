@@ -1,4 +1,4 @@
-package net.iobb.koheinoapp.scombmobile.ui.classdetail
+package net.iobb.koheinoapp.scombmobile.ui.webscomb
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -13,14 +13,15 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import kotlinx.android.synthetic.main.fragment_class_detail.*
 import kotlinx.android.synthetic.main.fragment_class_detail.progressBar
+import net.iobb.koheinoapp.scombmobile.MainActivity
 import net.iobb.koheinoapp.scombmobile.R
 import net.iobb.koheinoapp.scombmobile.common.*
 
-class ClassDetailFragment : Fragment() {
+class SinglePageWebScombFragment : Fragment() {
 
-    private lateinit var viewModel: ClassDetailViewModel
+    private lateinit var viewModel: SinglePageWebScombViewModel
     private val appViewModel: AppViewModel by activityViewModels()
-    private val args: ClassDetailFragmentArgs by navArgs()
+    private val args: SinglePageWebScombFragmentArgs by navArgs()
 
 
     override fun onCreateView(
@@ -33,7 +34,8 @@ class ClassDetailFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setHasOptionsMenu(true);
-        viewModel = ViewModelProvider(this, ClassDetailViewModel.Factory(args.url)).get(ClassDetailViewModel::class.java)
+        viewModel = ViewModelProvider(this, SinglePageWebScombViewModel.Factory(args.url)).get(
+            SinglePageWebScombViewModel::class.java)
         viewModel.appViewModel = appViewModel
     }
 
@@ -62,9 +64,12 @@ class ClassDetailFragment : Fragment() {
         }else{
             webView.loadUrl(
                 args.url,
-                null,
+                onScriptCallback = {
+                    (activity as MainActivity).binding.appBarMain.toolbar.title = it.replace("\"", "")
+                },
                 "document.getElementById('$HEADER_ELEMENT_ID').remove();",
-                "document.getElementById('$FOOTER_ELEMENT_ID').remove();"
+                "document.getElementById('$FOOTER_ELEMENT_ID').remove();",
+                "document.title;"
             )
         }
 

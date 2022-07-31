@@ -8,51 +8,40 @@
     <fragment
         android:id="@+id/nav_home"
         android:name="net.iobb.koheinoapp.scombmobile.ui.home.HomeFragment"
-        android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home" >
+        android:label="時間割"
+        tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_nav_home_to_classDetailFragment"
             app:destination="@id/classDetailFragment" />
     </fragment>
 
     <fragment
-        android:id="@+id/nav_gallery"
-        android:name="net.iobb.koheinoapp.scombmobile.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
-
-    <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="net.iobb.koheinoapp.scombmobile.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
-    <fragment
         android:id="@+id/loginFragment"
         android:name="net.iobb.koheinoapp.scombmobile.ui.login.LoginFragment"
-        android:label="LoginFragment" />
+        android:label="ログイン" />
     <fragment
-        android:id="@+id/settingFragment"
+        android:id="@+id/nav_settingFragment"
         android:name="net.iobb.koheinoapp.scombmobile.ui.settings.SettingFragment"
-        android:label="fragment_setting"
+        android:label="設定"
         tools:layout="@layout/fragment_setting" />
     <fragment
-        android:id="@+id/webScombFragment"
+        android:id="@+id/nav_webScombFragment"
         android:name="net.iobb.koheinoapp.scombmobile.ui.webscomb.WebScombFragment"
-        android:label="WebScombFragment" />
+        android:label="Web版Scomb" />
     <fragment
         android:id="@+id/classDetailFragment"
-        android:name="net.iobb.koheinoapp.scombmobile.ui.classdetail.ClassDetailFragment"
-        android:label="fragment_class_detail"
-        tools:layout="@layout/fragment_class_detail" >
+        android:name="net.iobb.koheinoapp.scombmobile.ui.webscomb.SinglePageWebScombFragment"
+        android:label=" "
+        tools:layout="@layout/fragment_class_detail">
         <argument
             android:name="url"
             app:argType="string" />
     </fragment>
     <fragment
-        android:id="@+id/taskFragment"
+        android:id="@+id/nav_taskFragment"
         android:name="net.iobb.koheinoapp.scombmobile.ui.task.list.TaskListFragment"
-        android:label="fragment_item_list"
-        tools:layout="@layout/fragment_item_list" >
+        android:label="課題・テスト一覧"
+        tools:layout="@layout/fragment_item_list">
         <action
             android:id="@+id/action_taskFragment_to_classDetailFragment"
             app:destination="@id/classDetailFragment" />
