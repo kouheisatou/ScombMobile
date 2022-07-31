@@ -1,7 +1,6 @@
 package net.iobb.koheinoapp.scombmobile.ui.task.list
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -10,25 +9,22 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import kotlinx.android.synthetic.main.fragment_item_list.*
 import kotlinx.android.synthetic.main.fragment_item_list.view.*
 import net.iobb.koheinoapp.scombmobile.R
 import net.iobb.koheinoapp.scombmobile.common.AppViewModel
 import net.iobb.koheinoapp.scombmobile.common.NetworkState
+import net.iobb.koheinoapp.scombmobile.ui.task.TaskViewModel
 
 class TaskListFragment : Fragment() {
 
     private val appViewModel: AppViewModel by activityViewModels()
-    private lateinit var viewModel: TaskListViewModel
+    private val taskViewModel: TaskViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        viewModel = ViewModelProvider(this)[TaskListViewModel::class.java]
-        viewModel.appViewModel = appViewModel
+        taskViewModel.appViewModel = appViewModel
         super.onCreate(savedInstanceState)
     }
 
@@ -39,18 +35,18 @@ class TaskListFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_item_list, container, false)
 
         view.swipeLayout.setOnRefreshListener {
-            viewModel.tasks.value = mutableListOf()
-            viewModel.page.reset()
+            taskViewModel.tasks.value = mutableListOf()
+            taskViewModel.page.reset()
         }
         val dividerItemDecoration = DividerItemDecoration(requireContext(), LinearLayoutManager(requireContext()).orientation)
         view.list.addItemDecoration(dividerItemDecoration)
 
-        viewModel.page.networkState.observe(viewLifecycleOwner) {
+        taskViewModel.page.networkState.observe(viewLifecycleOwner) {
             when(it) {
                 NetworkState.Initialized -> {
                     progressBar.isVisible = true
                     list.isVisible = false
-                    viewModel.fetchTasks(requireContext())
+                    taskViewModel.fetchTasks(requireContext())
                 }
                 NetworkState.Loading -> {
                     progressBar.isVisible = true
@@ -66,14 +62,14 @@ class TaskListFragment : Fragment() {
                 }
             }
         }
-        viewModel.tasks.observe(viewLifecycleOwner){
+        taskViewModel.tasks.observe(viewLifecycleOwner){
             if(it.isNotEmpty()){
 
                 // construct list view
                 if (list is RecyclerView) {
                     with(list) {
                         layoutManager = LinearLayoutManager(context)
-                        adapter = TaskRecyclerViewAdapter(viewModel.tasks.value?.toList() ?: return@with)
+                        adapter = TaskRecyclerViewAdapter(taskViewModel.tasks.value?.toList() ?: return@with)
                     }
                 }
             }

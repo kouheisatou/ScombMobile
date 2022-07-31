@@ -1,19 +1,17 @@
-package net.iobb.koheinoapp.scombmobile.ui.task.list
+package net.iobb.koheinoapp.scombmobile.ui.task
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.iobb.koheinoapp.scombmobile.common.*
-import net.iobb.koheinoapp.scombmobile.ui.task.Task
 import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 
-class TaskListViewModel : ViewModel() {
+class TaskViewModel : ViewModel() {
     lateinit var appViewModel: AppViewModel
     val page = Page(TASK_LIST_PAGE_URL)
     val tasks = MutableLiveData(mutableListOf<Task>())

@@ -1,4 +1,4 @@
-package net.iobb.koheinoapp.scombmobile.ui.home
+package net.iobb.koheinoapp.scombmobile.ui.timetable
 
 import androidx.room.Dao
 import androidx.room.Insert

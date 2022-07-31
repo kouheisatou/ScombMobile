@@ -1,8 +1,7 @@
-package net.iobb.koheinoapp.scombmobile.ui.home
+package net.iobb.koheinoapp.scombmobile.ui.timetable
 
 import android.content.Context
 import android.graphics.PorterDuff
-import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -71,10 +70,10 @@ class ClassCell(
             "ScombMobileDB"
         ).allowMainThreadQueries().build()
         db.classCellDao().insertClassCell(this)
-        Log.d("set_color_to_cell", "$name, $customColorInt")
+        Log.d("set_color_to_cell", "($id), $name, $customColorInt")
     }
 
     override fun toString(): String {
-        return "id=$classId, name=$name, teachers=$teachers, room=$room"
+        return "ClassCell{id=$id, classId=$classId, name=$name, teachers=$teachers, room=$room, createdDate=$customColorInt, createdDate=$createdDate}"
     }
 }

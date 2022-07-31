@@ -1,4 +1,4 @@
-package net.iobb.koheinoapp.scombmobile.ui.home
+package net.iobb.koheinoapp.scombmobile.ui.timetable
 
 import android.content.Context
 import android.util.Log
@@ -13,7 +13,7 @@ import net.iobb.koheinoapp.scombmobile.common.*
 import java.lang.StringBuilder
 import java.util.*
 
-class HomeViewModel : ViewModel() {
+class TimetableViewModel : ViewModel() {
 
     val page = Page(SCOMB_TIMETABLE_URL)
     lateinit var appViewModel: AppViewModel
@@ -25,7 +25,7 @@ class HomeViewModel : ViewModel() {
             }
         }
     )
-    val timetableListenerState = MutableLiveData(HomeFragment.ListenerState.Initialize)
+    val timetableListenerState = MutableLiveData(TimetableFragment.ListenerState.Initialize)
     @ColorInt
     var selectedColor: Int? = null
 
@@ -127,10 +127,11 @@ class HomeViewModel : ViewModel() {
 
             constructTimetable(classes)
 
-            var s = ""
+            var s = "["
             classes.forEach {
-                s += "{${it.name}, ${it.customColorInt}}, "
+                s += "${it}, "
             }
+            s += "]"
             Log.d("timetable", s)
 
             page.networkState.postValue(NetworkState.Finished)

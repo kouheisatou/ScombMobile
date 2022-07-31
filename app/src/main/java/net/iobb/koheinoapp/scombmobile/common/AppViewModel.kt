@@ -51,6 +51,7 @@ const val TASK_LIST_DEADLINE_CULUMN_CSS_NM = "tasklist-deadline"
 
 class AppViewModel : ViewModel(){
 
+    // login
     var sessionId: String? = null
     var userId = MutableLiveData("")
 }

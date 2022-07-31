@@ -1,8 +1,6 @@
-package net.iobb.koheinoapp.scombmobile.ui.home
+package net.iobb.koheinoapp.scombmobile.ui.timetable
 
 import android.app.Dialog
-import android.graphics.Color
-import android.graphics.ColorFilter
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -28,11 +26,11 @@ import net.iobb.koheinoapp.scombmobile.common.NetworkState
 import net.iobb.koheinoapp.scombmobile.databinding.FragmentHomeBinding
 
 
-class HomeFragment : Fragment(), SimpleDialog.OnDialogResultListener {
+class TimetableFragment : Fragment(), SimpleDialog.OnDialogResultListener {
 
     private var _binding: FragmentHomeBinding? = null
     private val appViewModel: AppViewModel by activityViewModels()
-    private lateinit var viewModel: HomeViewModel
+    private lateinit var viewModel: TimetableViewModel
 
     private val binding get() = _binding!!
 
@@ -42,7 +40,7 @@ class HomeFragment : Fragment(), SimpleDialog.OnDialogResultListener {
         savedInstanceState: Bundle?
     ): View {
         setHasOptionsMenu(true)
-        viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
+        viewModel = ViewModelProvider(this)[TimetableViewModel::class.java]
         viewModel.appViewModel = appViewModel
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
@@ -90,7 +88,7 @@ class HomeFragment : Fragment(), SimpleDialog.OnDialogResultListener {
                         }
 
                         classCell.view.classNameBtn.setOnClickListener {
-                            val action = HomeFragmentDirections.actionNavHomeToClassDetailFragment("$CLASS_PAGE_URL${classCell.classId}")
+                            val action = TimetableFragmentDirections.actionNavHomeToClassDetailFragment("$CLASS_PAGE_URL${classCell.classId}")
                             it.findNavController().navigate(action)
                         }
                     }
