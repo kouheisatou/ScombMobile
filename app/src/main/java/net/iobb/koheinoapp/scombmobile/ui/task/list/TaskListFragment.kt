@@ -58,6 +58,7 @@ class TaskListFragment : Fragment() {
                     swipeLayout.isRefreshing = false
                 }
                 NetworkState.NotPermitted -> {
+                    taskViewModel.page.reset()
                     findNavController().navigate(R.id.loginFragment)
                 }
             }

@@ -53,6 +53,7 @@ class TimetableFragment : Fragment(), SimpleDialog.OnDialogResultListener {
                     binding.timeTable.isVisible = false
                 }
                 NetworkState.NotPermitted -> {
+                    viewModel.page.reset()
                     findNavController().navigate(R.id.loginFragment)
                 }
                 else -> {
