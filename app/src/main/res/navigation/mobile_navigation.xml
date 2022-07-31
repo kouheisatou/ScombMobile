@@ -48,4 +48,9 @@
             android:name="classId"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/taskFragment"
+        android:name="net.iobb.koheinoapp.scombmobile.ui.task.TaskFragment"
+        android:label="fragment_item_list"
+        tools:layout="@layout/fragment_item_list" />
 </navigation>

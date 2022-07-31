@@ -8,6 +8,7 @@ const val SCOMB_HOME_URL = "https://scombz.shibaura-it.ac.jp/portal/home"
 const val SCOMB_LOGGED_OUT_PAGE_URL = "https://scombz.shibaura-it.ac.jp/login"
 const val SCOMB_TIMETABLE_URL = "https://scombz.shibaura-it.ac.jp/lms/timetable"
 const val CLASS_PAGE_URL = "https://scombz.shibaura-it.ac.jp/lms/course?idnumber="
+const val TASK_LIST_PAGE_URL = "https://scombz.shibaura-it.ac.jp/lms/task"
 
 /** ScombのCookieとして保存されているセッションIDのキー **/
 const val SESSION_COOKIE_ID = "SESSION"
@@ -35,9 +36,17 @@ const val TIMETABLE_CELL_DETAIL_CSS_CLASS_NM = "div-table-cell-detail"
 /** 教室名のattributeキー **/
 const val TIMETABLE_ROOM_ATTR_KEY = "title"
 
-// --------授業ページCSS---------
-/** 概要のCSS **/
-const val CLASS_OVERVIEW_CSS_CLASS_NM = "bodyEditor"
+// --------課題一覧ページCSS---------
+/** 課題1行分のCSS **/
+const val TASK_LIST_CSS_CLASS_NM = "result_list_line"
+/** 課題行の科目名列のCSS **/
+const val TASK_LIST_CLASS_CULUMN_CSS_NM = "tasklist-course"
+/** 課題行の課題タイプ列のCSS **/
+const val TASK_LIST_TYPE_CULUMN_CSS_NM = "tasklist-contents"
+/** 課題行の課題タイトル列のCSS **/
+const val TASK_LIST_TITLE_CULUMN_CSS_NM = "tasklist-title"
+/** 課題行の締切列のCSS **/
+const val TASK_LIST_DEADLINE_CULUMN_CSS_NM = "tasklist-deadline"
 
 class AppViewModel : ViewModel(){
 
