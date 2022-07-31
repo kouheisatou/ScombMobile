@@ -65,7 +65,7 @@ class SinglePageWebScombFragment : Fragment() {
             webView.loadUrl(
                 args.url,
                 onScriptCallback = {
-                    (activity as MainActivity).binding.appBarMain.toolbar.title = it.replace("\"", "")
+                    ((activity ?: return@loadUrl) as MainActivity).binding.appBarMain.toolbar.title = it.replace("\"", "")
                 },
                 "document.getElementById('$HEADER_ELEMENT_ID').remove();",
                 "document.getElementById('$FOOTER_ELEMENT_ID').remove();",
