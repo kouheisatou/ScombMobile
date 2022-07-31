@@ -7,10 +7,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.addTextChangedListener
 import androidx.room.Room
 import kotlinx.android.synthetic.main.fragment_setting.*
+import kotlinx.android.synthetic.main.fragment_setting.idTextView
+import kotlinx.android.synthetic.main.fragment_setting.passwordTextView
 import net.iobb.koheinoapp.scombmobile.common.AppDatabase
 import net.iobb.koheinoapp.scombmobile.R
+import net.iobb.koheinoapp.scombmobile.ui.login.User
 
 class SettingFragment : Fragment() {
 
@@ -41,11 +45,23 @@ class SettingFragment : Fragment() {
             "ScombMobileDB"
         ).allowMainThreadQueries().build()
 
-
+        // auto login checkbox
         autoLoginCheckBox.isChecked = db.settingDao().getSetting("enabled_auto_login")?.settingValue == "true"
         autoLoginCheckBox.setOnClickListener {
             db.settingDao().insertSetting(Setting("enabled_auto_login", autoLoginCheckBox.isChecked.toString()))
             Log.d("SettingDao : enabled_auto_login", db.settingDao().getSetting("enabled_auto_login")?.settingValue ?: "null")
+        }
+
+        // saved user and pass
+        idTextView.setText(db.userDao().getUser()?.username ?: "")
+        passwordTextView.setText(db.userDao().getUser()?.password ?: "")
+        idTextView.addTextChangedListener {
+            db.userDao().removeAllUser()
+            db.userDao().insertUser(User(idTextView.text.toString(), passwordTextView.text.toString()))
+        }
+        passwordTextView.addTextChangedListener {
+            db.userDao().removeAllUser()
+            db.userDao().insertUser(User(idTextView.text.toString(), passwordTextView.text.toString()))
         }
 
         super.onStart()

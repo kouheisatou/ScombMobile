@@ -9,8 +9,13 @@
     <LinearLayout
         android:id="@+id/loginLL"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@drawable/shape_rounded_coners_10dp"
         android:orientation="vertical"
+        android:padding="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <EditText
@@ -18,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="StudentID"
+            android:hint="学籍番号"
             android:inputType="textPersonName" />
 
         <EditText
@@ -26,22 +31,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="Password"
+            android:hint="パスワード"
             android:inputType="textPassword" />
 
         <Button
             android:id="@+id/loginButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="LOGIN"
+            android:text="ログイン"
             app:layout_constraintTop_toBottomOf="@+id/passwordTextView" />
 
         <net.iobb.koheinoapp.scombmobile.common.BasicAuthWebView
             android:id="@+id/webView"
-            android:visibility="invisible"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-        </net.iobb.koheinoapp.scombmobile.common.BasicAuthWebView>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
     </LinearLayout>
 
     <ProgressBar

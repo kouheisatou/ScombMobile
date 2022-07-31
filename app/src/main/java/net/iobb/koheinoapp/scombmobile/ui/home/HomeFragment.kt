@@ -106,7 +106,7 @@ class HomeFragment : Fragment(), SimpleDialog.OnDialogResultListener {
                     timeTable.isVisible = false
                 }
                 NetworkState.NotPermitted -> {
-                    this.findNavController().navigate(R.id.loginFragment)
+                    findNavController().navigate(R.id.loginFragment)
                 }
                 else -> {
                     progressBar.isVisible = false

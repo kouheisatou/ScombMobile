@@ -2,6 +2,7 @@ package net.iobb.koheinoapp.scombmobile.ui.login
 
 import android.annotation.SuppressLint
 import android.content.DialogInterface
+import android.opengl.Visibility
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -84,12 +85,13 @@ class LoginFragment : Fragment() {
                 }
                 LoginState.LoggedIn -> {
                     progressBar.isVisible = false
-                    loginButton.isVisible = false
+                    loginButton.isEnabled = false
                     if(dispWebView){ webView.isVisible = false }
 
                     appViewModel.sessionId = webView.sessionId ?: return@observe
                     appViewModel.userId.value = webView.loginUser ?: return@observe
-                    this.findNavController().navigate(R.id.action_loginFragment_to_nav_home)
+
+                    findNavController().popBackStack()
                 }
                 LoginState.InAuth -> {
                     progressBar.isVisible = true

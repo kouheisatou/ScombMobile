@@ -43,16 +43,11 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-
-        binding.navView.getHeaderView(0).findViewById<TextView>(R.id.userNameTextView).setOnClickListener {
-            findNavController(R.id.nav_host_fragment_content_main).navigate(R.id.loginFragment)
-            drawerLayout.closeDrawer(GravityCompat.START)
-        }
     }
 
     override fun onStart() {
         appViewModel.userId.observe(this){
-            binding.navView.getHeaderView(0).findViewById<TextView>(R.id.userNameTextView).text = it ?: ""
+            binding.navView.getHeaderView(0).findViewById<TextView>(R.id.userNameTextView).text = it ?: "ログインしていません"
         }
         super.onStart()
     }

@@ -6,9 +6,28 @@
     tools:context=".ui.settings.SettingFragment">
 
     <LinearLayout
+        android:layout_margin="10dp"
+        android:padding="10dp"
+        android:background="@drawable/shape_rounded_coners_10dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/idTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="学籍番号"
+            android:inputType="textPersonName" />
+
+        <EditText
+            android:id="@+id/passwordTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="パスワード"
+            android:inputType="textPassword" />
 
         <CheckBox
             android:id="@+id/autoLoginCheckBox"
