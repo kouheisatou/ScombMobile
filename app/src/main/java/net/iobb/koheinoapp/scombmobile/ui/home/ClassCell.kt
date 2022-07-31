@@ -1,6 +1,7 @@
 package net.iobb.koheinoapp.scombmobile.ui.home
 
 import android.content.Context
+import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.View
@@ -32,8 +33,6 @@ class ClassCell(
     @Ignore
     lateinit var view: View
     @Ignore
-    private lateinit var defaultBackground: Drawable
-    @Ignore
     lateinit var context: Context
 
     init {
@@ -47,7 +46,6 @@ class ClassCell(
         view = View.inflate(context, R.layout.class_cell, attachTo)
         view.classNameBtn.text = name
 
-        defaultBackground = view.classNameBtn.background.constantState!!.newDrawable()
         if (customColorInt != null) {
             setCustomColor(customColorInt!!)
         }
@@ -55,16 +53,17 @@ class ClassCell(
         return view
     }
 
-    fun setCustomColor(color: Int){
+    fun setCustomColor(color: Int?){
 
         customColorInt = color
 
-        view.classNameBtn.text = customColorInt?.toString() ?: "null"
-
-//        val button = view.classNameBtn
-//        val drawable = button.background.constantState?.newDrawable() ?: return
-//        DrawableCompat.setTint(drawable, color)
-//        button.background = drawable
+        val drawable = view.classNameBtn.background
+        if(color == null){
+            drawable.clearColorFilter()
+        }else{
+            drawable.setColorFilter(color, PorterDuff.Mode.MULTIPLY)
+        }
+        view.classNameBtn.background = drawable
 
         val db = Room.databaseBuilder(
             context,
@@ -73,23 +72,6 @@ class ClassCell(
         ).allowMainThreadQueries().build()
         db.classCellDao().insertClassCell(this)
         Log.d("set_color_to_cell", "$name, $customColorInt")
-    }
-
-    fun resetCustomColor(){
-
-        customColorInt = null
-
-        view.classNameBtn.text = customColorInt?.toString() ?: "null"
-
-//        view.classNameBtn.background = defaultBackground
-
-        val db = Room.databaseBuilder(
-            context,
-            AppDatabase::class.java,
-            "ScombMobileDB"
-        ).allowMainThreadQueries().build()
-        db.classCellDao().insertClassCell(this)
-        Log.d("set_color_to_cell", "$name, ${customColorInt ?: "null"}")
     }
 
     override fun toString(): String {

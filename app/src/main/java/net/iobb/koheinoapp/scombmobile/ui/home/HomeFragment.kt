@@ -163,7 +163,7 @@ class HomeFragment : Fragment(), SimpleDialog.OnDialogResultListener {
                         }
 
                         classCell.view.classNameBtn.setOnLongClickListener{
-                            classCell.resetCustomColor()
+                            classCell.setCustomColor(null)
                             true
                         }
                     }
