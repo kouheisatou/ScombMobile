@@ -62,9 +62,6 @@ class LoginFragment : Fragment() {
                 login(idTextView.text.toString(), passwordTextView.text.toString())
             }
         }
-        logoutButton.setOnClickListener {
-            logout()
-        }
         idTextView.addTextChangedListener {
             db.userDao().removeAllUser()
             db.userDao().insertUser(User(idTextView.text.toString(), passwordTextView.text.toString()))
@@ -81,16 +78,13 @@ class LoginFragment : Fragment() {
         webView.loginState.observe(viewLifecycleOwner){
             when(it){
                 LoginState.LoggedOut -> {
-                    loginLL.isVisible = true
-                    logoutLL.isVisible = false
                     progressBar.isVisible = false
                     loginButton.isEnabled = true
                     if(dispWebView){ webView.isVisible = false }
                 }
                 LoginState.LoggedIn -> {
-                    loginLL.isVisible = false
-                    logoutLL.isVisible = true
                     progressBar.isVisible = false
+                    loginButton.isVisible = false
                     if(dispWebView){ webView.isVisible = false }
 
                     appViewModel.sessionId = webView.sessionId ?: return@observe
@@ -99,9 +93,7 @@ class LoginFragment : Fragment() {
                 }
                 LoginState.InAuth -> {
                     progressBar.isVisible = true
-                    loginLL.isVisible = true
                     loginButton.isEnabled = false
-                    logoutLL.isVisible = false
                     if(dispWebView){ webView.isVisible = true }
                 }
                 else -> {}
