@@ -8,7 +8,7 @@ import androidx.room.Query
 @Dao
 interface ClassCellDao {
 
-    @Query("SELECT * FROM classCell WHERE id = :id")
+    @Query("SELECT * FROM classCell WHERE classId = :id")
     fun getClassCell(id: String): ClassCell?
 
     @Query("SELECT * FROM classCell WHERE createdDate > :date")

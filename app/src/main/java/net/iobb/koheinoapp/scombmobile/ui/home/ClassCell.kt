@@ -5,8 +5,6 @@ import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
@@ -18,8 +16,7 @@ import java.util.*
 
 @Entity
 class ClassCell(
-    @PrimaryKey
-    val id: String,
+    val classId: String,
     val name: String,
     val teachers: String,
     val room: String,
@@ -29,8 +26,11 @@ class ClassCell(
 
     var customColorInt: Int? = null
     var createdDate: Long
+    @PrimaryKey
+    var id: String
 
     init {
+        id = "$dayOfWeek,$period"
         createdDate = Calendar.getInstance().timeInMillis
     }
 
@@ -92,6 +92,6 @@ class ClassCell(
     }
 
     override fun toString(): String {
-        return "id=$id, name=$name, teachers=$teachers, room=$room"
+        return "id=$classId, name=$name, teachers=$teachers, room=$room"
     }
 }

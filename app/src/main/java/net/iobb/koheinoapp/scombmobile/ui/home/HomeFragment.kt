@@ -141,7 +141,7 @@ class HomeFragment : Fragment(), SimpleDialog.OnDialogResultListener {
                         }
 
                         classCell.view.classNameBtn.setOnClickListener {
-                            val action = HomeFragmentDirections.actionNavHomeToClassDetailFragment(classCell.id)
+                            val action = HomeFragmentDirections.actionNavHomeToClassDetailFragment(classCell.classId)
                             it.findNavController().navigate(action)
                         }
                     }

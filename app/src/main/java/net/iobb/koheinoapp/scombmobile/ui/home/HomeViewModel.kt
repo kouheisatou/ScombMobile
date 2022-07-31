@@ -115,7 +115,7 @@ class HomeViewModel : ViewModel() {
                 // update classes and take over custom color
                 for (newClass in newClasses) {
                     for (c in classes) {
-                        if(newClass.id == c.id){
+                        if(newClass.classId == c.classId){
                             newClass.customColorInt = c.customColorInt
                         }
                     }
