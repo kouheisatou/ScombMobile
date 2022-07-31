@@ -154,17 +154,20 @@ class HomeFragment : Fragment(), SimpleDialog.OnDialogResultListener {
                     menu.findItem(R.id.disableColorSettingMode)?.isVisible = true
                     menu.findItem(R.id.palette)?.isVisible = true
 
-                    Toast.makeText(requireContext(), "タップで色を設定\n長押しでデフォルト色に戻す", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "タップで色を設定", Toast.LENGTH_SHORT).show()
 
                     applyToAllCell { classCell, _, _ ->
                         classCell ?: return@applyToAllCell
                         classCell.view.classNameBtn.setOnClickListener {
-                            classCell.setCustomColor(viewModel.selectedColor ?: return@setOnClickListener)
-                        }
-
-                        classCell.view.classNameBtn.setOnLongClickListener{
-                            classCell.setCustomColor(null)
-                            true
+                            if(classCell.customColorInt == null){
+                                classCell.setCustomColor(viewModel.selectedColor ?: return@setOnClickListener)
+                            }else{
+                                if(viewModel.selectedColor == null || viewModel.selectedColor == classCell.customColorInt){
+                                    classCell.setCustomColor(null)
+                                }else{
+                                    classCell.setCustomColor(viewModel.selectedColor)
+                                }
+                            }
                         }
                     }
                 }
