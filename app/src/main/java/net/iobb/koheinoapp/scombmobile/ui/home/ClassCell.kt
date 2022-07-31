@@ -29,17 +29,18 @@ class ClassCell(
     @PrimaryKey
     var id: String
 
-    init {
-        id = "$dayOfWeek,$period"
-        createdDate = Calendar.getInstance().timeInMillis
-    }
-
     @Ignore
     lateinit var view: View
     @Ignore
     private lateinit var defaultBackground: Drawable
     @Ignore
     lateinit var context: Context
+
+    init {
+        id = "$dayOfWeek,$period"
+        createdDate = Calendar.getInstance().timeInMillis
+    }
+
 
     fun genView(context: Context, attachTo: ViewGroup): View{
         this.context = attachTo.context

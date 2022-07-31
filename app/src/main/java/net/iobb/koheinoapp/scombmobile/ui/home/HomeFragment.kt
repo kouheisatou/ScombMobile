@@ -1,6 +1,8 @@
 package net.iobb.koheinoapp.scombmobile.ui.home
 
 import android.app.Dialog
+import android.graphics.Color
+import android.graphics.ColorFilter
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -195,7 +197,11 @@ class HomeFragment : Fragment(), SimpleDialog.OnDialogResultListener {
     // when color dialog closed
     override fun onResult(dialogTag: String, which: Int, extras: Bundle): Boolean {
         if(which == Dialog.BUTTON_POSITIVE){
-            viewModel.selectedColor = extras.getIntArray(SimpleColorDialog.COLORS)!![0]
+            viewModel.selectedColor = extras.getIntArray(SimpleColorDialog.COLORS)?.getOrNull(0) ?: return false
+
+            val menuItem = (activity as MainActivity).binding.appBarMain.toolbar.menu.findItem(R.id.palette)
+            val drawable = menuItem.icon
+            drawable.setTint(viewModel.selectedColor!!)
         }
         return false
     }
