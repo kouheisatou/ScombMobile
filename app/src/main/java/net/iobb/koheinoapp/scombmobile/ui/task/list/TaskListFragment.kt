@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import kotlinx.android.synthetic.main.fragment_item_list.*
 import kotlinx.android.synthetic.main.fragment_item_list.view.*
 import net.iobb.koheinoapp.scombmobile.R
@@ -44,6 +45,13 @@ class TaskListFragment : Fragment() {
 
         viewModel.page.reset()
 
+        view.swipeLayout.setOnRefreshListener {
+            viewModel.tasks.value = mutableListOf()
+            viewModel.page.reset()
+        }
+        val dividerItemDecoration = DividerItemDecoration(requireContext(), LinearLayoutManager(requireContext()).orientation)
+        view.list.addItemDecoration(dividerItemDecoration)
+
         viewModel.page.networkState.observe(viewLifecycleOwner) {
             Log.d("network_status", viewModel.page.networkState.value.toString())
             when(it) {
@@ -59,6 +67,7 @@ class TaskListFragment : Fragment() {
                 NetworkState.Finished -> {
                     progressBar.isVisible = false
                     list.isVisible = true
+                    swipeLayout.isRefreshing = false
                 }
                 NetworkState.NotPermitted -> {
                     findNavController().navigate(R.id.loginFragment)
@@ -70,8 +79,6 @@ class TaskListFragment : Fragment() {
 
                 // construct list view
                 if (list is RecyclerView) {
-                    val dividerItemDecoration = DividerItemDecoration(requireContext(), LinearLayoutManager(requireContext()).orientation)
-                    list.addItemDecoration(dividerItemDecoration)
                     with(list) {
                         layoutManager = LinearLayoutManager(context)
                         adapter = TaskRecyclerViewAdapter(viewModel.tasks.value?.toList() ?: return@with)

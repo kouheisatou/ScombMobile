@@ -31,7 +31,6 @@ class TaskRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = tasks[position]
-        println(item)
         holder.titleTextView.text = item.title
         holder.deadlineTextView.text = Date(item.deadLineTime).toString()
         holder.classNameTextView.text = item.className
