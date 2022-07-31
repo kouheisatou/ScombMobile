@@ -1,4 +1,4 @@
-package net.iobb.koheinoapp.scombmobile.ui.task
+package net.iobb.koheinoapp.scombmobile.ui.task.list
 
 import android.content.Context
 import android.util.Log
@@ -11,7 +11,7 @@ import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 
-class TaskViewModel : ViewModel() {
+class TaskListViewModel : ViewModel() {
     lateinit var appViewModel: AppViewModel
     val page = Page(TASK_LIST_PAGE_URL)
     val tasks = mutableListOf<Task>()

@@ -68,11 +68,6 @@ dependencies {
     kapt "androidx.room:room-compiler:2.4.3"
     implementation "androidx.room:room-ktx:2.4.3"
 
-    // HtmlUnit
-//    implementation("net.sourceforge.htmlunit:htmlunit:2.63.0")
-//    implementation 'xyz.nulldev.huandroid:huandroid:2.30.01'
-    implementation "net.sourceforge.htmlunit:htmlunit-android:2.63.0"
-
     // color picker
     implementation 'io.github.eltos:simpledialogfragments:3.6.1'
 }

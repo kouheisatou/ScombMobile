@@ -1,6 +1,6 @@
 package net.iobb.koheinoapp.scombmobile.common
 
-import org.apache.commons.net.util.Base64
+import org.apache.commons.codec.binary.Base64
 import org.jsoup.HttpStatusException
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document

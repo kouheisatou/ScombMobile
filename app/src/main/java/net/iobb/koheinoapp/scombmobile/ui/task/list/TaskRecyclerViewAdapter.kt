@@ -1,4 +1,4 @@
-package net.iobb.koheinoapp.scombmobile.ui.task
+package net.iobb.koheinoapp.scombmobile.ui.task.list
 
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
@@ -9,9 +9,9 @@ import net.iobb.koheinoapp.scombmobile.common.SCOMBZ_DOMAIN
 import net.iobb.koheinoapp.scombmobile.databinding.FragmentItemBinding
 import java.util.*
 
-class MyTaskRecyclerViewAdapter(
+class TaskRecyclerViewAdapter(
     private val tasks: List<Task>
-) : RecyclerView.Adapter<MyTaskRecyclerViewAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<TaskRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
@@ -20,7 +20,8 @@ class MyTaskRecyclerViewAdapter(
 
         view.linearLayout.setOnClickListener {
             val task = tasks[holder.layoutPosition]
-            val action = TaskFragmentDirections.actionTaskFragmentToClassDetailFragment("$SCOMBZ_DOMAIN${task.url}")
+            val action =
+                TaskListFragmentDirections.actionTaskFragmentToClassDetailFragment("$SCOMBZ_DOMAIN${task.url}")
             view.linearLayout.findNavController().navigate(action)
         }
 

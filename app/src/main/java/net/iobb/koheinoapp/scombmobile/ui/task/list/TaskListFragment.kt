@@ -1,8 +1,7 @@
-package net.iobb.koheinoapp.scombmobile.ui.task
+package net.iobb.koheinoapp.scombmobile.ui.task.list
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
@@ -19,13 +18,13 @@ import net.iobb.koheinoapp.scombmobile.R
 import net.iobb.koheinoapp.scombmobile.common.AppViewModel
 import net.iobb.koheinoapp.scombmobile.common.NetworkState
 
-class TaskFragment : Fragment() {
+class TaskListFragment : Fragment() {
 
     private val appViewModel: AppViewModel by activityViewModels()
-    private lateinit var viewModel: TaskViewModel
+    private lateinit var viewModel: TaskListViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        viewModel = ViewModelProvider(this)[TaskViewModel::class.java]
+        viewModel = ViewModelProvider(this)[TaskListViewModel::class.java]
         viewModel.appViewModel = appViewModel
         super.onCreate(savedInstanceState)
     }
@@ -60,7 +59,7 @@ class TaskFragment : Fragment() {
                         view.list.addItemDecoration(dividerItemDecoration)
                         with(view.list) {
                             layoutManager = LinearLayoutManager(context)
-                            adapter = MyTaskRecyclerViewAdapter(viewModel.tasks)
+                            adapter = TaskRecyclerViewAdapter(viewModel.tasks)
                         }
                     }
                 }

@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layoutManager="LinearLayoutManager"
-        tools:context=".ui.task.TaskFragment"
+        tools:context=".ui.task.list.TaskListFragment"
         tools:listitem="@layout/fragment_item" />
 
     <ProgressBar

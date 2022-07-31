@@ -50,7 +50,7 @@
     </fragment>
     <fragment
         android:id="@+id/taskFragment"
-        android:name="net.iobb.koheinoapp.scombmobile.ui.task.TaskFragment"
+        android:name="net.iobb.koheinoapp.scombmobile.ui.task.list.TaskListFragment"
         android:label="fragment_item_list"
         tools:layout="@layout/fragment_item_list" >
         <action

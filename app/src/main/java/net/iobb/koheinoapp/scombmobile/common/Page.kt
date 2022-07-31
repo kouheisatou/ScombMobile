@@ -3,11 +3,6 @@ package net.iobb.koheinoapp.scombmobile.common
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.gargoylesoftware.htmlunit.BrowserVersion
-import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController
-import com.gargoylesoftware.htmlunit.WebClient
-import com.gargoylesoftware.htmlunit.html.HtmlPage
-import com.gargoylesoftware.htmlunit.util.Cookie
 import org.jsoup.HttpStatusException
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -36,33 +31,6 @@ class Page(val url: String) {
                 .timeout(10 * 1000)
                 .cookie("SESSION", cookieId ?: "")
                 .get()
-            if(document.baseUri() == SCOMB_LOGGED_OUT_PAGE_URL){
-                networkState.postValue(NetworkState.NotPermitted)
-            }
-        } catch (e: HttpStatusException) {
-            e.printStackTrace()
-        }finally {
-            networkState.postValue(NetworkState.Finished)
-        }
-    }
-
-    @SuppressLint("SetJavaScriptEnabled")
-    fun fetchDynamicPage(cookieId: String?){
-        networkState.postValue(NetworkState.Loading)
-        try {
-
-            val webClient = WebClient(BrowserVersion.CHROME)
-            webClient.options.isJavaScriptEnabled = true
-            webClient.options.isThrowExceptionOnScriptError = false
-            webClient.cookieManager.addCookie(Cookie("scombz.shibaura-it.ac.jp", SESSION_COOKIE_ID, cookieId))
-            webClient.ajaxController = NicelyResynchronizingAjaxController()
-            webClient.waitForBackgroundJavaScript(3000)
-
-            val htmlPage: HtmlPage = webClient.getPage(url)
-
-            document = Jsoup.parse(htmlPage.asXml())
-            Log.d("class_overview", htmlPage.textContent ?: "")
-
             if(document.baseUri() == SCOMB_LOGGED_OUT_PAGE_URL){
                 networkState.postValue(NetworkState.NotPermitted)
             }
