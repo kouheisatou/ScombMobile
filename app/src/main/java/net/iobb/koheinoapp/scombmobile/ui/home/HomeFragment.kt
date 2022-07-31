@@ -54,7 +54,12 @@ class HomeFragment : Fragment(), SimpleDialog.OnDialogResultListener {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.timetable_color_selector, menu)
-        menu.findItem(R.id.palette).isVisible = false
+        val isInColorSetting = viewModel.timetableListenerState.value == ListenerState.ColorSelect
+
+        menu.findItem(R.id.colorSettings)?.isVisible = !isInColorSetting
+        menu.findItem(R.id.disableColorSettingMode)?.isVisible = isInColorSetting
+        menu.findItem(R.id.palette)?.isVisible = isInColorSetting
+
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -62,9 +67,6 @@ class HomeFragment : Fragment(), SimpleDialog.OnDialogResultListener {
         when (item.itemId) {
             R.id.colorSettings -> {
                 viewModel.timetableListenerState.value = ListenerState.ColorSelect
-                if(viewModel.selectedColor == null){
-                    openColorSettingDialog()
-                }
             }
             R.id.disableColorSettingMode -> {
                 viewModel.timetableListenerState.value = ListenerState.Normal
