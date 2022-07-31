@@ -7,7 +7,7 @@ import net.iobb.koheinoapp.scombmobile.common.AppViewModel
 import net.iobb.koheinoapp.scombmobile.common.CLASS_PAGE_URL
 import net.iobb.koheinoapp.scombmobile.common.*
 
-class ClassDetailViewModel(val classId: String) : ViewModel() {
+class ClassDetailViewModel(val url: String) : ViewModel() {
 
     class Factory constructor(
         private val classId: String
@@ -19,5 +19,4 @@ class ClassDetailViewModel(val classId: String) : ViewModel() {
     }
 
     lateinit var appViewModel: AppViewModel
-    val url = "$CLASS_PAGE_URL$classId"
 }

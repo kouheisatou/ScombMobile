@@ -2,26 +2,27 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/linearLayout"
+    android:clickable="true"
+    android:focusable="true"
+    android:background="?attr/selectableItemBackground"
     android:orientation="vertical">
 
     <TextView
         android:id="@+id/titleTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/list_text_margin"
-        android:textAppearance="?attr/textAppearanceListItem" />
+        android:layout_margin="@dimen/list_text_margin"/>
 
     <TextView
         android:id="@+id/classNameTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/list_text_margin"
-        android:textAppearance="?attr/textAppearanceListItem" />
+        android:layout_margin="@dimen/list_text_margin"/>
 
     <TextView
         android:id="@+id/deadlineTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/list_text_margin"
-        android:textAppearance="?attr/textAppearanceListItem" />
+        android:layout_margin="@dimen/list_text_margin" />
 </LinearLayout>

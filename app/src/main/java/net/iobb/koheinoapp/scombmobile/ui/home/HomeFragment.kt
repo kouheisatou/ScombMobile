@@ -23,6 +23,7 @@ import kotlinx.android.synthetic.main.class_cell.view.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import net.iobb.koheinoapp.scombmobile.*
 import net.iobb.koheinoapp.scombmobile.common.AppViewModel
+import net.iobb.koheinoapp.scombmobile.common.CLASS_PAGE_URL
 import net.iobb.koheinoapp.scombmobile.common.NetworkState
 import net.iobb.koheinoapp.scombmobile.databinding.FragmentHomeBinding
 
@@ -143,7 +144,7 @@ class HomeFragment : Fragment(), SimpleDialog.OnDialogResultListener {
                         }
 
                         classCell.view.classNameBtn.setOnClickListener {
-                            val action = HomeFragmentDirections.actionNavHomeToClassDetailFragment(classCell.classId)
+                            val action = HomeFragmentDirections.actionNavHomeToClassDetailFragment("$CLASS_PAGE_URL${classCell.classId}")
                             it.findNavController().navigate(action)
                         }
                     }

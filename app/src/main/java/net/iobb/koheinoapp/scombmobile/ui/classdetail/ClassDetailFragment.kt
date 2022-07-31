@@ -1,12 +1,12 @@
 package net.iobb.koheinoapp.scombmobile.ui.classdetail
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
@@ -32,10 +32,26 @@ class ClassDetailFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this, ClassDetailViewModel.Factory(args.classId)).get(ClassDetailViewModel::class.java)
+        setHasOptionsMenu(true);
+        viewModel = ViewModelProvider(this, ClassDetailViewModel.Factory(args.url)).get(ClassDetailViewModel::class.java)
         viewModel.appViewModel = appViewModel
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.class_detail_option_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            R.id.openDefaultBrowser -> {
+                val uri = Uri.parse(viewModel.url)
+                val intent = Intent(Intent.ACTION_VIEW, uri)
+                startActivity(intent)
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onStart() {
@@ -45,7 +61,7 @@ class ClassDetailFragment : Fragment() {
             return
         }else{
             webView.loadUrl(
-                "$CLASS_PAGE_URL${args.classId}",
+                args.url,
                 null,
                 "document.getElementById('$HEADER_ELEMENT_ID').remove();",
                 "document.getElementById('$FOOTER_ELEMENT_ID').remove();"

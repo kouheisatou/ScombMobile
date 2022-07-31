@@ -3,6 +3,7 @@ package net.iobb.koheinoapp.scombmobile.common
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
+const val SCOMBZ_DOMAIN = "https://scombz.shibaura-it.ac.jp"
 const val SCOMB_LOGIN_PAGE_URL = "https://scombz.shibaura-it.ac.jp/saml/login?idp=http://adfs.sic.shibaura-it.ac.jp/adfs/services/trust"
 const val SCOMB_HOME_URL = "https://scombz.shibaura-it.ac.jp/portal/home"
 const val SCOMB_LOGGED_OUT_PAGE_URL = "https://scombz.shibaura-it.ac.jp/login"

@@ -45,12 +45,16 @@
         android:label="fragment_class_detail"
         tools:layout="@layout/fragment_class_detail" >
         <argument
-            android:name="classId"
+            android:name="url"
             app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/taskFragment"
         android:name="net.iobb.koheinoapp.scombmobile.ui.task.TaskFragment"
         android:label="fragment_item_list"
-        tools:layout="@layout/fragment_item_list" />
+        tools:layout="@layout/fragment_item_list" >
+        <action
+            android:id="@+id/action_taskFragment_to_classDetailFragment"
+            app:destination="@id/classDetailFragment" />
+    </fragment>
 </navigation>
