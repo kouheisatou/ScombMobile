@@ -31,8 +31,8 @@
     <fragment
         android:id="@+id/nav_taskFragment"
         android:name="net.iobb.koheinoapp.scombmobile.ui.task.TaskFragment"
-        android:label="fragment_task"
-        tools:layout="@layout/fragment_task" >
+        android:label="課題・テスト"
+        tools:layout="@layout/fragment_task">
         <action
             android:id="@+id/action_nav_taskFragment_to_nav_singleWebPageFragment"
             app:destination="@id/nav_singlePageWebScombFragment" />

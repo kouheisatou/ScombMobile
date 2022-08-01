@@ -1,18 +1,17 @@
 package net.iobb.koheinoapp.scombmobile.ui.timetable
 
 import android.app.Dialog
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.LinearLayout
+import android.widget.Switch
 import android.widget.TableRow
-import android.widget.Toast
 import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import eltos.simpledialogfragment.SimpleDialog
@@ -21,7 +20,6 @@ import kotlinx.android.synthetic.main.class_cell.view.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import net.iobb.koheinoapp.scombmobile.*
 import net.iobb.koheinoapp.scombmobile.common.AppViewModel
-import net.iobb.koheinoapp.scombmobile.common.CLASS_PAGE_URL
 import net.iobb.koheinoapp.scombmobile.common.NetworkState
 import net.iobb.koheinoapp.scombmobile.databinding.FragmentHomeBinding
 
@@ -74,35 +72,17 @@ class TimetableFragment : Fragment(), SimpleDialog.OnDialogResultListener {
             when(state){
                 ListenerState.Initialize -> {}
                 ListenerState.Normal -> {
-                    val menu = (activity as MainActivity).binding.appBarMain.toolbar.menu
-                    menu.findItem(R.id.colorSettings)?.isVisible = true
-                    menu.findItem(R.id.disableColorSettingMode)?.isVisible = false
-                    menu.findItem(R.id.palette)?.isVisible = false
-
                     applyToAllCell { classCell, row, col ->
                         classCell ?: return@applyToAllCell
 
-                        classCell.view.classNameBtn.setOnLongClickListener { v ->
-//                            Snackbar.make(v, "教室 : ${classCell.room}", Snackbar.LENGTH_LONG).show()
+                        classCell.view.classNameBtn.setOnClickListener { v ->
                             val dialog = ClassDetailDialogFragment.create(row, col)
                             dialog.show(childFragmentManager, "class_detail_dialog")
                             true
                         }
-
-                        classCell.view.classNameBtn.setOnClickListener {
-                            val action = TimetableFragmentDirections.actionNavHomeToNavSingleWebPageFragment("$CLASS_PAGE_URL${classCell.classId}")
-                            it.findNavController().navigate(action)
-                        }
                     }
                 }
                 ListenerState.ColorSelect -> {
-                    val menu = (activity as MainActivity).binding.appBarMain.toolbar.menu
-                    menu.findItem(R.id.colorSettings)?.isVisible = false
-                    menu.findItem(R.id.disableColorSettingMode)?.isVisible = true
-                    menu.findItem(R.id.palette)?.isVisible = true
-
-                    Toast.makeText(requireContext(), "タップで色を設定", Toast.LENGTH_SHORT).show()
-
                     applyToAllCell { classCell, _, _ ->
                         classCell ?: return@applyToAllCell
                         classCell.view.classNameBtn.setOnClickListener {
@@ -142,28 +122,69 @@ class TimetableFragment : Fragment(), SimpleDialog.OnDialogResultListener {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.timetable_color_selector, menu)
-        val isInColorSetting = viewModel.timetableListenerState.value == ListenerState.ColorSelect
 
-        menu.findItem(R.id.colorSettings)?.isVisible = !isInColorSetting
-        menu.findItem(R.id.disableColorSettingMode)?.isVisible = isInColorSetting
-        menu.findItem(R.id.palette)?.isVisible = isInColorSetting
+        val modeSwitch = menu.findItem(R.id.editModeSwitch)
+        val colorPalette = menu.findItem(R.id.colorPalette)
+
+        if(viewModel.timetableListenerState.value == ListenerState.ColorSelect){
+            colorPalette.isVisible = true
+            modeSwitch.icon.alpha = 1000
+            colorPalette.icon.setTint(viewModel.selectedColor!!)
+        }else{
+            colorPalette.isVisible = false
+            modeSwitch.icon.alpha = 100
+        }
 
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.colorSettings -> {
-                viewModel.timetableListenerState.value = ListenerState.ColorSelect
+            R.id.editModeSwitch -> {
+                val modeSwitch = (activity as MainActivity).binding.appBarMain.toolbar.menu.findItem(R.id.editModeSwitch)
+                val colorPalette = (activity as MainActivity).binding.appBarMain.toolbar.menu.findItem(R.id.colorPalette)
+
+                // edit_mode : on -> off
+                if(viewModel.timetableListenerState.value == ListenerState.ColorSelect){
+                    viewModel.timetableListenerState.value = ListenerState.Normal
+                    modeSwitch.icon.alpha = 100
+                    colorPalette.isVisible = false
+                    Snackbar.make(timeTable, "色設定モード : OFF", Snackbar.LENGTH_SHORT).show()
+                }
+                // edit_mode : off -> on
+                else{
+                    openColorSettingDialog()
+                }
+
             }
-            R.id.disableColorSettingMode -> {
-                viewModel.timetableListenerState.value = ListenerState.Normal
-            }
-            R.id.palette -> {
+            R.id.colorPalette -> {
                 openColorSettingDialog()
             }
         }
+
         return super.onOptionsItemSelected(item)
+    }
+
+    // when color dialog closed
+    override fun onResult(dialogTag: String, which: Int, extras: Bundle): Boolean {
+        if(which == Dialog.BUTTON_POSITIVE){
+            viewModel.selectedColor = extras.getIntArray(SimpleColorDialog.COLORS)?.getOrNull(0) ?: return false
+
+            val modeSwitch = (activity as MainActivity).binding.appBarMain.toolbar.menu.findItem(R.id.editModeSwitch)
+            val colorPalette = (activity as MainActivity).binding.appBarMain.toolbar.menu.findItem(R.id.colorPalette)
+
+            // set palette color
+            colorPalette.icon.setTint(viewModel.selectedColor!!)
+            Log.d("selected_color", viewModel.selectedColor?.toString() ?: "null")
+
+            // edit_mode : off -> on
+            if(viewModel.timetableListenerState.value != ListenerState.ColorSelect){
+                modeSwitch.icon.alpha = 1000
+                Snackbar.make(timeTable, "色設定モード : ON\nマスをタップして色を登録", Snackbar.LENGTH_SHORT).show()
+                viewModel.timetableListenerState.value = ListenerState.ColorSelect
+            }
+        }
+        return false
     }
 
     fun openColorSettingDialog(){
@@ -187,17 +208,5 @@ class TimetableFragment : Fragment(), SimpleDialog.OnDialogResultListener {
                 applyProcess(cell.value, rowNum, colNum)
             }
         }
-    }
-
-    // when color dialog closed
-    override fun onResult(dialogTag: String, which: Int, extras: Bundle): Boolean {
-        if(which == Dialog.BUTTON_POSITIVE){
-            viewModel.selectedColor = extras.getIntArray(SimpleColorDialog.COLORS)?.getOrNull(0) ?: return false
-
-            val menuItem = (activity as MainActivity).binding.appBarMain.toolbar.menu.findItem(R.id.palette)
-            val drawable = menuItem.icon
-            drawable.setTint(viewModel.selectedColor!!)
-        }
-        return false
     }
 }
