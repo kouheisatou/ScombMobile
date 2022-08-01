@@ -1,5 +1,6 @@
 package net.iobb.koheinoapp.scombmobile.ui.webscomb
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -53,9 +54,10 @@ class WebScombFragment : Fragment() {
         )
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     override fun onStart() {
         if(appViewModel.sessionId == null){
-            this.findNavController().navigate(R.id.loginFragment)
+            this.findNavController().navigate(R.id.nav_loginFragment)
         }else{
             webView.webViewClient = WebViewClient()
             webView.settings.javaScriptEnabled = true

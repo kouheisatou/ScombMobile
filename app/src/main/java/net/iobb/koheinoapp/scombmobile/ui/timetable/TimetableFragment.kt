@@ -54,7 +54,7 @@ class TimetableFragment : Fragment(), SimpleDialog.OnDialogResultListener {
                 }
                 NetworkState.NotPermitted -> {
                     viewModel.page.reset()
-                    findNavController().navigate(R.id.loginFragment)
+                    findNavController().navigate(R.id.nav_loginFragment)
                 }
                 else -> {
                     binding.progressBar.isVisible = false
@@ -89,7 +89,7 @@ class TimetableFragment : Fragment(), SimpleDialog.OnDialogResultListener {
                         }
 
                         classCell.view.classNameBtn.setOnClickListener {
-                            val action = TimetableFragmentDirections.actionNavHomeToClassDetailFragment("$CLASS_PAGE_URL${classCell.classId}")
+                            val action = TimetableFragmentDirections.actionNavHomeToNavSingleWebPageFragment("$CLASS_PAGE_URL${classCell.classId}")
                             it.findNavController().navigate(action)
                         }
                     }
@@ -125,7 +125,7 @@ class TimetableFragment : Fragment(), SimpleDialog.OnDialogResultListener {
 
 
         if(appViewModel.sessionId == null){
-            findNavController().navigate(R.id.loginFragment)
+            findNavController().navigate(R.id.nav_loginFragment)
             return root
         }
 

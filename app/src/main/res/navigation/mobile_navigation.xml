@@ -11,12 +11,12 @@
         android:label="時間割"
         tools:layout="@layout/fragment_home">
         <action
-            android:id="@+id/action_nav_home_to_classDetailFragment"
-            app:destination="@id/classDetailFragment" />
+            android:id="@+id/action_nav_home_to_nav_singleWebPageFragment"
+            app:destination="@id/nav_singlePageWebScombFragment" />
     </fragment>
 
     <fragment
-        android:id="@+id/loginFragment"
+        android:id="@+id/nav_loginFragment"
         android:name="net.iobb.koheinoapp.scombmobile.ui.login.LoginFragment"
         android:label="ログイン" />
     <fragment
@@ -29,26 +29,21 @@
         android:name="net.iobb.koheinoapp.scombmobile.ui.webscomb.WebScombFragment"
         android:label="Web版Scomb" />
     <fragment
-        android:id="@+id/classDetailFragment"
+        android:id="@+id/nav_taskFragment"
+        android:name="net.iobb.koheinoapp.scombmobile.ui.task.TaskFragment"
+        android:label="fragment_task"
+        tools:layout="@layout/fragment_task" >
+        <action
+            android:id="@+id/action_nav_taskFragment_to_nav_singleWebPageFragment"
+            app:destination="@id/nav_singlePageWebScombFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_singlePageWebScombFragment"
         android:name="net.iobb.koheinoapp.scombmobile.ui.webscomb.SinglePageWebScombFragment"
         android:label=" "
-        tools:layout="@layout/fragment_class_detail">
-        <argument
-            android:name="url"
-            app:argType="string" />
+        tools:layout="@layout/fragment_class_detail" >
+            <argument
+                android:name="url"
+                app:argType="string" />
     </fragment>
-    <fragment
-        android:id="@+id/nav_taskFragment"
-        android:name="net.iobb.koheinoapp.scombmobile.ui.task.list.TaskListFragment"
-        android:label="課題・テスト一覧"
-        tools:layout="@layout/fragment_item_list">
-        <action
-            android:id="@+id/action_taskFragment_to_classDetailFragment"
-            app:destination="@id/classDetailFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/taskCalendarFragment"
-        android:name="net.iobb.koheinoapp.scombmobile.ui.task.calendar.TaskCalendarFragment"
-        android:label="締切カレンダー"
-        tools:layout="@layout/fragment_calendar" />
 </navigation>

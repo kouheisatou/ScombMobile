@@ -9,13 +9,9 @@
             android:icon="@drawable/ic_baseline_table_chart_24"
             android:title="時間割" />
         <item
-            android:id="@+id/taskCalendarFragment"
-            android:icon="@drawable/ic_baseline_calendar_month_24"
-            android:title="締切カレンダー" />
-        <item
             android:id="@+id/nav_taskFragment"
             android:icon="@drawable/ic_baseline_insert_drive_file_24"
-            android:title="課題・テスト一覧" />
+            android:title="課題・テスト" />
         <item
             android:id="@+id/nav_webScombFragment"
             android:icon="@drawable/ic_baseline_web_24"

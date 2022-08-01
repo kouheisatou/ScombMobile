@@ -59,7 +59,7 @@ class SinglePageWebScombFragment : Fragment() {
     override fun onStart() {
 
         if(appViewModel.sessionId == null){
-            view?.findNavController()?.navigate(R.id.loginFragment)
+            view?.findNavController()?.navigate(R.id.nav_loginFragment)
             return
         }else{
             webView.loadUrl(
@@ -80,7 +80,7 @@ class SinglePageWebScombFragment : Fragment() {
                     webView.isVisible = true
                 }
                 NetworkState.NotPermitted -> {
-                    view?.findNavController()?.navigate(R.id.loginFragment)
+                    view?.findNavController()?.navigate(R.id.nav_loginFragment)
                 }
                 else -> {
                     progressBar.isVisible = true

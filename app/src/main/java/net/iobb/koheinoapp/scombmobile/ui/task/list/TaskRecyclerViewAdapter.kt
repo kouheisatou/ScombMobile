@@ -8,6 +8,7 @@ import androidx.navigation.findNavController
 import net.iobb.koheinoapp.scombmobile.common.SCOMBZ_DOMAIN
 import net.iobb.koheinoapp.scombmobile.databinding.FragmentItemBinding
 import net.iobb.koheinoapp.scombmobile.ui.task.Task
+import net.iobb.koheinoapp.scombmobile.ui.task.TaskFragmentDirections
 import java.util.*
 
 class TaskRecyclerViewAdapter(
@@ -22,7 +23,7 @@ class TaskRecyclerViewAdapter(
         view.linearLayout.setOnClickListener {
             val task = tasks[holder.layoutPosition]
             val action =
-                TaskListFragmentDirections.actionTaskFragmentToClassDetailFragment("$SCOMBZ_DOMAIN${task.url}")
+                TaskFragmentDirections.actionNavTaskFragmentToNavSingleWebPageFragment("$SCOMBZ_DOMAIN${task.url}")
             view.linearLayout.findNavController().navigate(action)
         }
 

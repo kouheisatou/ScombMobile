@@ -59,7 +59,7 @@ class TaskListFragment : Fragment() {
                 }
                 NetworkState.NotPermitted -> {
                     taskViewModel.page.reset()
-                    findNavController().navigate(R.id.loginFragment)
+                    findNavController().navigate(R.id.nav_loginFragment)
                 }
             }
         }
