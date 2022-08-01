@@ -112,7 +112,7 @@ class TimetableViewModel : ViewModel() {
             if(in24h.isEmpty()){
                 val newClasses = fetchFromServer(context)
 
-                // update classes and take over custom color
+                // update classes and marge old
                 for (newClass in newClasses) {
                     for (c in classes) {
                         if(newClass.classId == c.classId){
@@ -134,7 +134,6 @@ class TimetableViewModel : ViewModel() {
             s += "]"
             Log.d("timetable", s)
 
-            page.networkState.postValue(NetworkState.Finished)
         }
 
     }
@@ -145,5 +144,12 @@ class TimetableViewModel : ViewModel() {
             newTimetable[it.period][it.dayOfWeek] = it
         }
         timeTable.postValue(newTimetable)
+    }
+
+    fun forceFetchFromServer(context: Context){
+        viewModelScope.launch(Dispatchers.IO) {
+            val resp = fetchFromServer(context)
+            constructTimetable(resp)
+        }
     }
 }

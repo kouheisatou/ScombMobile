@@ -12,12 +12,15 @@ import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import eltos.simpledialogfragment.SimpleDialog
 import eltos.simpledialogfragment.color.SimpleColorDialog
 import kotlinx.android.synthetic.main.class_cell.view.*
 import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import net.iobb.koheinoapp.scombmobile.*
 import net.iobb.koheinoapp.scombmobile.common.AppViewModel
 import net.iobb.koheinoapp.scombmobile.common.NetworkState
@@ -43,6 +46,11 @@ class TimetableFragment : Fragment(), SimpleDialog.OnDialogResultListener {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        binding.swipeLayout.setOnRefreshListener {
+            viewModel.page.reset()
+            viewModel.forceFetchFromServer(requireContext())
+        }
+
         viewModel.page.networkState.observe(viewLifecycleOwner){
             when(it){
                 NetworkState.Loading -> {
@@ -53,9 +61,15 @@ class TimetableFragment : Fragment(), SimpleDialog.OnDialogResultListener {
                     viewModel.page.reset()
                     findNavController().navigate(R.id.nav_loginFragment)
                 }
-                else -> {
+                NetworkState.Finished -> {
                     binding.progressBar.isVisible = false
                     binding.timeTable.isVisible = true
+                    swipeLayout.isRefreshing = false
+                }
+                NetworkState.Initialized -> {
+                    binding.progressBar.isVisible = false
+                    binding.timeTable.isVisible = true
+                    viewModel.fetch(requireContext())
                 }
             }
         }
@@ -78,6 +92,11 @@ class TimetableFragment : Fragment(), SimpleDialog.OnDialogResultListener {
                         classCell.view.classNameBtn.setOnClickListener { v ->
                             val dialog = ClassDetailDialogFragment.create(row, col)
                             dialog.show(childFragmentManager, "class_detail_dialog")
+                            true
+                        }
+
+                        classCell.view.classNameBtn.setOnLongClickListener { v ->
+                            Snackbar.make(v, "教室 : ${classCell.room}", Snackbar.LENGTH_LONG).show()
                             true
                         }
                     }
@@ -103,15 +122,6 @@ class TimetableFragment : Fragment(), SimpleDialog.OnDialogResultListener {
                 }
             }
         }
-
-
-
-        if(appViewModel.sessionId == null){
-            findNavController().navigate(R.id.nav_loginFragment)
-            return root
-        }
-
-        viewModel.fetch(requireContext())
 
         return root
     }
