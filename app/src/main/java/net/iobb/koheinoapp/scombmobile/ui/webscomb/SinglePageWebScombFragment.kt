@@ -12,7 +12,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import kotlinx.android.synthetic.main.fragment_class_detail.*
-import kotlinx.android.synthetic.main.fragment_class_detail.progressBar
+import kotlinx.android.synthetic.main.fragment_class_detail.view.*
 import net.iobb.koheinoapp.scombmobile.MainActivity
 import net.iobb.koheinoapp.scombmobile.R
 import net.iobb.koheinoapp.scombmobile.common.*
@@ -28,7 +28,39 @@ class SinglePageWebScombFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_class_detail, container, false)
+        val root = inflater.inflate(R.layout.fragment_class_detail, container, false)
+
+        root.webView.networkState.observe(viewLifecycleOwner){
+            when(it){
+                NetworkState.Finished -> {
+                    root.progressBar.isVisible = false
+                    root.webView.isVisible = true
+                }
+                NetworkState.NotPermitted -> {
+                    view?.findNavController()?.navigate(R.id.nav_loginFragment)
+                }
+                NetworkState.Initialized -> {
+                    root.progressBar.isVisible = true
+                    root.webView.isVisible = false
+
+                    root.webView.loadUrl(
+                        args.url,
+                        onScriptCallback = {
+                            ((activity ?: return@loadUrl) as MainActivity).binding.appBarMain.toolbar.title = it.replace("\"", "")
+                        },
+                        "document.getElementById('$HEADER_ELEMENT_ID').remove();",
+                        "document.getElementById('$FOOTER_ELEMENT_ID').remove();",
+                        "document.title;"
+                    )
+                }
+                NetworkState.Loading -> {
+                    root.progressBar.isVisible = true
+                    root.webView.isVisible = false
+                }
+            }
+        }
+
+        return root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -53,44 +85,6 @@ class SinglePageWebScombFragment : Fragment() {
             }
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    @SuppressLint("SetJavaScriptEnabled")
-    override fun onStart() {
-
-        if(appViewModel.sessionId == null){
-            view?.findNavController()?.navigate(R.id.nav_loginFragment)
-            return
-        }else{
-            webView.loadUrl(
-                args.url,
-                onScriptCallback = {
-                    ((activity ?: return@loadUrl) as MainActivity).binding.appBarMain.toolbar.title = it.replace("\"", "")
-                },
-                "document.getElementById('$HEADER_ELEMENT_ID').remove();",
-                "document.getElementById('$FOOTER_ELEMENT_ID').remove();",
-                "document.title;"
-            )
-        }
-
-        webView.networkState.observe(viewLifecycleOwner){
-            when(it){
-                NetworkState.Finished -> {
-                    progressBar.isVisible = false
-                    webView.isVisible = true
-                }
-                NetworkState.NotPermitted -> {
-                    view?.findNavController()?.navigate(R.id.nav_loginFragment)
-                }
-                else -> {
-                    progressBar.isVisible = true
-                    webView.isVisible = false
-                }
-            }
-        }
-
-        super.onStart()
-
     }
 
 }
