@@ -9,6 +9,7 @@ import net.iobb.koheinoapp.scombmobile.common.SCOMBZ_DOMAIN
 import net.iobb.koheinoapp.scombmobile.databinding.FragmentItemBinding
 import net.iobb.koheinoapp.scombmobile.ui.task.Task
 import net.iobb.koheinoapp.scombmobile.ui.task.TaskFragmentDirections
+import net.iobb.koheinoapp.scombmobile.ui.task.timeToString
 import java.util.*
 
 class TaskRecyclerViewAdapter(
@@ -34,7 +35,7 @@ class TaskRecyclerViewAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = tasks[position]
         holder.titleTextView.text = item.title
-        holder.deadlineTextView.text = Date(item.deadLineTime).toString()
+        holder.deadlineTextView.text = timeToString(item.deadLineTime)
         holder.classNameTextView.text = item.className
     }
 

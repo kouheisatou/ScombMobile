@@ -6,11 +6,9 @@
                 android:topRightRadius="10dp"
                 android:bottomRightRadius="10dp"
                 android:bottomLeftRadius="10dp"
-                android:topLeftRadius="10dp"
-                />
+                android:topLeftRadius="10dp" />
             <solid
-                android:color="@color/button_material_light"
-                />
+                android:color="@color/button_material_light" />
         </shape>
     </item>
 </selector>

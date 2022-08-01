@@ -12,6 +12,7 @@ import androidx.room.Room
 import kotlinx.android.synthetic.main.class_cell.view.*
 import net.iobb.koheinoapp.scombmobile.R
 import net.iobb.koheinoapp.scombmobile.common.AppDatabase
+import net.iobb.koheinoapp.scombmobile.ui.task.timeToString
 import java.util.*
 
 @Entity
@@ -74,6 +75,6 @@ class ClassCell(
     }
 
     override fun toString(): String {
-        return "ClassCell{id=$id, classId=$classId, name=$name, teachers=$teachers, room=$room, createdDate=$customColorInt, createdDate=$createdDate}"
+        return "ClassCell{id=$id, classId=$classId, name=$name, teachers=$teachers, room=$room, createdDate=$customColorInt, createdDate=${timeToString(createdDate)}}"
     }
 }

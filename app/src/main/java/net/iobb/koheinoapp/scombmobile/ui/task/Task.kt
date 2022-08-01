@@ -1,5 +1,8 @@
 package net.iobb.koheinoapp.scombmobile.ui.task
 
+import java.text.SimpleDateFormat
+import java.util.*
+
 class Task(
     val title: String,
     val className: String,
@@ -32,4 +35,10 @@ fun getTaskTypeFromString(taskType: String): Task.TaskType? {
             null
         }
     }
+}
+
+fun timeToString(timeMillis: Long): String {
+    val date = Date(timeMillis)
+    val formatter = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
+    return formatter.format(date)
 }

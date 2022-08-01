@@ -30,7 +30,7 @@ class TimetableFragment : Fragment(), SimpleDialog.OnDialogResultListener {
 
     private var _binding: FragmentHomeBinding? = null
     private val appViewModel: AppViewModel by activityViewModels()
-    private lateinit var viewModel: TimetableViewModel
+    private val viewModel: TimetableViewModel by activityViewModels()
 
     private val binding get() = _binding!!
 
@@ -40,7 +40,6 @@ class TimetableFragment : Fragment(), SimpleDialog.OnDialogResultListener {
         savedInstanceState: Bundle?
     ): View {
         setHasOptionsMenu(true)
-        viewModel = ViewModelProvider(this)[TimetableViewModel::class.java]
         viewModel.appViewModel = appViewModel
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
@@ -80,11 +79,13 @@ class TimetableFragment : Fragment(), SimpleDialog.OnDialogResultListener {
                     menu.findItem(R.id.disableColorSettingMode)?.isVisible = false
                     menu.findItem(R.id.palette)?.isVisible = false
 
-                    applyToAllCell { classCell, _, _ ->
+                    applyToAllCell { classCell, row, col ->
                         classCell ?: return@applyToAllCell
 
                         classCell.view.classNameBtn.setOnLongClickListener { v ->
-                            Snackbar.make(v, "教室 : ${classCell.room}", Snackbar.LENGTH_LONG).show()
+//                            Snackbar.make(v, "教室 : ${classCell.room}", Snackbar.LENGTH_LONG).show()
+                            val dialog = ClassDetailDialogFragment.create(row, col)
+                            dialog.show(childFragmentManager, "class_detail_dialog")
                             true
                         }
 
@@ -115,6 +116,7 @@ class TimetableFragment : Fragment(), SimpleDialog.OnDialogResultListener {
                                 }
                             }
                         }
+                        classCell.view.classNameBtn.setOnLongClickListener(null)
                     }
                 }
                 ListenerState.AttendanceCount -> {
