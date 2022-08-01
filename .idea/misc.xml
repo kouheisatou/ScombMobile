@@ -4,22 +4,41 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../layout/custom_preview.xml" value="0.1789568345323741" />
-        <entry key="app/src/main/res/drawable/ic_baseline_circle_24.xml" value="0.1925" />
+        <entry key="app/src/main/res/drawable-v24/scomb_sitelogo.xml" value="0.215" />
+        <entry key="app/src/main/res/drawable/cell_shape.xml" value="0.2465" />
+        <entry key="app/src/main/res/drawable/ic_baseline_circle_24.xml" value="0.215" />
+        <entry key="app/src/main/res/drawable/ic_baseline_palette_24.xml" value="0.215" />
+        <entry key="app/src/main/res/drawable/palette.xml" value="0.2385" />
+        <entry key="app/src/main/res/drawable/shape_rounded_coners_10dp.xml" value="0.2385" />
+        <entry key="app/src/main/res/drawable/splash.xml" value="0.215" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.19583333333333333" />
         <entry key="app/src/main/res/layout/app_bar_main.xml" value="0.19583333333333333" />
+        <entry key="app/src/main/res/layout/class_cell.xml" value="0.19479166666666667" />
         <entry key="app/src/main/res/layout/content_main.xml" value="0.3591485507246377" />
-        <entry key="app/src/main/res/layout/fragment_class_detail_dialog.xml" value="0.31929347826086957" />
+        <entry key="app/src/main/res/layout/fragment_calendar.xml" value="0.3770833333333333" />
+        <entry key="app/src/main/res/layout/fragment_class_detail.xml" value="0.23333333333333334" />
+        <entry key="app/src/main/res/layout/fragment_class_detail_dialog.xml" value="0.31007751937984496" />
         <entry key="app/src/main/res/layout/fragment_gallery.xml" value="0.19583333333333333" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.22" />
+        <entry key="app/src/main/res/layout/fragment_item.xml" value="0.22447916666666667" />
+        <entry key="app/src/main/res/layout/fragment_item_list.xml" value="0.21145833333333333" />
         <entry key="app/src/main/res/layout/fragment_login.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_login_dialog.xml" value="0.19583333333333333" />
         <entry key="app/src/main/res/layout/fragment_setting.xml" value="0.19583333333333333" />
         <entry key="app/src/main/res/layout/fragment_slideshow.xml" value="0.19583333333333333" />
+        <entry key="app/src/main/res/layout/fragment_task.xml" value="0.22447916666666667" />
+        <entry key="app/src/main/res/layout/fragment_task2.xml" value="0.22447916666666667" />
+        <entry key="app/src/main/res/layout/fragment_task_switcher.xml" value="0.3770833333333333" />
+        <entry key="app/src/main/res/layout/fragment_web_scomb.xml" value="0.19583333333333333" />
         <entry key="app/src/main/res/layout/nav_header_main.xml" value="0.19583333333333333" />
+        <entry key="app/src/main/res/layout/pallete_image_button.xml" value="0.2234375" />
         <entry key="app/src/main/res/menu/activity_main_drawer.xml" value="0.19583333333333333" />
-        <entry key="app/src/main/res/menu/class_detail_option_menu.xml" value="0.22083333333333333" />
+        <entry key="app/src/main/res/menu/bottom_nav_item.xml" value="0.37604166666666666" />
+        <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.23333333333333334" />
+        <entry key="app/src/main/res/menu/class_detail_option_menu.xml" value="0.22447916666666667" />
         <entry key="app/src/main/res/menu/main.xml" value="0.19583333333333333" />
-        <entry key="app/src/main/res/menu/timetable_color_selector.xml" value="0.22083333333333333" />
+        <entry key="app/src/main/res/menu/task_bottom_nav_menu.xml" value="0.447265625" />
+        <entry key="app/src/main/res/menu/timetable_color_selector.xml" value="0.2234375" />
         <entry key="app/src/main/res/xml/network_security_config.xml" value="0.19583333333333333" />
       </map>
     </option>

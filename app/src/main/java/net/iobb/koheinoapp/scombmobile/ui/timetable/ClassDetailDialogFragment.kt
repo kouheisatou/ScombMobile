@@ -5,16 +5,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.ArrayRes
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import eltos.simpledialogfragment.SimpleDialog
+import eltos.simpledialogfragment.color.SimpleColorDialog
+import kotlinx.android.synthetic.main.class_cell.view.*
+import kotlinx.android.synthetic.main.fragment_class_detail_dialog.*
 import kotlinx.android.synthetic.main.fragment_class_detail_dialog.view.*
 import net.iobb.koheinoapp.scombmobile.R
 import net.iobb.koheinoapp.scombmobile.common.CLASS_PAGE_URL
 import net.iobb.koheinoapp.scombmobile.ui.task.timeToString
 
-class ClassDetailDialogFragment() : DialogFragment() {
+class ClassDetailDialogFragment() : DialogFragment(), SimpleDialog.OnDialogResultListener {
 
     private val viewModel: TimetableViewModel by activityViewModels()
     lateinit var classCell: ClassCell
@@ -69,7 +73,7 @@ class ClassDetailDialogFragment() : DialogFragment() {
         view.classRoomTextView.text = classCell.room
         view.classTimeTextView.text = "${dayOfWeekMap[classCell.dayOfWeek]}${classCell.period+1}限  ${classTimeMap[classCell.period]}"
         if (classCell.customColorInt != null) {
-            view.customColorTextView.background.setTint(classCell.customColorInt!!)
+            view.customColor.background.setTint(classCell.customColorInt!!)
         }
         view.lastUpdateTimeTextView.text = timeToString(classCell.createdDate)
 
@@ -77,6 +81,8 @@ class ClassDetailDialogFragment() : DialogFragment() {
             dialog?.cancel()
         }
         view.positive_button.setOnClickListener {
+            classCell.customColorInt = selectedColor
+            classCell.setCustomColor(selectedColor)
             dialog?.cancel()
         }
         view.webLink.setOnClickListener {
@@ -84,6 +90,29 @@ class ClassDetailDialogFragment() : DialogFragment() {
             val action = TimetableFragmentDirections.actionNavHomeToNavSingleWebPageFragment("$CLASS_PAGE_URL${classCell.classId}")
             parentFragment?.findNavController()?.navigate(action)
         }
+        view.customColor.setOnClickListener {
+            openColorSettingDialog()
+        }
         return view
+    }
+
+    fun openColorSettingDialog(){
+        @ArrayRes
+        val colors = R.array.material_pallet_light
+        SimpleColorDialog.build()
+            .title("色を選択")
+            .colors(requireContext(), colors)
+            .allowCustom(false)
+            .show(this, "color_dialog")
+    }
+
+    private var selectedColor: Int? = null
+    override fun onResult(dialogTag: String, which: Int, extras: Bundle): Boolean {
+        val color = extras.getIntArray(SimpleColorDialog.COLORS)?.getOrNull(0) ?: return false
+
+        selectedColor = color
+        customColor.background.setTint(color)
+
+        return false
     }
 }

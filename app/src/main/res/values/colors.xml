@@ -7,4 +7,25 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <array name="material_pallet_light">
+        <item>#FFEF9A9A</item>
+        <item>#FFF48FB1</item>
+        <item>#FFCE93D8</item>
+        <item>#FFB39DDB</item>
+        <item>#FF9FA8DA</item>
+        <item>#FF90CAF9</item>
+        <item>#FF81D4FA</item>
+        <item>#FF80DEEA</item>
+        <item>#FF80CBC4</item>
+        <item>#FFA5D6A7</item>
+        <item>#FFC5E1A5</item>
+        <item>#FFE6EE9C</item>
+        <item>#FFFFF59D</item>
+        <item>#FFFFE082</item>
+        <item>#FFFFCC80</item>
+        <item>#FFFFAB91</item>
+        <item>#FFBCAAA4</item>
+        <item>#FFB0BEC5</item>
+    </array>
 </resources>

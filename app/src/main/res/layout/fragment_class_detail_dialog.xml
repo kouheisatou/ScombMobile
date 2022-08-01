@@ -103,20 +103,25 @@
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_margin="10dp"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_margin="10dp"
                 android:text="色 :"/>
-
             <View
-                android:id="@+id/customColorTextView"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+            <View
+                android:id="@+id/customColor"
+                android:clickable="true"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:elevation="4dp"
                 android:background="@drawable/ic_baseline_circle_24"
                 android:backgroundTint="?attr/colorButtonNormal"
                 android:text="class_id" />

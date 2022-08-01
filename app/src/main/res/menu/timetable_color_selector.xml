@@ -3,13 +3,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/colorPalette"
-        android:title=" "
-        android:icon="@drawable/ic_baseline_circle_24"
+        android:id="@+id/editModeSwitch"
+        android:icon="@drawable/ic_baseline_palette_24"
+        android:iconTint="#FFFFFF"
+        android:title="色編集モード切り替え"
         app:showAsAction="always" />
-    <item android:id="@+id/editModeSwitch"
-        android:title=" "
-        app:showAsAction="always"
-        android:icon="@drawable/ic_baseline_palette_24"/>
 
 </menu>

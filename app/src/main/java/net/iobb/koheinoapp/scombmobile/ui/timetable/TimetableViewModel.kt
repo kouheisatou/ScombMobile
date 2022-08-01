@@ -56,7 +56,7 @@ class TimetableViewModel : ViewModel() {
                     val teachers = StringBuilder()
                     for(teacher in cellDetail.children()){
                         if(teacher.text() == "【教室】") continue
-                        teachers.append(teacher.text().replace(", ", ","))
+                        teachers.append(teacher.text())
                     }
 
                     val newCell = ClassCell(id, name, teachers.toString(), room, cell.index, row.index)
