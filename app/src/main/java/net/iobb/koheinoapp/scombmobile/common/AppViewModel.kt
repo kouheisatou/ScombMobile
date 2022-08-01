@@ -53,5 +53,5 @@ class AppViewModel : ViewModel(){
 
     // login
     var sessionId: String? = null
-    var userId = MutableLiveData("")
+    var userId = MutableLiveData("ログインしていません")
 }

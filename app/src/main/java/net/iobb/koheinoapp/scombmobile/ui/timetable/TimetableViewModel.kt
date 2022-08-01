@@ -2,7 +2,6 @@ package net.iobb.koheinoapp.scombmobile.ui.timetable
 
 import android.content.Context
 import android.util.Log
-import androidx.annotation.ColorInt
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -26,8 +25,11 @@ class TimetableViewModel : ViewModel() {
         }
     )
     val timetableListenerState = MutableLiveData(TimetableFragment.ListenerState.Initialize)
-    @ColorInt
     var selectedColor: Int? = null
+
+    companion object {
+        var refreshRequired = false
+    }
 
     suspend fun fetchFromServer(context: Context): Array<ClassCell>{
 
@@ -91,44 +93,47 @@ class TimetableViewModel : ViewModel() {
         return db.classCellDao().getAllClassCell()
     }
 
-    fun fetch(context: Context){
+    /**
+     * @param requiredRefresh force fetch from server
+     */
+    fun fetch(context: Context, requiredRefresh: Boolean = false){
         if(page.networkState.value == NetworkState.Finished) return
         viewModelScope.launch(Dispatchers.IO) {
 
-            var classes = fetchFromDB(context)
+            var classesFromDB = fetchFromDB(context)
 
             val yesterday = Calendar.getInstance()
             yesterday.add(Calendar.HOUR, -1 * TIMETABLE_EFFECTIVE_TIME)
 
             // get classes fetched in 24h
             val in24h = mutableListOf<ClassCell>()
-            classes.forEach {
+            classesFromDB.forEach {
                 if(it.createdDate > yesterday.timeInMillis){
                     in24h.add(it)
                 }
             }
 
             // if classes info in db is too old, fetch new from server
-            if(in24h.isEmpty()){
+            if(in24h.isEmpty() || requiredRefresh){
                 val newClasses = fetchFromServer(context)
 
                 // update classes and marge old
                 for (newClass in newClasses) {
-                    for (c in classes) {
-                        if(newClass.classId == c.classId){
-                            newClass.customColorInt = c.customColorInt
+                    for (oldClass in classesFromDB) {
+                        if(newClass.classId == oldClass.classId){
+                            newClass.customColorInt = oldClass.customColorInt
                         }
                     }
                 }
-                classes = newClasses
+                classesFromDB = newClasses
 
                 updateDB(newClasses, context)
             }
 
-            constructTimetable(classes)
+            constructTimetable(classesFromDB)
 
             var s = "["
-            classes.forEach {
+            classesFromDB.forEach {
                 s += "${it}, "
             }
             s += "]"
@@ -144,12 +149,5 @@ class TimetableViewModel : ViewModel() {
             newTimetable[it.period][it.dayOfWeek] = it
         }
         timeTable.postValue(newTimetable)
-    }
-
-    fun forceFetchFromServer(context: Context){
-        viewModelScope.launch(Dispatchers.IO) {
-            val resp = fetchFromServer(context)
-            constructTimetable(resp)
-        }
     }
 }

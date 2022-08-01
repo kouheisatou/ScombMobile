@@ -6,25 +6,22 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.LinearLayout
-import android.widget.Switch
 import android.widget.TableRow
 import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import eltos.simpledialogfragment.SimpleDialog
 import eltos.simpledialogfragment.color.SimpleColorDialog
 import kotlinx.android.synthetic.main.class_cell.view.*
 import kotlinx.android.synthetic.main.fragment_home.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import net.iobb.koheinoapp.scombmobile.*
 import net.iobb.koheinoapp.scombmobile.common.AppViewModel
 import net.iobb.koheinoapp.scombmobile.common.NetworkState
 import net.iobb.koheinoapp.scombmobile.databinding.FragmentHomeBinding
+import net.iobb.koheinoapp.scombmobile.ui.timetable.TimetableViewModel.Companion.refreshRequired
 
 
 class TimetableFragment : Fragment(), SimpleDialog.OnDialogResultListener {
@@ -47,8 +44,10 @@ class TimetableFragment : Fragment(), SimpleDialog.OnDialogResultListener {
         val root: View = binding.root
 
         binding.swipeLayout.setOnRefreshListener {
-            viewModel.page.reset()
-            viewModel.forceFetchFromServer(requireContext())
+            if(appViewModel.sessionId == null){
+                refreshRequired = true
+            }
+            refresh()
         }
 
         viewModel.page.networkState.observe(viewLifecycleOwner){
@@ -69,7 +68,11 @@ class TimetableFragment : Fragment(), SimpleDialog.OnDialogResultListener {
                 NetworkState.Initialized -> {
                     binding.progressBar.isVisible = false
                     binding.timeTable.isVisible = true
-                    viewModel.fetch(requireContext())
+                    if(refreshRequired){
+                        refresh()
+                    }else{
+                        viewModel.fetch(requireContext())
+                    }
                 }
             }
         }
@@ -182,6 +185,11 @@ class TimetableFragment : Fragment(), SimpleDialog.OnDialogResultListener {
             }
         }
         return false
+    }
+
+    private fun refresh(){
+        viewModel.page.reset()
+        viewModel.fetch(requireContext(), true)
     }
 
     fun openColorSettingDialog(){
