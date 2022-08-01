@@ -81,8 +81,10 @@ class ClassDetailDialogFragment() : DialogFragment(), SimpleDialog.OnDialogResul
             dialog?.cancel()
         }
         view.positive_button.setOnClickListener {
-            classCell.customColorInt = selectedColor
-            classCell.setCustomColor(selectedColor)
+            if (selectedColor == null) {
+                classCell.customColorInt = selectedColor
+                classCell.setCustomColor(selectedColor)
+            }
             dialog?.cancel()
         }
         view.webLink.setOnClickListener {
@@ -96,7 +98,7 @@ class ClassDetailDialogFragment() : DialogFragment(), SimpleDialog.OnDialogResul
         return view
     }
 
-    fun openColorSettingDialog(){
+    private fun openColorSettingDialog(){
         @ArrayRes
         val colors = R.array.material_pallet_light
         SimpleColorDialog.build()
