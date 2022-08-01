@@ -81,7 +81,7 @@ class ClassDetailDialogFragment() : DialogFragment(), SimpleDialog.OnDialogResul
             dialog?.cancel()
         }
         view.positive_button.setOnClickListener {
-            if (selectedColor == null) {
+            if (selectedColor != null) {
                 classCell.customColorInt = selectedColor
                 classCell.setCustomColor(selectedColor)
             }
