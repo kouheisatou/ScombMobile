@@ -18,7 +18,7 @@
         android:layout_height="match_parent">
 
 
-        <CalendarView
+        <com.skyhope.eventcalenderlibrary.CalenderEvent
             android:id="@+id/calendarView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

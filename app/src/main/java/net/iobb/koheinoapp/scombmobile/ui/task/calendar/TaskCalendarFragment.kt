@@ -21,6 +21,7 @@ import net.iobb.koheinoapp.scombmobile.common.AppViewModel
 import net.iobb.koheinoapp.scombmobile.common.NetworkState
 import net.iobb.koheinoapp.scombmobile.ui.task.TaskViewModel
 import net.iobb.koheinoapp.scombmobile.ui.task.list.TaskRecyclerViewAdapter
+import net.iobb.koheinoapp.scombmobile.ui.task.timeToString
 import java.util.*
 
 class TaskCalendarFragment : Fragment() {
@@ -70,7 +71,7 @@ class TaskCalendarFragment : Fragment() {
             }
         }
         taskViewModel.tasks.observe(viewLifecycleOwner){
-            taskViewModel.getTasksOf(root.calendarView.date)
+            taskViewModel.getTasksOf(root.calendarView.drawingTime)
         }
         taskViewModel.tasksOfTheDate.observe(viewLifecycleOwner){
             // construct list view
@@ -82,9 +83,9 @@ class TaskCalendarFragment : Fragment() {
             }
         }
 
-        root.calendarView.setOnDateChangeListener { _, year, month, day ->
-            val selectedDate = Calendar.getInstance().apply{ set(year, month, day) }
-            taskViewModel.getTasksOf(selectedDate.timeInMillis)
+        root.calendarView.initCalderItemClickCallback {
+            taskViewModel.getTasksOf(it.timeInMillisecond)
+            Toast.makeText(requireContext(), timeToString(it.timeInMillisecond), Toast.LENGTH_SHORT).show()
         }
 
         return root
