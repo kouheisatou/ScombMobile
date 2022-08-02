@@ -34,6 +34,8 @@ class ClassCell(
     lateinit var view: View
     @Ignore
     lateinit var context: Context
+    @Ignore
+    var timetable: Array<Array<ClassCell?>>? = null
 
     init {
         id = "$dayOfWeek,$period"
@@ -47,13 +49,13 @@ class ClassCell(
         view.classNameBtn.text = name
 
         if (customColorInt != null) {
-            setCustomColor(customColorInt!!)
+            setCustomColor(customColorInt!!, true)
         }
 
         return view
     }
 
-    fun setCustomColor(color: Int?){
+    fun setCustomColor(color: Int?, applyToSameIdClass: Boolean){
 
         customColorInt = color
 
@@ -72,6 +74,17 @@ class ClassCell(
         ).allowMainThreadQueries().build()
         db.classCellDao().insertClassCell(this)
         Log.d("set_color_to_cell", "($id), $name, $customColorInt")
+
+        // sync color to same id class
+        if(applyToSameIdClass){
+            timetable?.forEach { row ->
+                row.forEach {
+                    if(it?.classId == classId){
+                        it.setCustomColor(customColorInt, false)
+                    }
+                }
+            }
+        }
     }
 
     override fun toString(): String {

@@ -80,6 +80,8 @@ class TimetableFragment : Fragment(), SimpleDialog.OnDialogResultListener {
                 val tableRow = binding.timeTable[row + 1] as TableRow
                 val cellView = tableRow[col + 1] as LinearLayout
                 classCell?.genView(requireContext(), cellView)
+
+                classCell?.timetable = viewModel.timeTable.value
             }
             viewModel.timetableListenerState.value = ListenerState.Normal
         }
@@ -108,12 +110,12 @@ class TimetableFragment : Fragment(), SimpleDialog.OnDialogResultListener {
                         classCell ?: return@applyToAllCell
                         classCell.view.classNameBtn.setOnClickListener {
                             if(classCell.customColorInt == null){
-                                classCell.setCustomColor(viewModel.selectedColor ?: return@setOnClickListener)
+                                classCell.setCustomColor(viewModel.selectedColor ?: return@setOnClickListener, true)
                             }else{
                                 if(viewModel.selectedColor == null || viewModel.selectedColor == classCell.customColorInt){
-                                    classCell.setCustomColor(null)
+                                    classCell.setCustomColor(null, true)
                                 }else{
-                                    classCell.setCustomColor(viewModel.selectedColor)
+                                    classCell.setCustomColor(viewModel.selectedColor, true)
                                 }
                             }
                         }

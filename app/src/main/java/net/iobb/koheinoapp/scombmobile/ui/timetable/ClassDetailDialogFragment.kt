@@ -105,7 +105,7 @@ class ClassDetailDialogFragment() : DialogFragment(), SimpleDialog.OnDialogResul
     override fun onResult(dialogTag: String, which: Int, extras: Bundle): Boolean {
         val color = extras.getIntArray(SimpleColorDialog.COLORS)?.getOrNull(0) ?: return false
 
-        classCell.setCustomColor(color)
+        classCell.setCustomColor(color, true)
         customColor.background.setTint(color)
 
         return false
