@@ -44,34 +44,33 @@ class TimetableFragment : Fragment(), SimpleDialog.OnDialogResultListener {
         val root: View = binding.root
 
         binding.swipeLayout.setOnRefreshListener {
-            if(appViewModel.sessionId == null){
-                refreshRequired = true
-            }
-            refresh()
+            refreshRequired = true
+            viewModel.page.networkState.value = NetworkState.Initialized
         }
 
         viewModel.page.networkState.observe(viewLifecycleOwner){
+            Log.d("network_state", viewModel.page.networkState.value.toString())
             when(it){
+                NetworkState.Initialized -> {
+                    binding.swipeLayout.isRefreshing = false
+                    binding.timeTable.isVisible = true
+                    viewModel.fetch(requireContext(), refreshRequired)
+                }
                 NetworkState.Loading -> {
-                    binding.progressBar.isVisible = true
+                    binding.swipeLayout.isRefreshing = true
                     binding.timeTable.isVisible = false
                 }
-                NetworkState.NotPermitted -> {
-                    viewModel.page.reset()
-                    findNavController().navigate(R.id.nav_loginFragment)
-                }
                 NetworkState.Finished -> {
-                    binding.progressBar.isVisible = false
+                    binding.swipeLayout.isRefreshing = false
                     binding.timeTable.isVisible = true
-                    swipeLayout.isRefreshing = false
                 }
-                NetworkState.Initialized -> {
-                    binding.progressBar.isVisible = false
-                    binding.timeTable.isVisible = true
-                    if(refreshRequired){
-                        refresh()
-                    }else{
-                        viewModel.fetch(requireContext())
+                NetworkState.NotPermitted -> {
+                    if(appViewModel.sessionId == null){
+                        findNavController().navigate(R.id.nav_loginFragment)
+                    }
+                    // when backed from login fragment
+                    else{
+                        viewModel.page.networkState.value = NetworkState.Initialized
                     }
                 }
             }
@@ -185,11 +184,6 @@ class TimetableFragment : Fragment(), SimpleDialog.OnDialogResultListener {
             }
         }
         return false
-    }
-
-    private fun refresh(){
-        viewModel.page.reset()
-        viewModel.fetch(requireContext(), true)
     }
 
     private fun openColorSettingDialog(){

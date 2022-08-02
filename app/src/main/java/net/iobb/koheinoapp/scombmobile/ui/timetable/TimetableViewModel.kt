@@ -31,12 +31,12 @@ class TimetableViewModel : ViewModel() {
         var refreshRequired = false
     }
 
-    suspend fun fetchFromServer(context: Context): Array<ClassCell>{
+    suspend fun fetchFromServer(context: Context): Array<ClassCell>?{
 
         // get from web
-        page.fetch(appViewModel.sessionId)
+        val doc = page.fetch(appViewModel.sessionId)
 
-        val tableElement = page.document.getElementsByClass(TIMETABLE_ROW_CSS_CLASS_NM)
+        val tableElement = doc?.getElementsByClass(TIMETABLE_ROW_CSS_CLASS_NM) ?: return null
         val classes = mutableListOf<ClassCell>()
 
         // extract html
@@ -97,7 +97,6 @@ class TimetableViewModel : ViewModel() {
      * @param requiredRefresh force fetch from server
      */
     fun fetch(context: Context, requiredRefresh: Boolean = false){
-        if(page.networkState.value == NetworkState.Finished) return
         viewModelScope.launch(Dispatchers.IO) {
 
             var classesFromDB = fetchFromDB(context)
@@ -117,17 +116,21 @@ class TimetableViewModel : ViewModel() {
             if(in24h.isEmpty() || requiredRefresh){
                 val newClasses = fetchFromServer(context)
 
-                // update classes and marge old
-                for (newClass in newClasses) {
-                    for (oldClass in classesFromDB) {
-                        if(newClass.classId == oldClass.classId){
-                            newClass.customColorInt = oldClass.customColorInt
+                if(newClasses != null){
+                    // update classes and marge old
+                    for (newClass in newClasses) {
+                        for (oldClass in classesFromDB) {
+                            if(newClass.classId == oldClass.classId){
+                                newClass.customColorInt = oldClass.customColorInt
+                            }
                         }
                     }
+                    classesFromDB = newClasses
+                    updateDB(newClasses, context)
+                    refreshRequired = false
+                }else{
+                    return@launch
                 }
-                classesFromDB = newClasses
-
-                updateDB(newClasses, context)
             }
 
             constructTimetable(classesFromDB)
@@ -138,7 +141,6 @@ class TimetableViewModel : ViewModel() {
             }
             s += "]"
             Log.d("timetable", s)
-
         }
 
     }

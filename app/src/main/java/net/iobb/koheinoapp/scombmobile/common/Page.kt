@@ -1,7 +1,5 @@
 package net.iobb.koheinoapp.scombmobile.common
 
-import android.annotation.SuppressLint
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import org.jsoup.HttpStatusException
 import org.jsoup.Jsoup
@@ -16,10 +14,16 @@ private const val HEADER_REFERER = "https://www.xxxxx/yyyy"
 
 class Page(val url: String) {
 
-    lateinit var document: Document
     var networkState = MutableLiveData(NetworkState.Initialized)
 
-    fun fetch(cookieId: String?){
+    fun fetch(cookieId: String?): Document?{
+        var document: Document? = null
+
+        if(cookieId == null){
+            networkState.postValue(NetworkState.NotPermitted)
+            return document
+        }
+
         networkState.postValue(NetworkState.Loading)
         try {
             document = Jsoup.connect(url)
@@ -29,20 +33,13 @@ class Page(val url: String) {
                 .header("Accept-Encoding", HEADER_ACCEPT_ENCODING)
                 .header("Referer", HEADER_REFERER)
                 .timeout(10 * 1000)
-                .cookie("SESSION", cookieId ?: "")
+                .cookie("SESSION", cookieId)
                 .get()
 
-            if(document.baseUri() == SCOMB_LOGGED_OUT_PAGE_URL){
-                networkState.postValue(NetworkState.NotPermitted)
-            }else{
-                networkState.postValue(NetworkState.Finished)
-            }
+            networkState.postValue(NetworkState.Finished)
         } catch (e: HttpStatusException) {
             e.printStackTrace()
         }
-    }
-
-    fun reset(){
-        networkState.postValue(NetworkState.Initialized)
+        return document
     }
 }

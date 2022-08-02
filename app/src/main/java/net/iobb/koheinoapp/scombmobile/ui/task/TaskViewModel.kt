@@ -17,12 +17,11 @@ class TaskViewModel : ViewModel() {
     val tasks = MutableLiveData(mutableListOf<Task>())
 
     fun fetchTasks(context: Context){
-        if(page.networkState.value == NetworkState.Finished) return
         viewModelScope.launch(Dispatchers.IO) {
-            page.fetch(appViewModel.sessionId)
+            val document = page.fetch(appViewModel.sessionId)
 
             val newTasks = mutableListOf<Task>()
-            val fetchedTasks = page.document.getElementsByClass(TASK_LIST_CSS_CLASS_NM)
+            val fetchedTasks = document?.getElementsByClass(TASK_LIST_CSS_CLASS_NM) ?: return@launch
             for(row in fetchedTasks) {
                 val className = row.getElementsByClass(TASK_LIST_CLASS_CULUMN_CSS_NM).text()
                 val taskType = when(row.getElementsByClass(TASK_LIST_TYPE_CULUMN_CSS_NM).getOrNull(0)?.text()) {

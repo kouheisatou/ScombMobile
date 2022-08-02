@@ -1,6 +1,7 @@
 package net.iobb.koheinoapp.scombmobile.ui.task.list
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -33,33 +34,37 @@ class TaskListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_item_list, container, false)
-
-        view.swipeLayout.setOnRefreshListener {
-            taskViewModel.tasks.value = mutableListOf()
-            taskViewModel.page.reset()
-        }
         val dividerItemDecoration = DividerItemDecoration(requireContext(), LinearLayoutManager(requireContext()).orientation)
         view.list.addItemDecoration(dividerItemDecoration)
 
+        view.swipeLayout.setOnRefreshListener {
+            taskViewModel.page.networkState.value = NetworkState.Initialized
+            swipeLayout.isRefreshing = true
+        }
         taskViewModel.page.networkState.observe(viewLifecycleOwner) {
+            Log.d("network_status", taskViewModel.page.networkState.value.toString())
             when(it) {
                 NetworkState.Initialized -> {
-                    progressBar.isVisible = true
+                    swipeLayout.isRefreshing = false
                     list.isVisible = false
                     taskViewModel.fetchTasks(requireContext())
                 }
                 NetworkState.Loading -> {
-                    progressBar.isVisible = true
+                    swipeLayout.isRefreshing = true
                     list.isVisible = false
                 }
                 NetworkState.Finished -> {
-                    progressBar.isVisible = false
                     list.isVisible = true
                     swipeLayout.isRefreshing = false
                 }
                 NetworkState.NotPermitted -> {
-                    taskViewModel.page.reset()
-                    findNavController().navigate(R.id.nav_loginFragment)
+                    if(appViewModel.sessionId == null){
+                        findNavController().navigate(R.id.nav_loginFragment)
+                    }
+                    // when backed from login fragment
+                    else{
+                        taskViewModel.page.networkState.value = NetworkState.Initialized
+                    }
                 }
             }
         }
