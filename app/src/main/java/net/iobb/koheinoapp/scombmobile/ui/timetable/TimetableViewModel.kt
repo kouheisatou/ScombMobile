@@ -120,7 +120,7 @@ class TimetableViewModel : ViewModel() {
                     // update classes and marge old
                     for (newClass in newClasses) {
                         for (oldClass in classesFromDB) {
-                            if(newClass.classId == oldClass.classId){
+                            if(newClass.id == oldClass.id){
                                 newClass.customColorInt = oldClass.customColorInt
                             }
                         }
