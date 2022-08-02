@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.core.view.isVisible
@@ -30,8 +31,9 @@ class SinglePageWebScombFragment : Fragment() {
     ): View? {
         val root = inflater.inflate(R.layout.fragment_class_detail, container, false)
 
-        root.webView.networkState.observe(viewLifecycleOwner){
-            when(it){
+        root.webView.networkState.observe(viewLifecycleOwner){ state ->
+            Log.d("network_state", root.webView.networkState.value.toString())
+            when(state){
                 NetworkState.Finished -> {
                     root.progressBar.isVisible = false
                     root.webView.isVisible = true
@@ -42,6 +44,11 @@ class SinglePageWebScombFragment : Fragment() {
                 NetworkState.Initialized -> {
                     root.progressBar.isVisible = true
                     root.webView.isVisible = false
+
+                    if(appViewModel.sessionId == null){
+                        root.webView.networkState.value = NetworkState.NotPermitted
+                        return@observe
+                    }
 
                     root.webView.loadUrl(
                         args.url,
