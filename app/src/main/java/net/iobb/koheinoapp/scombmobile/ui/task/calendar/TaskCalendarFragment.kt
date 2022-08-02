@@ -26,8 +26,11 @@ class TaskCalendarFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Toast.makeText(requireContext(), taskViewModel.tasks.value.toString(), Toast.LENGTH_SHORT).show()
-        return inflater.inflate(R.layout.fragment_calendar, container, false)
+        val root = inflater.inflate(R.layout.fragment_calendar, container, false)
+
+
+
+        return root
     }
 
 

@@ -29,15 +29,6 @@
         android:name="net.iobb.koheinoapp.scombmobile.ui.webscomb.WebScombFragment"
         android:label="Web版Scomb" />
     <fragment
-        android:id="@+id/nav_taskFragment"
-        android:name="net.iobb.koheinoapp.scombmobile.ui.task.TaskFragment"
-        android:label="課題・テスト"
-        tools:layout="@layout/fragment_task">
-        <action
-            android:id="@+id/action_nav_taskFragment_to_nav_singleWebPageFragment"
-            app:destination="@id/nav_singlePageWebScombFragment" />
-    </fragment>
-    <fragment
         android:id="@+id/nav_singlePageWebScombFragment"
         android:name="net.iobb.koheinoapp.scombmobile.ui.webscomb.SinglePageWebScombFragment"
         android:label=" "
@@ -45,5 +36,22 @@
             <argument
                 android:name="url"
                 app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_taskCalendarFragment"
+        android:name="net.iobb.koheinoapp.scombmobile.ui.task.calendar.TaskCalendarFragment"
+        android:label="締切カレンダー"
+        tools:layout="@layout/fragment_calendar">
+        <action
+            android:id="@+id/action_taskCalendarFragment_to_nav_singlePageWebScombFragment"
+            app:destination="@id/nav_singlePageWebScombFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_taskListFragment"
+        android:name="net.iobb.koheinoapp.scombmobile.ui.task.list.TaskListFragment"
+        android:label="課題・テスト一覧">
+        <action
+            android:id="@+id/action_taskListFragment_to_nav_singlePageWebScombFragment"
+            app:destination="@id/nav_singlePageWebScombFragment" />
     </fragment>
 </navigation>
