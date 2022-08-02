@@ -3,9 +3,7 @@ package net.iobb.koheinoapp.scombmobile.ui.task.calendar
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -43,7 +41,9 @@ class TaskCalendarFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_calendar, container, false)
         val dividerItemDecoration = DividerItemDecoration(requireContext(), LinearLayoutManager(requireContext()).orientation)
         root.taskList.addItemDecoration(dividerItemDecoration)
+        setHasOptionsMenu(true)
 
+        val today = Calendar.getInstance()
         taskViewModel.page.networkState.observe(viewLifecycleOwner) {
             Log.d("network_status", taskViewModel.page.networkState.value.toString())
             when(it) {
@@ -80,11 +80,14 @@ class TaskCalendarFragment : Fragment() {
                 }
                 root.calendarView.addEvent(event)
             }
+            taskViewModel.getTasksOf(today.timeInMillis)
+            root.calendarView.setCurrentDate(today.time)
         }
         taskViewModel.tasksOfTheDate.observe(viewLifecycleOwner){
             // construct list view
             if (root.taskList is RecyclerView) {
                 with(root.taskList) {
+                    println("aiaiai")
                     layoutManager = LinearLayoutManager(context)
                     adapter = TaskRecyclerViewAdapter(taskViewModel.tasksOfTheDate.value?.toList() ?: return@with)
                 }
@@ -94,16 +97,13 @@ class TaskCalendarFragment : Fragment() {
         root.calendarView.setListener(object : CompactCalendarViewListener {
             override fun onDayClick(dateClicked: Date) {
                 taskViewModel.getTasksOf(dateClicked.time)
-                Log.d("selected_date", dateClicked.toString())
             }
             override fun onMonthScroll(firstDayOfNewMonth: Date) {
                 val currentCalMonth = Calendar.getInstance().apply { timeInMillis = firstDayOfNewMonth.time }
                 root.yearAndMonthTextView.text = "${currentCalMonth.get(Calendar.YEAR)}年 ${currentCalMonth.get(Calendar.MONTH)+1}月"
                 taskViewModel.getTasksOf(firstDayOfNewMonth.time)
-                Log.d("selected_date", firstDayOfNewMonth.toString())
             }
         })
-        val today = Calendar.getInstance()
         root.yearAndMonthTextView.text = "${today.get(Calendar.YEAR)}年 ${today.get(Calendar.MONTH+1)}月"
         root.nextMonthBtn.setOnClickListener {
             taskViewModel.tasksOfTheDate.value = mutableListOf()
@@ -119,4 +119,21 @@ class TaskCalendarFragment : Fragment() {
     }
 
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.calendar_menu, menu)
+
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.reloadBtn -> {
+                if(taskViewModel.page.networkState.value == NetworkState.Finished){
+                    taskViewModel.page.networkState.value = NetworkState.Initialized
+                    calendarView.removeAllEvents()
+                }
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
 }

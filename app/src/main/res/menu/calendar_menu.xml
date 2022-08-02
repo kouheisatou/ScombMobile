@@ -5,6 +5,6 @@
     <item android:title="再読み込み"
         android:id="@+id/reloadBtn"
         android:icon="@drawable/ic_baseline_update_24"
-        android:iconTint="@android:color/background_light"
+        android:iconTint="@android:color/background_dark"
         app:showAsAction="always"/>
 </menu>
