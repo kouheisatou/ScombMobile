@@ -16,9 +16,10 @@
         <entry key="app/src/main/res/drawable/splash.xml" value="0.215" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.19583333333333333" />
         <entry key="app/src/main/res/layout/app_bar_main.xml" value="0.19583333333333333" />
+        <entry key="app/src/main/res/layout/calendar_menu.xml" value="0.23333333333333334" />
         <entry key="app/src/main/res/layout/class_cell.xml" value="0.19479166666666667" />
         <entry key="app/src/main/res/layout/content_main.xml" value="0.3591485507246377" />
-        <entry key="app/src/main/res/layout/fragment_calendar.xml" value="0.3770833333333333" />
+        <entry key="app/src/main/res/layout/fragment_calendar.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_class_detail.xml" value="0.23333333333333334" />
         <entry key="app/src/main/res/layout/fragment_class_detail_dialog.xml" value="0.31007751937984496" />
         <entry key="app/src/main/res/layout/fragment_gallery.xml" value="0.19583333333333333" />
@@ -38,6 +39,7 @@
         <entry key="app/src/main/res/menu/activity_main_drawer.xml" value="0.19583333333333333" />
         <entry key="app/src/main/res/menu/bottom_nav_item.xml" value="0.37604166666666666" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.23333333333333334" />
+        <entry key="app/src/main/res/menu/calendar_menu.xml" value="0.23333333333333334" />
         <entry key="app/src/main/res/menu/class_detail_option_menu.xml" value="0.22447916666666667" />
         <entry key="app/src/main/res/menu/main.xml" value="0.19583333333333333" />
         <entry key="app/src/main/res/menu/task_bottom_nav_menu.xml" value="0.447265625" />

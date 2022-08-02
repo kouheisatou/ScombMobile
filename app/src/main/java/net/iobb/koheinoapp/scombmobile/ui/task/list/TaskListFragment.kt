@@ -69,14 +69,11 @@ class TaskListFragment : Fragment() {
             }
         }
         taskViewModel.tasks.observe(viewLifecycleOwner){
-            if(it.isNotEmpty()){
-
-                // construct list view
-                if (list is RecyclerView) {
-                    with(list) {
-                        layoutManager = LinearLayoutManager(context)
-                        adapter = TaskRecyclerViewAdapter(taskViewModel.tasks.value?.toList() ?: return@with)
-                    }
+            // construct list view
+            if (list is RecyclerView) {
+                with(list) {
+                    layoutManager = LinearLayoutManager(context)
+                    adapter = TaskRecyclerViewAdapter(taskViewModel.tasks.value?.toList() ?: return@with)
                 }
             }
         }

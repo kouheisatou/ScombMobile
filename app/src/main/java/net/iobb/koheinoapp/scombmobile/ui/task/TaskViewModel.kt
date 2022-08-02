@@ -1,6 +1,7 @@
 package net.iobb.koheinoapp.scombmobile.ui.task
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,6 +16,7 @@ class TaskViewModel : ViewModel() {
     lateinit var appViewModel: AppViewModel
     val page = Page(TASK_LIST_PAGE_URL)
     val tasks = MutableLiveData(mutableListOf<Task>())
+    val tasksOfTheDate = MutableLiveData(mutableListOf<Task>())
 
     fun fetchTasks(context: Context){
         viewModelScope.launch(Dispatchers.IO) {
@@ -45,5 +47,29 @@ class TaskViewModel : ViewModel() {
             }
             tasks.postValue(newTasks)
         }
+    }
+
+    fun getTasksOf(timeMillis: Long){
+        val calendarDate = Calendar.getInstance().apply {
+            timeInMillis = timeMillis
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+        val dayOfTasks = mutableListOf<Task>()
+        tasks.value?.forEach {
+            val deadlineDate = Calendar.getInstance().apply {
+                timeInMillis = it.deadLineTime
+                set(Calendar.HOUR_OF_DAY, 0)
+                set(Calendar.MINUTE, 0)
+                set(Calendar.SECOND, 0)
+                set(Calendar.MILLISECOND, 0)
+            }
+            if(calendarDate.equals(deadlineDate)){
+                dayOfTasks.add(it)
+            }
+        }
+        tasksOfTheDate.value = dayOfTasks
     }
 }
