@@ -70,4 +70,7 @@ dependencies {
 
     // color picker
     implementation 'io.github.eltos:simpledialogfragments:3.6.1'
+
+    // calendar
+    implementation 'com.github.sundeepk:compact-calendar-view:3.0.0'
 }

@@ -1,19 +1,21 @@
 package net.iobb.koheinoapp.scombmobile.ui.task.calendar
 
-import androidx.lifecycle.ViewModelProvider
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.github.sundeepk.compactcalendarview.CompactCalendarView
+import com.github.sundeepk.compactcalendarview.CompactCalendarView.CompactCalendarViewListener
+import com.github.sundeepk.compactcalendarview.domain.Event
 import kotlinx.android.synthetic.main.fragment_calendar.*
 import kotlinx.android.synthetic.main.fragment_calendar.view.*
 import net.iobb.koheinoapp.scombmobile.R
@@ -70,7 +72,10 @@ class TaskCalendarFragment : Fragment() {
             }
         }
         taskViewModel.tasks.observe(viewLifecycleOwner){
-            taskViewModel.getTasksOf(root.calendarView.date)
+            taskViewModel.tasks.value?.forEach {
+                val event = Event(Color.parseColor("#FF0000"), it.deadLineTime)
+                root.calendarView.addEvent(event)
+            }
         }
         taskViewModel.tasksOfTheDate.observe(viewLifecycleOwner){
             // construct list view
@@ -82,10 +87,29 @@ class TaskCalendarFragment : Fragment() {
             }
         }
 
-        root.calendarView.setOnDateChangeListener { _, year, month, day ->
-            val selectedDate = Calendar.getInstance().apply{ set(year, month, day) }
-            taskViewModel.getTasksOf(selectedDate.timeInMillis)
+        root.calendarView.setListener(object : CompactCalendarViewListener {
+            override fun onDayClick(dateClicked: Date) {
+                taskViewModel.getTasksOf(dateClicked.time)
+                Log.d("selected_date", dateClicked.toString())
+            }
+            override fun onMonthScroll(firstDayOfNewMonth: Date) {
+                val currentCalMonth = Calendar.getInstance().apply { timeInMillis = firstDayOfNewMonth.time }
+                root.yearAndMonthTextView.text = "${currentCalMonth.get(Calendar.YEAR)}年 ${currentCalMonth.get(Calendar.MONTH)+1}月"
+                taskViewModel.getTasksOf(firstDayOfNewMonth.time)
+                Log.d("selected_date", firstDayOfNewMonth.toString())
+            }
+        })
+        val today = Calendar.getInstance()
+        root.yearAndMonthTextView.text = "${today.get(Calendar.YEAR)}年 ${today.get(Calendar.MONTH+1)}月"
+        root.nextMonthBtn.setOnClickListener {
+            taskViewModel.tasksOfTheDate.value = mutableListOf()
+            root.calendarView.scrollRight()
         }
+        root.prevMonthBtn.setOnClickListener {
+            taskViewModel.tasksOfTheDate.value = mutableListOf()
+            root.calendarView.scrollLeft()
+        }
+
 
         return root
     }
