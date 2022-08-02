@@ -19,4 +19,7 @@ interface ClassCellDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertClassCell(classCell: ClassCell)
+
+    @Query("SELECT * FROM classCell WHERE name = :name")
+    fun findClassesByName(name: String): Array<ClassCell>
 }

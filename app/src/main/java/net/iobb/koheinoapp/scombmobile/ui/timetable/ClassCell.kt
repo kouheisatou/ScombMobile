@@ -75,6 +75,6 @@ class ClassCell(
     }
 
     override fun toString(): String {
-        return "ClassCell{id=$id, classId=$classId, name=$name, teachers=$teachers, room=$room, createdDate=$customColorInt, createdDate=${timeToString(createdDate)}}"
+        return "ClassCell{id=$id, classId=$classId, name=$name, teachers=$teachers, room=$room, customColor=$customColorInt, createdDate=${timeToString(createdDate)}}"
     }
 }

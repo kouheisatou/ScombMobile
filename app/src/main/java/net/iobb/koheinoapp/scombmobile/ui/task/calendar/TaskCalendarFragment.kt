@@ -73,7 +73,11 @@ class TaskCalendarFragment : Fragment() {
         }
         taskViewModel.tasks.observe(viewLifecycleOwner){
             taskViewModel.tasks.value?.forEach {
-                val event = Event(Color.parseColor("#FF0000"), it.deadLineTime)
+                val event = if(it.customColor != null){
+                    Event(it.customColor!!, it.deadLineTime)
+                }else{
+                    Event(R.color.black, it.deadLineTime)
+                }
                 root.calendarView.addEvent(event)
             }
         }

@@ -47,6 +47,9 @@ class TaskRecyclerViewAdapter(
         holder.titleTextView.text = item.title
         holder.deadlineTextView.text = timeToString(item.deadLineTime)
         holder.classNameTextView.text = item.className
+        if (item.customColor != null) {
+            holder.classNameTextView.setTextColor(item.customColor!!)
+        }
     }
 
     override fun getItemCount(): Int = tasks.size

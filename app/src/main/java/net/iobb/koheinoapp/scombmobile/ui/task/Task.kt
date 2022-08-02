@@ -10,13 +10,15 @@ class Task(
     val deadLineTime: Long,
     val url: String,
     val done: Boolean,
+    var customColor: Int?,
 ) {
+
     enum class TaskType {
         Task, Test, Questionnaire
     }
 
     override fun toString(): String {
-        return "Task { title=$title, className=$className, taskType=$taskType, deadlineTime=$deadLineTime, url=$url, done=$done }"
+        return "Task { title=$title, className=$className, taskType=$taskType, deadlineTime=$deadLineTime, url=$url, customColor=$customColor, done=$done }"
     }
 }
 
