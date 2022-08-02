@@ -26,6 +26,7 @@
         <item>#FFFFCC80</item>
         <item>#FFFFAB91</item>
         <item>#FFBCAAA4</item>
-        <item>#FFB0BEC5</item>
+        <!--button_default_color-->
+        <item>#D6D7D7</item>
     </array>
 </resources>

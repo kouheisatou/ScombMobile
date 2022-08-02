@@ -77,14 +77,7 @@ class ClassDetailDialogFragment() : DialogFragment(), SimpleDialog.OnDialogResul
         }
         view.lastUpdateTimeTextView.text = timeToString(classCell.createdDate)
 
-        view.negative_button.setOnClickListener {
-            dialog?.cancel()
-        }
         view.positive_button.setOnClickListener {
-            if (selectedColor != null) {
-                classCell.customColorInt = selectedColor
-                classCell.setCustomColor(selectedColor)
-            }
             dialog?.cancel()
         }
         view.webLink.setOnClickListener {
@@ -103,16 +96,16 @@ class ClassDetailDialogFragment() : DialogFragment(), SimpleDialog.OnDialogResul
         val colors = R.array.material_pallet_light
         SimpleColorDialog.build()
             .title("色を選択")
+            .cancelable(false)
             .colors(requireContext(), colors)
             .allowCustom(false)
             .show(this, "color_dialog")
     }
 
-    private var selectedColor: Int? = null
     override fun onResult(dialogTag: String, which: Int, extras: Bundle): Boolean {
         val color = extras.getIntArray(SimpleColorDialog.COLORS)?.getOrNull(0) ?: return false
 
-        selectedColor = color
+        classCell.setCustomColor(color)
         customColor.background.setTint(color)
 
         return false

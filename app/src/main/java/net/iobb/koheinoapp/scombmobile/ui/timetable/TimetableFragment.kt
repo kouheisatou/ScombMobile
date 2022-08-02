@@ -192,9 +192,10 @@ class TimetableFragment : Fragment(), SimpleDialog.OnDialogResultListener {
         viewModel.fetch(requireContext(), true)
     }
 
-    fun openColorSettingDialog(){
+    private fun openColorSettingDialog(){
         SimpleColorDialog.build()
             .title("色を選択")
+            .cancelable(false)
             .colors(requireContext(), SimpleColorDialog.MATERIAL_COLOR_PALLET_LIGHT)
             .allowCustom(false)
             .show(this, "color_dialog")
