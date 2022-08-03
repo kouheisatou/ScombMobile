@@ -85,7 +85,7 @@ class ClassDetailDialogFragment() : DialogFragment(), SimpleDialog.OnDialogResul
             val action = TimetableFragmentDirections.actionNavHomeToNavSingleWebPageFragment("$CLASS_PAGE_URL${classCell.classId}")
             parentFragment?.findNavController()?.navigate(action)
         }
-        view.customColor.setOnClickListener {
+        view.colorSelectorListener.setOnClickListener {
             openColorSettingDialog()
         }
         return view
@@ -94,12 +94,11 @@ class ClassDetailDialogFragment() : DialogFragment(), SimpleDialog.OnDialogResul
     private fun openColorSettingDialog(){
         @ArrayRes
         val colors = R.array.material_pallet_light
-        SimpleColorDialog.build()
+        val dialog = SimpleColorDialog.build()
             .title("色を選択")
-            .cancelable(false)
             .colors(requireContext(), colors)
             .allowCustom(false)
-            .show(this, "color_dialog")
+        dialog.show(this, "color_dialog")
     }
 
     override fun onResult(dialogTag: String, which: Int, extras: Bundle): Boolean {

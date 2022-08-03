@@ -38,7 +38,7 @@ class ClassCell(
     var timetable: Array<Array<ClassCell?>>? = null
 
     init {
-        id = "$dayOfWeek,$period"
+        id = "$dayOfWeek-$period-$classId"
         createdDate = Calendar.getInstance().timeInMillis
     }
 
@@ -58,12 +58,15 @@ class ClassCell(
     fun setCustomColor(color: Int?, applyToSameIdClass: Boolean){
 
         customColorInt = color
+        if(customColorInt == -2697257){
+            customColorInt = null
+        }
 
         val drawable = view.classNameBtn.background
-        if(color == null){
+        if(customColorInt == null){
             drawable.clearColorFilter()
         }else{
-            drawable.setColorFilter(color, PorterDuff.Mode.MULTIPLY)
+            drawable.setColorFilter(customColorInt!!, PorterDuff.Mode.MULTIPLY)
         }
         view.classNameBtn.background = drawable
 
