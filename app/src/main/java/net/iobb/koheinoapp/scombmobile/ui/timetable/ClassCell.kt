@@ -12,7 +12,7 @@ import androidx.room.Room
 import kotlinx.android.synthetic.main.class_cell.view.*
 import net.iobb.koheinoapp.scombmobile.R
 import net.iobb.koheinoapp.scombmobile.common.AppDatabase
-import net.iobb.koheinoapp.scombmobile.ui.task.timeToString
+import net.iobb.koheinoapp.scombmobile.common.timeToString
 import java.util.*
 
 @Entity
@@ -26,9 +26,10 @@ class ClassCell(
 ) {
 
     var customColorInt: Int? = null
-    var createdDate: Long
+    var createdDate: Long = Calendar.getInstance().timeInMillis
+
     @PrimaryKey
-    var id: String
+    var id: String = "$dayOfWeek-$period-$classId"
 
     @Ignore
     lateinit var view: View
@@ -36,11 +37,6 @@ class ClassCell(
     lateinit var context: Context
     @Ignore
     var timetable: Array<Array<ClassCell?>>? = null
-
-    init {
-        id = "$dayOfWeek-$period-$classId"
-        createdDate = Calendar.getInstance().timeInMillis
-    }
 
 
     fun genView(context: Context, attachTo: ViewGroup): View{

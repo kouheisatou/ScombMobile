@@ -9,10 +9,11 @@ import android.widget.TextView
 import androidx.navigation.findNavController
 import net.iobb.koheinoapp.scombmobile.R
 import net.iobb.koheinoapp.scombmobile.common.SCOMBZ_DOMAIN
+import net.iobb.koheinoapp.scombmobile.common.TaskType
+import net.iobb.koheinoapp.scombmobile.common.timeToString
 import net.iobb.koheinoapp.scombmobile.databinding.FragmentItemBinding
 import net.iobb.koheinoapp.scombmobile.ui.task.Task
 import net.iobb.koheinoapp.scombmobile.ui.task.calendar.TaskCalendarFragmentDirections
-import net.iobb.koheinoapp.scombmobile.ui.task.timeToString
 import java.util.*
 
 class TaskRecyclerViewAdapter(
@@ -55,15 +56,15 @@ class TaskRecyclerViewAdapter(
         val iconResource: Int
         val taskTitleString: String
         when(item.taskType){
-            Task.TaskType.Task -> {
+            TaskType.Task -> {
                 iconResource = R.drawable.ic_baseline_assignment_24
                 taskTitleString = "課題"
             }
-            Task.TaskType.Exam -> {
+            TaskType.Exam -> {
                 iconResource = R.drawable.ic_baseline_checklist_24
                 taskTitleString = "テスト"
             }
-            Task.TaskType.Questionnaire -> {
+            TaskType.Questionnaire -> {
                 iconResource = R.drawable.question_24
                 taskTitleString = "アンケート"
             }

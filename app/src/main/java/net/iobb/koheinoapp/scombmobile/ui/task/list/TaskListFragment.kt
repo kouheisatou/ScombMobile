@@ -17,9 +17,13 @@ import kotlinx.android.synthetic.main.fragment_item_list.view.*
 import net.iobb.koheinoapp.scombmobile.R
 import net.iobb.koheinoapp.scombmobile.common.AppViewModel
 import net.iobb.koheinoapp.scombmobile.common.NetworkState
+import net.iobb.koheinoapp.scombmobile.ui.task.AddNewTaskDialogFragment
+import net.iobb.koheinoapp.scombmobile.ui.task.Task
+import net.iobb.koheinoapp.scombmobile.ui.task.TaskFragment
 import net.iobb.koheinoapp.scombmobile.ui.task.TaskViewModel
+import java.util.*
 
-class TaskListFragment : Fragment() {
+class TaskListFragment : Fragment(), TaskFragment {
 
     private val appViewModel: AppViewModel by activityViewModels()
     private val taskViewModel: TaskViewModel by activityViewModels()
@@ -38,8 +42,7 @@ class TaskListFragment : Fragment() {
         view.list.addItemDecoration(dividerItemDecoration)
 
         view.swipeLayout.setOnRefreshListener {
-            taskViewModel.page.networkState.value = NetworkState.Initialized
-            swipeLayout.isRefreshing = true
+            refresh()
         }
         taskViewModel.page.networkState.observe(viewLifecycleOwner) {
             Log.d("network_status", taskViewModel.page.networkState.value.toString())
@@ -77,6 +80,18 @@ class TaskListFragment : Fragment() {
                 }
             }
         }
+        view.addTaskBtn.setOnClickListener {
+            AddNewTaskDialogFragment.create().show(childFragmentManager, "add_new_task_dialog")
+        }
         return view
+    }
+
+    override fun refresh() {
+        taskViewModel.page.networkState.value = NetworkState.Initialized
+        swipeLayout.isRefreshing = true
+    }
+
+    override fun addTask(newTask: Task) {
+        taskViewModel.addMyTask(requireContext(), newTask)
     }
 }

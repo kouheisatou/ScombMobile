@@ -11,14 +11,13 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import eltos.simpledialogfragment.SimpleDialog
 import eltos.simpledialogfragment.color.SimpleColorDialog
-import kotlinx.android.synthetic.main.class_cell.view.*
 import kotlinx.android.synthetic.main.fragment_class_detail_dialog.*
 import kotlinx.android.synthetic.main.fragment_class_detail_dialog.view.*
 import net.iobb.koheinoapp.scombmobile.R
 import net.iobb.koheinoapp.scombmobile.common.CLASS_PAGE_URL
-import net.iobb.koheinoapp.scombmobile.ui.task.timeToString
+import net.iobb.koheinoapp.scombmobile.common.timeToString
 
-class ClassDetailDialogFragment() : DialogFragment(), SimpleDialog.OnDialogResultListener {
+class ClassDetailDialogFragment : DialogFragment(), SimpleDialog.OnDialogResultListener {
 
     private val viewModel: TimetableViewModel by activityViewModels()
     lateinit var classCell: ClassCell
@@ -68,7 +67,7 @@ class ClassDetailDialogFragment() : DialogFragment(), SimpleDialog.OnDialogResul
         dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
         view.title.text = classCell.name
-        view.classIdTextView.text = classCell.classId
+        view.taskTitle.text = classCell.classId
         view.teachersTextView.text = classCell.teachers
         view.classRoomTextView.text = classCell.room
         view.classTimeTextView.text = "${dayOfWeekMap[classCell.dayOfWeek]}${classCell.period+1}限  ${classTimeMap[classCell.period]}"

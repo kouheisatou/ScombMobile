@@ -1,6 +1,5 @@
 package net.iobb.koheinoapp.scombmobile.ui.task.calendar
 
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -11,7 +10,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.github.sundeepk.compactcalendarview.CompactCalendarView
 import com.github.sundeepk.compactcalendarview.CompactCalendarView.CompactCalendarViewListener
 import com.github.sundeepk.compactcalendarview.domain.Event
 import kotlinx.android.synthetic.main.fragment_calendar.*
@@ -19,11 +17,14 @@ import kotlinx.android.synthetic.main.fragment_calendar.view.*
 import net.iobb.koheinoapp.scombmobile.R
 import net.iobb.koheinoapp.scombmobile.common.AppViewModel
 import net.iobb.koheinoapp.scombmobile.common.NetworkState
+import net.iobb.koheinoapp.scombmobile.ui.task.AddNewTaskDialogFragment
+import net.iobb.koheinoapp.scombmobile.ui.task.Task
+import net.iobb.koheinoapp.scombmobile.ui.task.TaskFragment
 import net.iobb.koheinoapp.scombmobile.ui.task.TaskViewModel
 import net.iobb.koheinoapp.scombmobile.ui.task.list.TaskRecyclerViewAdapter
 import java.util.*
 
-class TaskCalendarFragment : Fragment() {
+class TaskCalendarFragment : Fragment(), TaskFragment {
 
     companion object {
         fun newInstance() = TaskCalendarFragment()
@@ -87,7 +88,6 @@ class TaskCalendarFragment : Fragment() {
             // construct list view
             if (root.taskList is RecyclerView) {
                 with(root.taskList) {
-                    println("aiaiai")
                     layoutManager = LinearLayoutManager(context)
                     adapter = TaskRecyclerViewAdapter(taskViewModel.tasksOfTheDate.value?.toList() ?: return@with)
                 }
@@ -113,7 +113,9 @@ class TaskCalendarFragment : Fragment() {
             taskViewModel.tasksOfTheDate.value = mutableListOf()
             root.calendarView.scrollLeft()
         }
-
+        root.addTaskBtn.setOnClickListener {
+            AddNewTaskDialogFragment.create().show(childFragmentManager, "add_new_task_dialog")
+        }
 
         return root
     }
@@ -129,11 +131,19 @@ class TaskCalendarFragment : Fragment() {
         when (item.itemId) {
             R.id.reloadBtn -> {
                 if(taskViewModel.page.networkState.value == NetworkState.Finished){
-                    taskViewModel.page.networkState.value = NetworkState.Initialized
-                    calendarView.removeAllEvents()
+                    refresh()
                 }
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun refresh() {
+        taskViewModel.page.networkState.value = NetworkState.Initialized
+        calendarView.removeAllEvents()
+    }
+
+    override fun addTask(newTask: Task) {
+        taskViewModel.addMyTask(requireContext(), newTask)
     }
 }

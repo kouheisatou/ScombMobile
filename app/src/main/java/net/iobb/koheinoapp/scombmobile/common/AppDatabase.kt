@@ -8,10 +8,13 @@ import net.iobb.koheinoapp.scombmobile.ui.login.User
 import net.iobb.koheinoapp.scombmobile.ui.login.UserDao
 import net.iobb.koheinoapp.scombmobile.ui.settings.Setting
 import net.iobb.koheinoapp.scombmobile.ui.settings.SettingDao
+import net.iobb.koheinoapp.scombmobile.ui.task.Task
+import net.iobb.koheinoapp.scombmobile.ui.task.TaskDao
 
-@Database(entities = [User::class, Setting::class, ClassCell::class], version = 2, exportSchema = false)
+@Database(entities = [User::class, Setting::class, ClassCell::class, Task::class], version = 2, exportSchema = false)
 abstract class AppDatabase : RoomDatabase(){
     abstract fun userDao(): UserDao
     abstract fun settingDao(): SettingDao
     abstract fun classCellDao(): ClassCellDao
+    abstract fun taskDao(): TaskDao
 }

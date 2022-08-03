@@ -28,9 +28,9 @@ class TaskViewModel : ViewModel() {
             for(row in fetchedTasks) {
                 val className = row.getElementsByClass(TASK_LIST_CLASS_CULUMN_CSS_NM).text()
                 val taskType = when(row.getElementsByClass(TASK_LIST_TYPE_CULUMN_CSS_NM).getOrNull(0)?.text()) {
-                    "課題" -> Task.TaskType.Task
-                    "テスト" -> Task.TaskType.Exam
-                    "アンケート" -> Task.TaskType.Questionnaire
+                    "課題" -> TaskType.Task
+                    "テスト" -> TaskType.Exam
+                    "アンケート" -> TaskType.Questionnaire
                     else -> null
                 }
                 val taskTitle = row.getElementsByClass(TASK_LIST_TITLE_CULUMN_CSS_NM).getOrNull(0)?.text() ?: "null"
@@ -43,13 +43,16 @@ class TaskViewModel : ViewModel() {
                     e.printStackTrace()
                 }
 
-                val newTask = Task(taskTitle, className, taskType, deadline.timeInMillis, url, false, context)
+                val newTask = Task(taskTitle, className, taskType, deadline.timeInMillis, url, false)
+                newTask.applyClassCustomColor(context)
+                Log.d("fetched_task", newTask.toString())
                 newTasks.add(newTask)
             }
             tasks.postValue(newTasks)
         }
     }
 
+    // tasks of the day
     fun getTasksOf(timeMillis: Long){
         val calendarDate = Calendar.getInstance().apply {
             timeInMillis = timeMillis
@@ -72,5 +75,15 @@ class TaskViewModel : ViewModel() {
             }
         }
         tasksOfTheDate.value = dayOfTasks
+    }
+
+    fun addMyTask(context: Context, newTask: Task){
+        tasks.value?.add(newTask)
+        val db = Room.databaseBuilder(
+            context,
+            AppDatabase::class.java,
+            "ScombMobileDB"
+        ).allowMainThreadQueries().build()
+        db.taskDao().insertTask(newTask)
     }
 }
