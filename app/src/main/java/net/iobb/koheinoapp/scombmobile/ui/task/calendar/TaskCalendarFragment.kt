@@ -104,7 +104,7 @@ class TaskCalendarFragment : Fragment() {
                 taskViewModel.getTasksOf(firstDayOfNewMonth.time)
             }
         })
-        root.yearAndMonthTextView.text = "${today.get(Calendar.YEAR)}年 ${today.get(Calendar.MONTH+1)}月"
+        root.yearAndMonthTextView.text = "${today.get(Calendar.YEAR)}年 ${today.get(Calendar.MONTH)+1}月"
         root.nextMonthBtn.setOnClickListener {
             taskViewModel.tasksOfTheDate.value = mutableListOf()
             root.calendarView.scrollRight()

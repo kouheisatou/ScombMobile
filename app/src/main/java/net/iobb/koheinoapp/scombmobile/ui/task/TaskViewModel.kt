@@ -1,7 +1,6 @@
 package net.iobb.koheinoapp.scombmobile.ui.task
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -29,7 +28,7 @@ class TaskViewModel : ViewModel() {
                 val className = row.getElementsByClass(TASK_LIST_CLASS_CULUMN_CSS_NM).text()
                 val taskType = when(row.getElementsByClass(TASK_LIST_TYPE_CULUMN_CSS_NM).getOrNull(0)?.text()) {
                     "課題" -> Task.TaskType.Task
-                    "テスト" -> Task.TaskType.Test
+                    "テスト" -> Task.TaskType.Exam
                     "アンケート" -> Task.TaskType.Questionnaire
                     else -> null
                 }

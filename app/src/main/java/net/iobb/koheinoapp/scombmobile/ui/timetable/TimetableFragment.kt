@@ -172,18 +172,16 @@ class TimetableFragment : Fragment(), SimpleDialog.OnDialogResultListener {
 
     // when color dialog closed
     override fun onResult(dialogTag: String, which: Int, extras: Bundle): Boolean {
-        if(which == Dialog.BUTTON_POSITIVE){
-            viewModel.selectedColor = extras.getIntArray(SimpleColorDialog.COLORS)?.getOrNull(0) ?: return false
-            Log.d("selected_color", viewModel.selectedColor?.toString() ?: "null")
+        viewModel.selectedColor = extras.getIntArray(SimpleColorDialog.COLORS)?.getOrNull(0) ?: return false
+        Log.d("selected_color", viewModel.selectedColor?.toString() ?: "null")
 
-            val modeSwitch = (activity as MainActivity).binding.appBarMain.toolbar.menu.findItem(R.id.editModeSwitch)
+        val modeSwitch = (activity as MainActivity).binding.appBarMain.toolbar.menu.findItem(R.id.editModeSwitch)
 
-            // edit_mode : off -> on
-            if(viewModel.timetableListenerState.value != ListenerState.ColorSelect){
-                modeSwitch.icon.setTint(Color.parseColor("#000000"))
-                Snackbar.make(timeTable, "色設定モード : ON", Snackbar.LENGTH_SHORT).show()
-                viewModel.timetableListenerState.value = ListenerState.ColorSelect
-            }
+        // edit_mode : off -> on
+        if(viewModel.timetableListenerState.value != ListenerState.ColorSelect){
+            modeSwitch.icon.setTint(Color.parseColor("#000000"))
+            Snackbar.make(timeTable, "色設定モード : ON", Snackbar.LENGTH_SHORT).show()
+            viewModel.timetableListenerState.value = ListenerState.ColorSelect
         }
         return false
     }
@@ -191,7 +189,6 @@ class TimetableFragment : Fragment(), SimpleDialog.OnDialogResultListener {
     private fun openColorSettingDialog(){
         SimpleColorDialog.build()
             .title("色を選択")
-            .cancelable(false)
             .colors(requireContext(), SimpleColorDialog.MATERIAL_COLOR_PALLET_LIGHT)
             .allowCustom(false)
             .show(this, "color_dialog")

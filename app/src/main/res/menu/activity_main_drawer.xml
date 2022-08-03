@@ -6,7 +6,7 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/ic_baseline_table_chart_24"
+            android:icon="@drawable/table_24"
             android:title="時間割" />
         <item
             android:id="@+id/nav_taskListFragment"

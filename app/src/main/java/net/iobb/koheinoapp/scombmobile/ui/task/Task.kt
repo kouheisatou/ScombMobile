@@ -14,7 +14,7 @@ class Task(
 ) {
 
     enum class TaskType {
-        Task, Test, Questionnaire
+        Task, Exam, Questionnaire
     }
 
     override fun toString(): String {
@@ -27,8 +27,8 @@ fun getTaskTypeFromString(taskType: String): Task.TaskType? {
         Task.TaskType.Task.toString() -> {
             Task.TaskType.Task
         }
-        Task.TaskType.Test.toString() -> {
-            Task.TaskType.Test
+        Task.TaskType.Exam.toString() -> {
+            Task.TaskType.Exam
         }
         Task.TaskType.Questionnaire.toString() -> {
             Task.TaskType.Questionnaire
@@ -40,7 +40,19 @@ fun getTaskTypeFromString(taskType: String): Task.TaskType? {
 }
 
 fun timeToString(timeMillis: Long): String {
-    val date = Date(timeMillis)
-    val formatter = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
-    return formatter.format(date)
+    val date = Calendar.getInstance().apply { this.timeInMillis = timeMillis }
+    val today = Calendar.getInstance()
+    return if(date.get(Calendar.DATE) == today.get(Calendar.DATE)){
+        val formatter = SimpleDateFormat("HH:mm")
+        "今日 ${formatter.format(date.time)}"
+    }else if(date.get(Calendar.DATE) == today.get(Calendar.DATE)+1){
+        val formatter = SimpleDateFormat("HH:mm")
+        "明日 ${formatter.format(date.time)}"
+    }else if(date.get(Calendar.DATE) == today.get(Calendar.DATE)-1){
+        val formatter = SimpleDateFormat("HH:mm")
+        "昨日 ${formatter.format(date.time)}"
+    }else{
+        val formatter = SimpleDateFormat("yyyy/MM/dd HH:mm")
+        formatter.format(date.time)
+    }
 }

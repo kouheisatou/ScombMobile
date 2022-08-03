@@ -1,21 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/linearLayout"
     android:clickable="true"
     android:focusable="true"
     android:background="?attr/selectableItemBackground"
     android:orientation="vertical">
 
+    <ImageView
+        android:id="@+id/iconView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/list_text_margin"
+        android:paddingHorizontal="20dp"
+        android:src="@drawable/ic_baseline_insert_drive_file_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/taskTypeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="アンケート"
+        app:layout_constraintEnd_toEndOf="@+id/iconView"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/iconView"
+        app:layout_constraintTop_toBottomOf="@+id/iconView" />
+
     <TextView
         android:id="@+id/titleTextView"
+        android:text="課題名"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/iconView"
+        style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/list_text_margin"/>
 
     <TextView
         android:id="@+id/classNameTextView"
+        android:text="クラス"
+        app:layout_constraintTop_toBottomOf="@id/titleTextView"
+        app:layout_constraintLeft_toRightOf="@id/iconView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/list_text_margin"/>
@@ -24,5 +53,9 @@
         android:id="@+id/deadlineTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/list_text_margin" />
-</LinearLayout>
+        android:layout_margin="@dimen/list_text_margin"
+        android:text="2022/08/03 00:00"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/iconView"
+        app:layout_constraintTop_toBottomOf="@id/classNameTextView" />
+</androidx.constraintlayout.widget.ConstraintLayout>
