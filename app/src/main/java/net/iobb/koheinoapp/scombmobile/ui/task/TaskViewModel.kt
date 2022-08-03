@@ -1,6 +1,7 @@
 package net.iobb.koheinoapp.scombmobile.ui.task
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -41,9 +42,8 @@ class TaskViewModel : ViewModel() {
                 }catch (e: Exception){
                     e.printStackTrace()
                 }
-                val customColor = getClassCustomColor(className, context)
 
-                val newTask = Task(taskTitle, className, taskType, deadline.timeInMillis, url, false, customColor)
+                val newTask = Task(taskTitle, className, taskType, deadline.timeInMillis, url, false, context)
                 newTasks.add(newTask)
             }
             tasks.postValue(newTasks)
@@ -72,15 +72,5 @@ class TaskViewModel : ViewModel() {
             }
         }
         tasksOfTheDate.value = dayOfTasks
-    }
-
-    fun getClassCustomColor(className: String, context: Context): Int? {
-        val db = Room.databaseBuilder(
-            context,
-            AppDatabase::class.java,
-            "ScombMobileDB"
-        ).allowMainThreadQueries().build()
-        val classes = db.classCellDao().findClassesByName(className)
-        return classes.getOrNull(0)?.customColorInt
     }
 }

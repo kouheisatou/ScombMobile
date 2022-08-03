@@ -1,8 +1,18 @@
 package net.iobb.koheinoapp.scombmobile.ui.task
 
+import android.content.Context
+import android.util.Log
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
+import androidx.room.Room
+import net.iobb.koheinoapp.scombmobile.common.AppDatabase
+import org.apache.http.client.utils.URLEncodedUtils
+import java.nio.charset.StandardCharsets
 import java.text.SimpleDateFormat
 import java.util.*
 
+@Entity
 class Task(
     val title: String,
     val className: String,
@@ -10,15 +20,43 @@ class Task(
     val deadLineTime: Long,
     val url: String,
     val done: Boolean,
-    var customColor: Int?,
+    context: Context
 ) {
+
+    @PrimaryKey
+    lateinit var reportId: String
+    lateinit var classId: String
+    var customColor: Int? = null
+    init {
+        val params = URLEncodedUtils.parse(url, StandardCharsets.UTF_8)
+        params.forEach {
+            val paramKey = it.name.replace(Regex("^/.*\\?"), "")
+            val paramValue = it.value
+
+            when(paramKey) {
+                "idnumber" -> classId = paramValue
+                "reportId" -> reportId = paramValue
+            }
+        }
+        customColor = getClassCustomColor(classId, context)
+    }
 
     enum class TaskType {
         Task, Exam, Questionnaire
     }
 
     override fun toString(): String {
-        return "Task { title=$title, className=$className, taskType=$taskType, deadlineTime=$deadLineTime, url=$url, customColor=$customColor, done=$done }"
+        return "Task { id=$reportId, classId=$classId, title=$title, className=$className, taskType=$taskType, deadlineTime=$deadLineTime, url=$url, customColor=$customColor, done=$done }"
+    }
+
+    fun getClassCustomColor(classId: String, context: Context): Int? {
+        val db = Room.databaseBuilder(
+            context,
+            AppDatabase::class.java,
+            "ScombMobileDB"
+        ).allowMainThreadQueries().build()
+        val classes = db.classCellDao().getClassCell(classId)
+        return classes?.customColorInt
     }
 }
 
