@@ -48,6 +48,13 @@ class TaskViewModel : ViewModel() {
                 Log.d("fetched_task", newTask.toString())
                 newTasks.add(newTask)
             }
+
+            // tasks added manually
+            newTasks.addAll(fetchMyTask(context))
+
+            // sort by deadline
+            newTasks.sortBy { it.deadLineTime }
+
             tasks.postValue(newTasks)
         }
     }
@@ -86,4 +93,10 @@ class TaskViewModel : ViewModel() {
         ).allowMainThreadQueries().build()
         db.taskDao().insertTask(newTask)
     }
+
+    fun fetchMyTask(context: Context) = Room.databaseBuilder(
+            context,
+            AppDatabase::class.java,
+            "ScombMobileDB"
+        ).allowMainThreadQueries().build().taskDao().getAllTask()
 }

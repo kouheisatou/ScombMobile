@@ -4,11 +4,13 @@ import android.app.DatePickerDialog
 import android.app.Dialog
 import android.app.TimePickerDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Spinner
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
@@ -39,7 +41,7 @@ class AddNewTaskDialogFragment : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         arguments?.let {
-            selectedDate.timeInMillis = savedInstanceState?.getLong("selected_date") ?: return@let
+            selectedDate.timeInMillis = it.getLong("selected_date")
         }
         return super.onCreateDialog(savedInstanceState)
     }
@@ -81,19 +83,21 @@ class AddNewTaskDialogFragment : DialogFragment() {
         root.taskTypeSpinner.adapter = taskTypeAdapter
 
         root.positive_button.setOnClickListener {
-            if(root.dialogTitle.text != ""){
+            if(root.taskTitle.text.toString() != ""){
                 val newTask = Task(
                     root.taskTitle.text.toString(),
                     "todo : from class ids from fetched url",
-                    japaneseTaskTypeMap[(it as TextView).text.toString()],
+                    TaskType.values()[root.taskTypeSpinner.selectedItemPosition],
                     selectedDate.timeInMillis,
                     "todo : url to class page",
                     false
                 )
                 (parentFragment as TaskFragment).addTask(newTask)
                 (parentFragment as TaskFragment).refresh()
+
+                Log.d("added_new_task", newTask.toString())
+                dialog?.cancel()
             }
-            dialog?.cancel()
         }
 
         root.negative_button.setOnClickListener {

@@ -33,6 +33,7 @@ class TaskCalendarFragment : Fragment(), TaskFragment {
     private val taskViewModel: TaskViewModel by activityViewModels()
     private val appViewModel: AppViewModel by activityViewModels()
 
+    private var selectedDate = Calendar.getInstance()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -96,9 +97,11 @@ class TaskCalendarFragment : Fragment(), TaskFragment {
 
         root.calendarView.setListener(object : CompactCalendarViewListener {
             override fun onDayClick(dateClicked: Date) {
+                selectedDate.timeInMillis = dateClicked.time
                 taskViewModel.getTasksOf(dateClicked.time)
             }
             override fun onMonthScroll(firstDayOfNewMonth: Date) {
+                selectedDate.timeInMillis = firstDayOfNewMonth.time
                 val currentCalMonth = Calendar.getInstance().apply { timeInMillis = firstDayOfNewMonth.time }
                 root.yearAndMonthTextView.text = "${currentCalMonth.get(Calendar.YEAR)}年 ${currentCalMonth.get(Calendar.MONTH)+1}月"
                 taskViewModel.getTasksOf(firstDayOfNewMonth.time)
@@ -114,7 +117,7 @@ class TaskCalendarFragment : Fragment(), TaskFragment {
             root.calendarView.scrollLeft()
         }
         root.addTaskBtn.setOnClickListener {
-            AddNewTaskDialogFragment.create().show(childFragmentManager, "add_new_task_dialog")
+            AddNewTaskDialogFragment.create(selectedDate.timeInMillis).show(childFragmentManager, "add_new_task_dialog")
         }
 
         return root
