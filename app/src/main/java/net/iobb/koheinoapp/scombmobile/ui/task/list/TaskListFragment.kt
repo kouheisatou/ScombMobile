@@ -76,7 +76,7 @@ class TaskListFragment : Fragment(), TaskFragment {
             if (list is RecyclerView) {
                 with(list) {
                     layoutManager = LinearLayoutManager(context)
-                    adapter = TaskRecyclerViewAdapter(taskViewModel.tasks.value?.toList() ?: return@with)
+                    adapter = TaskRecyclerViewAdapter(taskViewModel.tasks.value?.toMutableList() ?: return@with, this@TaskListFragment)
                 }
             }
         }
@@ -93,5 +93,9 @@ class TaskListFragment : Fragment(), TaskFragment {
 
     override fun addTask(newTask: Task) {
         taskViewModel.addMyTask(requireContext(), newTask)
+    }
+
+    override fun removeTask(removeTarget: Task) {
+        taskViewModel.removeMyTask(requireContext(), removeTarget)
     }
 }

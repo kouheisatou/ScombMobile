@@ -90,7 +90,7 @@ class TaskCalendarFragment : Fragment(), TaskFragment {
             if (root.taskList is RecyclerView) {
                 with(root.taskList) {
                     layoutManager = LinearLayoutManager(context)
-                    adapter = TaskRecyclerViewAdapter(taskViewModel.tasksOfTheDate.value?.toList() ?: return@with)
+                    adapter = TaskRecyclerViewAdapter(taskViewModel.tasksOfTheDate.value?.toMutableList() ?: return@with, this@TaskCalendarFragment)
                 }
             }
         }
@@ -148,5 +148,9 @@ class TaskCalendarFragment : Fragment(), TaskFragment {
 
     override fun addTask(newTask: Task) {
         taskViewModel.addMyTask(requireContext(), newTask)
+    }
+
+    override fun removeTask(removeTarget: Task) {
+        taskViewModel.removeMyTask(requireContext(), removeTarget)
     }
 }

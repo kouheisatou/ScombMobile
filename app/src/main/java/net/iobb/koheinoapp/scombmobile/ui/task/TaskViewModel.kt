@@ -102,6 +102,18 @@ class TaskViewModel : ViewModel() {
         db.taskDao().insertTask(newTask)
     }
 
+    fun removeMyTask(context: Context, removeTarget: Task){
+        if(removeTarget.addManually){
+            tasks.value?.remove(removeTarget)
+            val db = Room.databaseBuilder(
+                context,
+                AppDatabase::class.java,
+                "ScombMobileDB"
+            ).allowMainThreadQueries().build()
+            db.taskDao().deleteTask(removeTarget)
+        }
+    }
+
     fun fetchMyTask(context: Context) = Room.databaseBuilder(
             context,
             AppDatabase::class.java,

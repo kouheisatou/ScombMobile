@@ -1,6 +1,7 @@
 package net.iobb.koheinoapp.scombmobile.ui.task.list
 
-import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.graphics.Color
 import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
@@ -8,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.navigation.findNavController
 import net.iobb.koheinoapp.scombmobile.R
 import net.iobb.koheinoapp.scombmobile.common.SCOMBZ_DOMAIN
@@ -15,36 +17,21 @@ import net.iobb.koheinoapp.scombmobile.common.TaskType
 import net.iobb.koheinoapp.scombmobile.common.timeToString
 import net.iobb.koheinoapp.scombmobile.databinding.FragmentItemBinding
 import net.iobb.koheinoapp.scombmobile.ui.task.Task
+import net.iobb.koheinoapp.scombmobile.ui.task.TaskFragment
 import net.iobb.koheinoapp.scombmobile.ui.task.calendar.TaskCalendarFragmentDirections
 import java.util.*
 
 class TaskRecyclerViewAdapter(
-    private val tasks: List<Task>
+    private val tasks: MutableList<Task>,
+    private val taskFragment: TaskFragment
 ) : RecyclerView.Adapter<TaskRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
         val view = FragmentItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        val holder = ViewHolder(view)
 
-        view.linearLayout.setOnClickListener {
-            val task = tasks[holder.layoutPosition]
-            Log.d("task_url", task.url)
-            try {
-                val action =
-                    TaskListFragmentDirections.actionTaskListFragmentToNavSinglePageWebScombFragment(task.url)
-                view.linearLayout.findNavController().navigate(action)
-            }catch (e: Exception){
-                try {
-                    val action = TaskCalendarFragmentDirections.actionTaskCalendarFragmentToNavSinglePageWebScombFragment("$SCOMBZ_DOMAIN${task.url}")
-                    view.linearLayout.findNavController().navigate(action)
-                }catch (e: Exception){
 
-                }
-            }
-        }
-
-        return holder
+        return ViewHolder(view)
 
     }
 
@@ -54,6 +41,42 @@ class TaskRecyclerViewAdapter(
         holder.classNameTextView.text = item.className
         if (item.customColor != null) {
             holder.classNameTextView.setTextColor(item.customColor!!)
+        }
+
+
+        holder.linearLayout.setOnClickListener {
+            val task = tasks[holder.layoutPosition]
+            Log.d("task_url", task.url)
+            try {
+                val action =
+                    TaskListFragmentDirections.actionTaskListFragmentToNavSinglePageWebScombFragment(task.url)
+                holder.linearLayout.findNavController().navigate(action)
+            }catch (e: Exception){
+                try {
+                    val action = TaskCalendarFragmentDirections.actionTaskCalendarFragmentToNavSinglePageWebScombFragment("$SCOMBZ_DOMAIN${task.url}")
+                    holder.linearLayout.findNavController().navigate(action)
+                }catch (e: Exception){
+
+                }
+            }
+        }
+
+        holder.linearLayout.setOnLongClickListener {
+            AlertDialog.Builder(taskFragment.requireContext())
+                .setTitle("タスクの削除")
+                .setMessage("\"${item.title}\"\nを削除しますか？")
+                .setPositiveButton("OK", DialogInterface.OnClickListener { _, _ ->
+                    if(item.addManually){
+                        taskFragment.removeTask(item)
+                        tasks.remove(item)
+                        notifyItemRemoved(position)
+                    }else{
+                        Toast.makeText(taskFragment.requireContext(), "Scombのタスクは削除できません", Toast.LENGTH_SHORT).show()
+                    }
+                })
+                .setNegativeButton("CANCEL", null)
+                .show()
+            false
         }
 
         val iconResource: Int
@@ -93,6 +116,7 @@ class TaskRecyclerViewAdapter(
         val titleTextView: TextView = binding.titleTextView
         val icon: ImageView = binding.iconView
         val taskTypeTextView = binding.taskTypeTextView
+        val linearLayout = binding.linearLayout
     }
 
 }

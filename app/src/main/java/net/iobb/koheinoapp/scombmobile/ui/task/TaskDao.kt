@@ -1,9 +1,6 @@
 package net.iobb.koheinoapp.scombmobile.ui.task
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 
 @Dao
 interface TaskDao {
@@ -16,4 +13,8 @@ interface TaskDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertTask(task: Task)
+
+    @Delete
+    fun deleteTask(task: Task)
+
 }
