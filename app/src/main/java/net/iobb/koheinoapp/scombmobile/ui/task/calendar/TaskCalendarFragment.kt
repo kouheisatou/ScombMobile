@@ -34,11 +34,12 @@ class TaskCalendarFragment : Fragment(), TaskFragment {
     private val appViewModel: AppViewModel by activityViewModels()
 
     private var selectedDate = Calendar.getInstance().apply {
-        set(Calendar.HOUR_OF_DAY, 0)
-        set(Calendar.MINUTE, 0)
+        set(Calendar.HOUR_OF_DAY, 23)
+        set(Calendar.MINUTE, 59)
         set(Calendar.SECOND, 0)
         set(Calendar.MILLISECOND, 0)
     }
+    val now = Calendar.getInstance()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -107,9 +108,13 @@ class TaskCalendarFragment : Fragment(), TaskFragment {
             }
             override fun onMonthScroll(firstDayOfNewMonth: Date) {
                 selectedDate.timeInMillis = firstDayOfNewMonth.time
-                val currentCalMonth = Calendar.getInstance().apply { timeInMillis = firstDayOfNewMonth.time }
+                var currentCalMonth = Calendar.getInstance().apply { timeInMillis = firstDayOfNewMonth.time }
+                if(now.get(Calendar.MONTH) == currentCalMonth.get(Calendar.MONTH) && now.get(Calendar.YEAR) == currentCalMonth.get(Calendar.YEAR)){
+                    currentCalMonth = now
+                    root.calendarView.setCurrentDate(now.time)
+                }
                 root.yearAndMonthTextView.text = "${currentCalMonth.get(Calendar.YEAR)}年 ${currentCalMonth.get(Calendar.MONTH)+1}月"
-                taskViewModel.getTasksOf(firstDayOfNewMonth.time)
+                taskViewModel.getTasksOf(currentCalMonth.timeInMillis)
             }
         })
         root.yearAndMonthTextView.text = "${today.get(Calendar.YEAR)}年 ${today.get(Calendar.MONTH)+1}月"
