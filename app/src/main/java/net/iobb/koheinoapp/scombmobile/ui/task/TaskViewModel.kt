@@ -114,11 +114,21 @@ class TaskViewModel : ViewModel() {
         }
     }
 
-    fun fetchMyTask(context: Context) = Room.databaseBuilder(
+    fun fetchMyTask(context: Context): List<Task> {
+        val allTask = Room.databaseBuilder(
             context,
             AppDatabase::class.java,
             "ScombMobileDB"
         ).allowMainThreadQueries().build().taskDao().getAllTask()
+
+        val result = mutableListOf<Task>()
+        allTask.forEach {
+            if(it.deadLineTime > Calendar.getInstance().timeInMillis){
+                result.add(it)
+            }
+        }
+        return result
+    }
 
     fun getAllClasses(context: Context): List<ClassCell> {
         val allClasses = Room.databaseBuilder(

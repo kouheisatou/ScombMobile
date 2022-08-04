@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import kotlinx.android.synthetic.main.fragment_add_new_task.*
@@ -24,7 +25,7 @@ import java.util.*
 class AddNewTaskDialogFragment : DialogFragment() {
 
     val taskViewModel: TaskViewModel by activityViewModels()
-    var selectedDate: Calendar = Calendar.getInstance()
+    var selectedDate: Calendar? = null
 
     companion object {
         fun create(selectedDate: Long): AddNewTaskDialogFragment {
@@ -41,7 +42,7 @@ class AddNewTaskDialogFragment : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         arguments?.let {
-            selectedDate.timeInMillis = it.getLong("selected_date")
+            selectedDate = Calendar.getInstance().apply { timeInMillis = it.getLong("selected_date") }
         }
         return super.onCreateDialog(savedInstanceState)
     }
@@ -53,7 +54,11 @@ class AddNewTaskDialogFragment : DialogFragment() {
         val root = inflater.inflate(R.layout.fragment_add_new_task, container, false)
         dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
-        root.selectedTimeDialog.text = timeToString(selectedDate.timeInMillis)
+        if(selectedDate != null){
+            root.selectedTimeDialog.text = timeToString(selectedDate!!.timeInMillis)
+        }else{
+            root.selectedTimeDialog.text = ""
+        }
 
         root.deadlineCalendarBtn.setOnClickListener {
             showDatePickerDialog()
@@ -90,32 +95,42 @@ class AddNewTaskDialogFragment : DialogFragment() {
         root.classNameSpinner.adapter = classNameAdapter
 
         root.positive_button.setOnClickListener {
-            if(root.taskTitle.text.toString() != ""){
-                val selectedClass = if(root.classNameSpinner.selectedItemPosition == 0){
-                    null
-                }else{
-                    allClasses.getOrNull(root.classNameSpinner.selectedItemPosition-1)
-                }
-                val url = if(selectedClass != null){
-                    "${CLASS_PAGE_URL}${selectedClass.classId}"
-                }else{
-                    ""
-                }
-                Log.d("selected_class", selectedClass?.toString() ?: "null")
-                val newTask = Task(
-                    root.taskTitle.text.toString(),
-                    selectedClass?.name ?: "",
-                    TaskType.values()[root.taskTypeSpinner.selectedItemPosition],
-                    selectedDate.timeInMillis,
-                    url,
-                    true
-                )
-                (parentFragment as TaskFragment).addTask(newTask)
-                (parentFragment as TaskFragment).refresh()
-
-                Log.d("added_new_task", newTask.toString())
-                dialog?.cancel()
+            if(root.taskTitle.text.toString() == ""){
+                Toast.makeText(requireContext(), "タスク名を入力してください", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
+            if(selectedDate == null){
+                Toast.makeText(requireContext(), "締切時刻を指定してください", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            } else if(selectedDate!!.timeInMillis <= Calendar.getInstance().timeInMillis){
+                Toast.makeText(requireContext(), "今よりも先の時刻を選択してください", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val selectedClass = if(root.classNameSpinner.selectedItemPosition == 0){
+                null
+            }else{
+                allClasses.getOrNull(root.classNameSpinner.selectedItemPosition-1)
+            }
+            val url = if(selectedClass != null){
+                "${CLASS_PAGE_URL}${selectedClass.classId}"
+            }else{
+                ""
+            }
+            Log.d("selected_class", selectedClass?.toString() ?: "null")
+            val newTask = Task(
+                root.taskTitle.text.toString(),
+                selectedClass?.name ?: "",
+                TaskType.values()[root.taskTypeSpinner.selectedItemPosition],
+                selectedDate!!.timeInMillis,
+                url,
+                true
+            )
+            (parentFragment as TaskFragment).addTask(newTask)
+            (parentFragment as TaskFragment).refresh()
+
+            Log.d("added_new_task", newTask.toString())
+            dialog?.cancel()
         }
 
         root.negative_button.setOnClickListener {
@@ -126,6 +141,8 @@ class AddNewTaskDialogFragment : DialogFragment() {
     }
 
     fun showDatePickerDialog(){
+        val selectedDate = selectedDate ?: Calendar.getInstance()
+        this.selectedDate = selectedDate
         DatePickerDialog(
             requireContext(),
             DatePickerDialog.OnDateSetListener { _, year, month, date ->

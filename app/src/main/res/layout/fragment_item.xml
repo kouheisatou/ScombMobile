@@ -32,13 +32,14 @@
 
     <TextView
         android:id="@+id/titleTextView"
-        android:text="課題名"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/iconView"
         style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/list_text_margin"/>
+        android:layout_margin="@dimen/list_text_margin"
+        android:text="課題名"
+        app:layout_constraintRight_toLeftOf="@+id/imageView"
+        app:layout_constraintLeft_toRightOf="@id/iconView"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/classNameTextView"
@@ -58,4 +59,16 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/iconView"
         app:layout_constraintTop_toBottomOf="@id/classNameTextView" />
+
+    <ImageView
+        android:id="@+id/deleteBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/list_text_margin"
+        android:src="@drawable/ic_baseline_delete_24"
+        android:clickable="true"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        app:layout_constraintBottom_toBottomOf="@+id/titleTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/titleTextView" />
 </androidx.constraintlayout.widget.ConstraintLayout>

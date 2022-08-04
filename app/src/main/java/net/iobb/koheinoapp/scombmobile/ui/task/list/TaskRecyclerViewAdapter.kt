@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
@@ -29,8 +30,6 @@ class TaskRecyclerViewAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
         val view = FragmentItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-
-
         return ViewHolder(view)
 
     }
@@ -41,44 +40,9 @@ class TaskRecyclerViewAdapter(
         holder.classNameTextView.text = item.className
         if (item.customColor != null) {
             holder.classNameTextView.setTextColor(item.customColor!!)
+        }else{
+            holder.classNameTextView.setTextColor(holder.classNameTextView.textColors.defaultColor)
         }
-
-
-        holder.linearLayout.setOnClickListener {
-            val task = tasks[holder.layoutPosition]
-            Log.d("task_url", task.url)
-            try {
-                val action =
-                    TaskListFragmentDirections.actionTaskListFragmentToNavSinglePageWebScombFragment(task.url)
-                holder.linearLayout.findNavController().navigate(action)
-            }catch (e: Exception){
-                try {
-                    val action = TaskCalendarFragmentDirections.actionTaskCalendarFragmentToNavSinglePageWebScombFragment("$SCOMBZ_DOMAIN${task.url}")
-                    holder.linearLayout.findNavController().navigate(action)
-                }catch (e: Exception){
-
-                }
-            }
-        }
-
-        holder.linearLayout.setOnLongClickListener {
-            AlertDialog.Builder(taskFragment.requireContext())
-                .setTitle("タスクの削除")
-                .setMessage("\"${item.title}\"\nを削除しますか？")
-                .setPositiveButton("OK", DialogInterface.OnClickListener { _, _ ->
-                    if(item.addManually){
-                        taskFragment.removeTask(item)
-                        tasks.remove(item)
-                        notifyItemRemoved(position)
-                    }else{
-                        Toast.makeText(taskFragment.requireContext(), "Scombのタスクは削除できません", Toast.LENGTH_SHORT).show()
-                    }
-                })
-                .setNegativeButton("CANCEL", null)
-                .show()
-            false
-        }
-
         val iconResource: Int
         val taskTitleString: String
         when(item.taskType){
@@ -104,8 +68,50 @@ class TaskRecyclerViewAdapter(
         // if tasks deadline in 24h
         if(item.deadLineTime - Date().time < 86400000){
             holder.deadlineTextView.setTextColor(Color.parseColor("#EE0000"))
+        }else{
+            holder.deadlineTextView.setTextColor(holder.deadlineTextView.textColors.defaultColor)
         }
         holder.deadlineTextView.text = "締切 : ${timeToString(item.deadLineTime)}"
+
+
+        holder.linearLayout.setOnClickListener {
+            val task = tasks[holder.layoutPosition]
+            Log.d("task_url", task.url)
+            try {
+                val action =
+                    TaskListFragmentDirections.actionTaskListFragmentToNavSinglePageWebScombFragment(task.url)
+                holder.linearLayout.findNavController().navigate(action)
+            }catch (e: Exception){
+                try {
+                    val action = TaskCalendarFragmentDirections.actionTaskCalendarFragmentToNavSinglePageWebScombFragment("$SCOMBZ_DOMAIN${task.url}")
+                    holder.linearLayout.findNavController().navigate(action)
+                }catch (e: Exception){
+
+                }
+            }
+        }
+
+        holder.deleteBtn.visibility = if(item.addManually){
+            View.VISIBLE
+        }else{
+            View.GONE
+        }
+        holder.deleteBtn.setOnClickListener {
+            AlertDialog.Builder(taskFragment.requireContext())
+                .setTitle("タスクの削除")
+                .setMessage("\"${item.title}\"\nを削除しますか？")
+                .setPositiveButton("OK", DialogInterface.OnClickListener { _, _ ->
+                    if(item.addManually){
+                        taskFragment.removeTask(item)
+                        tasks.remove(item)
+                        notifyItemRemoved(position)
+                    }else{
+                        Toast.makeText(taskFragment.requireContext(), "Scombのタスクは削除できません", Toast.LENGTH_SHORT).show()
+                    }
+                })
+                .setNegativeButton("CANCEL", null)
+                .show()
+        }
     }
 
     override fun getItemCount(): Int = tasks.size
@@ -117,6 +123,7 @@ class TaskRecyclerViewAdapter(
         val icon: ImageView = binding.iconView
         val taskTypeTextView = binding.taskTypeTextView
         val linearLayout = binding.linearLayout
+        val deleteBtn = binding.deleteBtn
     }
 
 }

@@ -33,7 +33,12 @@ class TaskCalendarFragment : Fragment(), TaskFragment {
     private val taskViewModel: TaskViewModel by activityViewModels()
     private val appViewModel: AppViewModel by activityViewModels()
 
-    private var selectedDate = Calendar.getInstance()
+    private var selectedDate = Calendar.getInstance().apply {
+        set(Calendar.HOUR_OF_DAY, 0)
+        set(Calendar.MINUTE, 0)
+        set(Calendar.SECOND, 0)
+        set(Calendar.MILLISECOND, 0)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
