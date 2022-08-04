@@ -9,6 +9,7 @@ import androidx.room.Room
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.iobb.koheinoapp.scombmobile.common.*
+import net.iobb.koheinoapp.scombmobile.ui.timetable.ClassCell
 import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
@@ -23,6 +24,7 @@ class TaskViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             val document = page.fetch(appViewModel.sessionId)
 
+            // tasks from scomb
             val newTasks = mutableListOf<Task>()
             val fetchedTasks = document?.getElementsByClass(TASK_LIST_CSS_CLASS_NM) ?: return@launch
             for(row in fetchedTasks) {
@@ -34,7 +36,8 @@ class TaskViewModel : ViewModel() {
                     else -> null
                 }
                 val taskTitle = row.getElementsByClass(TASK_LIST_TITLE_CULUMN_CSS_NM).getOrNull(0)?.text() ?: "null"
-                val url = row.getElementsByAttribute("href").attr("href")
+                val relativeLocation = row.getElementsByAttribute("href").attr("href")
+                val url = "$SCOMBZ_DOMAIN$relativeLocation"
                 val deadlineString = row.getElementsByClass(TASK_LIST_DEADLINE_CULUMN_CSS_NM).text().replace("期限： ", "")
                 val deadline = Calendar.getInstance()
                 try{
@@ -45,15 +48,20 @@ class TaskViewModel : ViewModel() {
 
                 val newTask = Task(taskTitle, className, taskType, deadline.timeInMillis, url, false)
                 newTask.applyClassCustomColor(context)
-                Log.d("fetched_task", newTask.toString())
                 newTasks.add(newTask)
             }
 
             // tasks added manually
-            newTasks.addAll(fetchMyTask(context))
+            val myTasks = fetchMyTask(context)
+            for(task in myTasks){
+                task.applyClassCustomColor(context)
+            }
+            newTasks.addAll(myTasks)
 
             // sort by deadline
             newTasks.sortBy { it.deadLineTime }
+
+            Log.d("fetched_task", newTasks.toString())
 
             tasks.postValue(newTasks)
         }
@@ -99,4 +107,19 @@ class TaskViewModel : ViewModel() {
             AppDatabase::class.java,
             "ScombMobileDB"
         ).allowMainThreadQueries().build().taskDao().getAllTask()
+
+    fun getAllClasses(context: Context): List<ClassCell> {
+        val allClasses = Room.databaseBuilder(
+            context,
+            AppDatabase::class.java,
+            "ScombMobileDB"
+        ).allowMainThreadQueries().build().classCellDao().getAllClassCell()
+        val result = mutableListOf<ClassCell>()
+        allClasses.forEach {
+            if(!result.contains(it)){
+                result.add(it)
+            }
+        }
+        return result
+    }
 }

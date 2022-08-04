@@ -2,6 +2,7 @@ package net.iobb.koheinoapp.scombmobile.ui.task.list
 
 import android.annotation.SuppressLint
 import android.graphics.Color
+import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -28,9 +29,10 @@ class TaskRecyclerViewAdapter(
 
         view.linearLayout.setOnClickListener {
             val task = tasks[holder.layoutPosition]
+            Log.d("task_url", task.url)
             try {
                 val action =
-                    TaskListFragmentDirections.actionTaskListFragmentToNavSinglePageWebScombFragment("$SCOMBZ_DOMAIN${task.url}")
+                    TaskListFragmentDirections.actionTaskListFragmentToNavSinglePageWebScombFragment(task.url)
                 view.linearLayout.findNavController().navigate(action)
             }catch (e: Exception){
                 try {
@@ -52,8 +54,6 @@ class TaskRecyclerViewAdapter(
         holder.classNameTextView.text = item.className
         if (item.customColor != null) {
             holder.classNameTextView.setTextColor(item.customColor!!)
-        }else{
-            holder.classNameTextView.setTextColor(R.color.text)
         }
 
         val iconResource: Int
@@ -81,8 +81,6 @@ class TaskRecyclerViewAdapter(
         // if tasks deadline in 24h
         if(item.deadLineTime - Date().time < 86400000){
             holder.deadlineTextView.setTextColor(Color.parseColor("#EE0000"))
-        }else{
-            holder.deadlineTextView.setTextColor(R.color.text)
         }
         holder.deadlineTextView.text = "締切 : ${timeToString(item.deadLineTime)}"
     }
