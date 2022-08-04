@@ -83,7 +83,7 @@ class TaskRecyclerViewAdapter(
                 holder.linearLayout.findNavController().navigate(action)
             }catch (e: Exception){
                 try {
-                    val action = TaskCalendarFragmentDirections.actionTaskCalendarFragmentToNavSinglePageWebScombFragment("$SCOMBZ_DOMAIN${task.url}")
+                    val action = TaskCalendarFragmentDirections.actionTaskCalendarFragmentToNavSinglePageWebScombFragment(task.url)
                     holder.linearLayout.findNavController().navigate(action)
                 }catch (e: Exception){
 
