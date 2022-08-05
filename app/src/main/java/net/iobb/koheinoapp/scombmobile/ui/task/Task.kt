@@ -39,6 +39,10 @@ class Task(
                 "examinationId" -> reportId = paramValue
             }
         }
+
+        if (!addManually && reportId != null){
+            taskId = reportId!!.hashCode().toLong()
+        }
     }
 
     override fun toString(): String {

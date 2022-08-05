@@ -61,6 +61,11 @@ class TaskViewModel : ViewModel() {
             // sort by deadline
             newTasks.sortBy { it.deadLineTime }
 
+            // alerm
+            newTasks.forEach {
+                ScombMobileNotification.setTaskAlerm(context, it)
+            }
+
             Log.d("fetched_task", newTasks.toString())
 
             tasks.postValue(newTasks)
