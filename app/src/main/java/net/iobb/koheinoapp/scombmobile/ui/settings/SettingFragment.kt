@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.room.Room
@@ -67,15 +68,13 @@ class SettingFragment : Fragment() {
         }
 
         // saved user and pass
-        root.userNameSaveBtn.setOnClickListener {
+        root.userEditText.addTextChangedListener {
             db.userDao().removeAllUser()
             db.userDao().insertUser(User(root.userEditText.text.toString(), root.passEditText.text.toString()))
-            Toast.makeText(requireContext(), "学籍番号を保存しました", Toast.LENGTH_SHORT).show()
         }
-        root.passwordSaveBtn.setOnClickListener {
+        root.passEditText.addTextChangedListener {
             db.userDao().removeAllUser()
             db.userDao().insertUser(User(root.userEditText.text.toString(), root.passEditText.text.toString()))
-            Toast.makeText(requireContext(), "パスワードを保存しました", Toast.LENGTH_SHORT).show()
         }
 
         return root

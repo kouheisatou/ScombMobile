@@ -40,13 +40,6 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:inputType="textPersonName" />
-            <ImageView
-                android:id="@+id/userNameSaveBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_baseline_save_24"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:clickable="true"/>
         </LinearLayout>
 
         <LinearLayout
@@ -66,14 +59,6 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:inputType="textPassword" />
-
-            <ImageView
-                android:id="@+id/passwordSaveBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_baseline_save_24"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:clickable="true"/>
         </LinearLayout>
 
         <CheckBox
