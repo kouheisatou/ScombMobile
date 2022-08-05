@@ -82,7 +82,7 @@ class TaskCalendarFragment : Fragment(), TaskFragment {
         taskViewModel.tasks.observe(viewLifecycleOwner){
             taskViewModel.tasks.value?.forEach {
                 val event = if(it.customColor != null){
-                    Event(it.customColor!!, it.deadLineTime)
+                    Event(it.customColor!!, it.deadLineTime, it.taskId)
                 }else{
                     Event(R.color.black, it.deadLineTime)
                 }
@@ -158,9 +158,11 @@ class TaskCalendarFragment : Fragment(), TaskFragment {
 
     override fun addTask(newTask: Task) {
         taskViewModel.addMyTask(requireContext(), newTask)
+        refresh()
     }
 
     override fun removeTask(removeTarget: Task) {
         taskViewModel.removeMyTask(requireContext(), removeTarget)
+        refresh()
     }
 }

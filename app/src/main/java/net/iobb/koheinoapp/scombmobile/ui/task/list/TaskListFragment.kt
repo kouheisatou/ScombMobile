@@ -93,9 +93,11 @@ class TaskListFragment : Fragment(), TaskFragment {
 
     override fun addTask(newTask: Task) {
         taskViewModel.addMyTask(requireContext(), newTask)
+        refresh()
     }
 
     override fun removeTask(removeTarget: Task) {
         taskViewModel.removeMyTask(requireContext(), removeTarget)
+        refresh()
     }
 }

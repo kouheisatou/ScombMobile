@@ -76,7 +76,7 @@ class TaskRecyclerViewAdapter(
 
         holder.linearLayout.setOnClickListener {
             val task = tasks[holder.layoutPosition]
-            Log.d("task_url", task.url)
+            if(task.url == "") return@setOnClickListener
             try {
                 val action =
                     TaskListFragmentDirections.actionTaskListFragmentToNavSinglePageWebScombFragment(task.url)
@@ -104,7 +104,6 @@ class TaskRecyclerViewAdapter(
                     if(item.addManually){
                         taskFragment.removeTask(item)
                         tasks.remove(item)
-                        notifyItemRemoved(position)
                     }else{
                         Toast.makeText(taskFragment.requireContext(), "Scombのタスクは削除できません", Toast.LENGTH_SHORT).show()
                     }

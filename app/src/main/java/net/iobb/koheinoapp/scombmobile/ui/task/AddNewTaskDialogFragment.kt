@@ -1,18 +1,13 @@
 package net.iobb.koheinoapp.scombmobile.ui.task
 
-import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.app.TimePickerDialog
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
@@ -28,6 +23,7 @@ class AddNewTaskDialogFragment : DialogFragment() {
 
     val taskViewModel: TaskViewModel by activityViewModels()
     var selectedDate: Calendar? = null
+    var selectedClass: ClassCell? = null
 
     companion object {
         fun create(selectedDate: Long): AddNewTaskDialogFragment {
@@ -70,38 +66,35 @@ class AddNewTaskDialogFragment : DialogFragment() {
         taskTypeAdapter.addAll(japaneseTaskType())
         root.taskTypeSpinner.adapter = taskTypeAdapter
 
-        val allClasses = taskViewModel.getAllClasses(requireContext()).toMutableList()
-        allClasses.sortWith(compareBy<ClassCell> { it.year }.thenBy { it.term }.thenBy { it.dayOfWeek })
-        allClasses.reverse()
-        val classNameAdapter = object : ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item) {
-            // pos in item
-            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-                val v = super.getView(position, convertView, parent)
-                (v as TextView).gravity = Gravity.RIGHT
-                return v
-            }
-            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
-                val v = super.getDropDownView(position, convertView, parent)
-                (v as TextView).gravity = Gravity.CENTER
-                val classInfo = allClasses.getOrNull(position+1) ?: return v
-                if(classInfo.customColorInt != null) {
-                    v.setTextColor(classInfo.customColorInt!!)
-                }else{
-                    v.setTextColor(Color.parseColor("#000000"))
+        val allClasses = mutableListOf<ClassCell>()
+        taskViewModel.getAllClasses(requireContext()).toMutableList().apply {
+            sortWith(compareBy<ClassCell> { it.year }.thenBy { it.term }.thenBy { it.dayOfWeek })
+            reverse()
+        }.forEach {
+            var contains = false
+            for (c in allClasses) {
+                if(c.classId == it.classId){
+                    contains = true
+                    break
                 }
-                return v
+            }
+            if (!contains) {
+                allClasses.add(it)
             }
         }
-        classNameAdapter.setDropDownViewResource(androidx.appcompat.R.layout.support_simple_spinner_dropdown_item)
-        val classesNameString = mutableListOf<String>()
+        val classesNameString = mutableListOf("指定なし")
         allClasses.forEach {
             if(!classesNameString.contains(it.name)){
                 classesNameString.add(it.name)
             }
         }
-        classNameAdapter.add("指定なし")
-        classNameAdapter.addAll(classesNameString)
-        root.classNameSpinner.adapter = classNameAdapter
+        setRightGravityAdapterToSpinner(requireContext(), classesNameString, root.classNameSpinner){ position, _ ->
+            selectedClass = if(position == 0){
+                null
+            }else{
+                allClasses[position-1]
+            }
+        }
 
         root.positive_button.setOnClickListener {
             if(root.taskTitle.text.toString() == ""){
@@ -116,12 +109,7 @@ class AddNewTaskDialogFragment : DialogFragment() {
                 return@setOnClickListener
             }
 
-            val selectedClass = if(root.classNameSpinner.selectedItemPosition == 0){
-                null
-            }else{
-                allClasses.getOrNull(root.classNameSpinner.selectedItemPosition-1)
-            }
-            val url = if(selectedClass != null){ "${CLASS_PAGE_URL}${selectedClass.classId}" }else{ "" }
+            val url = if(selectedClass != null){ "${CLASS_PAGE_URL}${selectedClass!!.classId}" }else{ "" }
             val newTask = Task(
                 root.taskTitle.text.toString(),
                 selectedClass?.name ?: "",
@@ -131,7 +119,6 @@ class AddNewTaskDialogFragment : DialogFragment() {
                 true
             )
             (parentFragment as TaskFragment).addTask(newTask)
-            (parentFragment as TaskFragment).refresh()
 
             Log.d("added_new_task", newTask.toString())
             dialog?.cancel()

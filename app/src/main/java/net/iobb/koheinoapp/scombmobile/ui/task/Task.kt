@@ -10,6 +10,7 @@ import net.iobb.koheinoapp.scombmobile.common.SCOMBZ_DOMAIN
 import net.iobb.koheinoapp.scombmobile.common.TaskType
 import org.apache.http.client.utils.URLEncodedUtils
 import java.nio.charset.StandardCharsets
+import java.util.*
 
 @Entity
 class Task(
@@ -21,8 +22,8 @@ class Task(
     val addManually: Boolean
 ) {
 
-    @PrimaryKey(autoGenerate = true)
-    var taskId: Int = 0
+    @PrimaryKey
+    var taskId: Long = Calendar.getInstance().timeInMillis
     var reportId: String? = null
     var classId: String? = null
     var customColor: Int? = null
