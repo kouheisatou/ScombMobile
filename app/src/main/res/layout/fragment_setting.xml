@@ -6,206 +6,218 @@
     android:orientation="vertical"
     tools:context=".ui.settings.SettingFragment">
 
-    <LinearLayout
-        android:layout_margin="10dp"
-        android:padding="10dp"
-        android:background="@drawable/shape_rounded_coners_10dp"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
-            android:text="自動ログイン設定"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginBottom="10dp"
-            android:background="@color/black"/>
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:gravity="center_vertical"
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+
+            <LinearLayout
+                android:layout_margin="10dp"
+                android:padding="10dp"
+                android:background="@drawable/shape_rounded_coners_10dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="学籍番号　"/>
-            <EditText
-                android:id="@+id/userEditText"
-                android:layout_width="0dp"
-                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
+                    android:text="自動ログイン設定"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@color/black"/>
+
+                <LinearLayout
+                    android:gravity="center_vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="学籍番号　"/>
+                    <EditText
+                        android:id="@+id/userEditText"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:inputType="textPersonName" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:gravity="center_vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="パスワード"/>
+
+                    <EditText
+                        android:id="@+id/passEditText"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:inputType="textPassword" />
+                </LinearLayout>
+
+                <CheckBox
+                    android:id="@+id/autoLoginCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="自動ログイン" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_margin="10dp"
+                android:padding="10dp"
+                android:background="@drawable/shape_rounded_coners_10dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="10"
-                android:inputType="textPersonName" />
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
+                    android:text="時間割設定"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@color/black"/>
+
+                <LinearLayout
+                    android:gravity="center_vertical"
+                    android:layout_marginVertical="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="自動更新間隔"/>
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"/>
+                    <Spinner
+                        android:id="@+id/refreshIntervalSpinner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginVertical="8dp"
+                    android:gravity="center_vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="表示年度"/>
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"/>
+                    <Spinner
+                        android:id="@+id/yearSpinner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginVertical="8dp"
+                    android:gravity="center_vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="表示学期"/>
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"/>
+                    <Spinner
+                        android:id="@+id/termSpinner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_margin="10dp"
+                android:padding="10dp"
+                android:background="@drawable/shape_rounded_coners_10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
+                    android:text="通知設定"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@color/black"/>
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="時間割通知"/>
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="課題締切通知"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_margin="10dp"
+                android:padding="10dp"
+                android:background="@drawable/shape_rounded_coners_10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
+                    android:text="このアプリについて"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@color/black"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="github : "/>
+                <TextView
+                    android:id="@+id/githubLinkTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textColor="#0000FF"
+                    android:text="@string/github_link"/>
+
+            </LinearLayout>
         </LinearLayout>
-
-        <LinearLayout
-            android:gravity="center_vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="パスワード"/>
-
-            <EditText
-                android:id="@+id/passEditText"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:inputType="textPassword" />
-        </LinearLayout>
-
-        <CheckBox
-            android:id="@+id/autoLoginCheckBox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="自動ログイン" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_margin="10dp"
-        android:padding="10dp"
-        android:background="@drawable/shape_rounded_coners_10dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
-            android:text="時間割設定"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginBottom="10dp"
-            android:background="@color/black"/>
-
-        <LinearLayout
-            android:gravity="center_vertical"
-            android:layout_marginVertical="8dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="自動更新間隔"/>
-            <View
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"/>
-            <Spinner
-                android:id="@+id/refreshIntervalSpinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_marginVertical="8dp"
-            android:gravity="center_vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="表示年度"/>
-            <View
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"/>
-            <Spinner
-                android:id="@+id/yearSpinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_marginVertical="8dp"
-            android:gravity="center_vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="表示学期"/>
-            <View
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"/>
-            <Spinner
-                android:id="@+id/termSpinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_margin="10dp"
-        android:padding="10dp"
-        android:background="@drawable/shape_rounded_coners_10dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
-            android:text="通知設定"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginBottom="10dp"
-            android:background="@color/black"/>
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="時間割通知"/>
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="課題締切通知"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_margin="10dp"
-        android:padding="10dp"
-        android:background="@drawable/shape_rounded_coners_10dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
-            android:text="このアプリについて"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginBottom="10dp"
-            android:background="@color/black"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="github : "/>
-        <TextView
-            android:id="@+id/githubLinkTextView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:textColor="#0000FF"
-            android:text="@string/github_link"/>
-
-    </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>
