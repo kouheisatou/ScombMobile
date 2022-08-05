@@ -1,20 +1,22 @@
 package net.iobb.koheinoapp.scombmobile.ui.settings
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.Spinner
+import android.widget.TextView
 import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.room.Room
 import kotlinx.android.synthetic.main.fragment_setting.*
-import kotlinx.android.synthetic.main.fragment_setting.idTextView
-import kotlinx.android.synthetic.main.fragment_setting.passwordTextView
-import net.iobb.koheinoapp.scombmobile.common.AppDatabase
 import net.iobb.koheinoapp.scombmobile.R
+import net.iobb.koheinoapp.scombmobile.common.AppDatabase
 import net.iobb.koheinoapp.scombmobile.ui.login.User
+
 
 class SettingFragment : Fragment() {
 
@@ -34,7 +36,6 @@ class SettingFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(SettingViewModel::class.java)
-        // TODO: Use the ViewModel
     }
 
     override fun onStart() {
@@ -63,6 +64,22 @@ class SettingFragment : Fragment() {
             db.userDao().removeAllUser()
             db.userDao().insertUser(User(idTextView.text.toString(), passwordTextView.text.toString()))
         }
+
+
+        refreshIntervalSpinner.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                // アイテムが選択された時の動作
+                override fun onItemSelected(
+                    parent: AdapterView<*>,
+                    view: View,
+                    position: Int,
+                    id: Long
+                ) {
+                }
+
+                // 何も選択されなかった時の動作
+                override fun onNothingSelected(parent: AdapterView<*>?) {}
+            }
 
         super.onStart()
     }

@@ -27,7 +27,6 @@
         android:layout_marginHorizontal="10dp"
         android:background="@drawable/ic_baseline_open_in_browser_24"
         android:backgroundTint="?android:attr/textColorSecondary"
-        android:text="@string/open_in_browser"
         android:clickable="true"
         android:textColor="#0000FF"
         app:layout_constraintBottom_toBottomOf="@+id/title"
