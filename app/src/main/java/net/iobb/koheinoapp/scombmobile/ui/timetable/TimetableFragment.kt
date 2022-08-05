@@ -44,8 +44,7 @@ class TimetableFragment : Fragment(), SimpleDialog.OnDialogResultListener {
         val root: View = binding.root
 
         binding.swipeLayout.setOnRefreshListener {
-            refreshRequired = true
-            viewModel.page.networkState.value = NetworkState.Initialized
+            refresh()
         }
 
         viewModel.page.networkState.observe(viewLifecycleOwner){
@@ -207,5 +206,10 @@ class TimetableFragment : Fragment(), SimpleDialog.OnDialogResultListener {
                 applyProcess(cell.value, rowNum, colNum)
             }
         }
+    }
+
+    fun refresh(){
+        refreshRequired = true
+        viewModel.page.networkState.value = NetworkState.Initialized
     }
 }

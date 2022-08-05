@@ -52,6 +52,10 @@ class ClassDetailDialogFragment : DialogFragment(), SimpleDialog.OnDialogResultL
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         arguments?.let {
+            if(viewModel.timeTable.value == null){
+                (parentFragment as TimetableFragment).refresh()
+                return@let
+            }
             val row = it.getInt("row")
             val col = it.getInt("col")
             classCell = viewModel.timeTable.value!![row][col]!!
