@@ -1,8 +1,10 @@
 package net.iobb.koheinoapp.scombmobile.ui.task
 
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.app.TimePickerDialog
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -18,6 +20,7 @@ import kotlinx.android.synthetic.main.fragment_add_new_task.*
 import kotlinx.android.synthetic.main.fragment_add_new_task.view.*
 import net.iobb.koheinoapp.scombmobile.R
 import net.iobb.koheinoapp.scombmobile.common.*
+import net.iobb.koheinoapp.scombmobile.ui.timetable.ClassCell
 import java.util.*
 
 
@@ -67,11 +70,34 @@ class AddNewTaskDialogFragment : DialogFragment() {
         taskTypeAdapter.addAll(japaneseTaskType())
         root.taskTypeSpinner.adapter = taskTypeAdapter
 
-        val classNameAdapter = rightGravityArrayAdapter<String>(requireContext(), root.classNameSpinner)
-        val allClasses = taskViewModel.getAllClasses(requireContext())
+        val allClasses = taskViewModel.getAllClasses(requireContext()).toMutableList()
+        allClasses.sortWith(compareBy<ClassCell> { it.year }.thenBy { it.term }.thenBy { it.dayOfWeek })
+        allClasses.reverse()
+        val classNameAdapter = object : ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item) {
+            // pos in item
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val v = super.getView(position, convertView, parent)
+                (v as TextView).gravity = Gravity.RIGHT
+                return v
+            }
+            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val v = super.getDropDownView(position, convertView, parent)
+                (v as TextView).gravity = Gravity.CENTER
+                val classInfo = allClasses.getOrNull(position) ?: return v
+                if(classInfo.customColorInt != null) {
+                    v.setTextColor(classInfo.customColorInt!!)
+                }else{
+                    v.setTextColor(Color.parseColor("#000000"))
+                }
+                return v
+            }
+        }
+        classNameAdapter.setDropDownViewResource(androidx.appcompat.R.layout.support_simple_spinner_dropdown_item)
         val classesNameString = mutableListOf<String>()
         allClasses.forEach {
-            classesNameString.add(it.name)
+            if(!classesNameString.contains(it.name)){
+                classesNameString.add(it.name)
+            }
         }
         classNameAdapter.add("指定なし")
         classNameAdapter.addAll(classesNameString)
@@ -95,12 +121,7 @@ class AddNewTaskDialogFragment : DialogFragment() {
             }else{
                 allClasses.getOrNull(root.classNameSpinner.selectedItemPosition-1)
             }
-            val url = if(selectedClass != null){
-                "${CLASS_PAGE_URL}${selectedClass.classId}"
-            }else{
-                ""
-            }
-            Log.d("selected_class", selectedClass?.toString() ?: "null")
+            val url = if(selectedClass != null){ "${CLASS_PAGE_URL}${selectedClass.classId}" }else{ "" }
             val newTask = Task(
                 root.taskTitle.text.toString(),
                 selectedClass?.name ?: "",

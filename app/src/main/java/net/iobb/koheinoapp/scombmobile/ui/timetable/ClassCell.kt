@@ -31,7 +31,7 @@ class ClassCell(
     var createdDate: Long = Calendar.getInstance().timeInMillis
 
     @PrimaryKey
-    var id: String = "$dayOfWeek-$period-$classId"
+    var id: String = "$dayOfWeek:$period-$classId"
 
     @Ignore
     lateinit var view: View

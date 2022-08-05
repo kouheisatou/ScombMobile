@@ -52,7 +52,7 @@ class LoginFragment : Fragment() {
         passwordTextView.setText(db.userDao().getUser()?.password ?: "")
 
         // auto login
-        if(db.settingDao().getSetting("enabled_auto_login")?.settingValue == "true"){
+        if((db.settingDao().getSetting("enabled_auto_login")?.settingValue ?: "true") == "true"){
             login(idTextView.text.toString(), passwordTextView.text.toString())
         }
 

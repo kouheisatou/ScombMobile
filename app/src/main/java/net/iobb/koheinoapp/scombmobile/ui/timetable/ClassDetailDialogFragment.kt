@@ -21,7 +21,7 @@ class ClassDetailDialogFragment : DialogFragment(), SimpleDialog.OnDialogResultL
 
     private val viewModel: TimetableViewModel by activityViewModels()
     lateinit var classCell: ClassCell
-    private val classTimeMap = mapOf<Int, String>(
+    private val classTimeMap = mapOf(
         0 to "9:00 ~ 10:40",
         1 to "10:50 ~ 12:30",
         2 to "13:20 ~ 15:00",

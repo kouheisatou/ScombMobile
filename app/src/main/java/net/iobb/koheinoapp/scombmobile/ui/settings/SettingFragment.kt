@@ -87,7 +87,7 @@ class SettingFragment : Fragment() {
 
 
     fun recoverSettings(db: AppDatabase, root: View, yearSelection: List<String>){
-        root.autoLoginCheckBox.isChecked = db.settingDao().getSetting("enabled_auto_login")?.settingValue == "true"
+        root.autoLoginCheckBox.isChecked = (db.settingDao().getSetting("enabled_auto_login")?.settingValue ?: "true") == "true"
 
         root.userEditText.setText(db.userDao().getUser()?.username ?: "")
         root.passEditText.setText(db.userDao().getUser()?.password ?: "")
