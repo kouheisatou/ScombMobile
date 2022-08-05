@@ -23,6 +23,8 @@ class ClassCell(
     val room: String,
     val dayOfWeek: Int,
     val period: Int,
+    val year: Int,
+    val term: Int
 ) {
 
     var customColorInt: Int? = null

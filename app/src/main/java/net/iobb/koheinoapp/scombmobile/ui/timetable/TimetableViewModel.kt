@@ -9,7 +9,6 @@ import androidx.room.Room
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.iobb.koheinoapp.scombmobile.common.*
-import net.iobb.koheinoapp.scombmobile.ui.settings.Setting
 import java.lang.StringBuilder
 import java.util.*
 
@@ -31,15 +30,14 @@ class TimetableViewModel : ViewModel() {
     // timetable setting
     var refreshInterval: Long = 86400000L * 7
     var timetableYear: Int? = null
-    var timetablePeriod: Int? = null    // 前期 -> 10, 後期 -> 20
+    var timetableTerm: Int? = null    // 前期 -> 10, 後期 -> 20
 
     companion object {
         var refreshRequired = false
     }
 
     suspend fun fetchFromServer(context: Context): Array<ClassCell>?{
-        loadTimetableSettings(context)
-        val url = "$SCOMB_TIMETABLE_URL?risyunen=${timetableYear ?: ""}&kikanCd=${timetablePeriod ?: ""}"
+        val url = "$SCOMB_TIMETABLE_URL?risyunen=${timetableYear!!}&kikanCd=${timetableTerm!!}"
 
         // get from web
         val doc = page.fetch(url, appViewModel.sessionId)
@@ -69,7 +67,7 @@ class TimetableViewModel : ViewModel() {
                         teachers.append(teacher.text())
                     }
 
-                    val newCell = ClassCell(id, name, teachers.toString(), room, cell.index, row.index)
+                    val newCell = ClassCell(id, name, teachers.toString(), room, cell.index, row.index, timetableYear!!, timetableTerm!!)
                     newCell.context = context
 
                     classes.add(newCell)
@@ -89,25 +87,23 @@ class TimetableViewModel : ViewModel() {
 
         val interval = db.getSetting("refresh_interval")?.settingValue
         val year = db.getSetting("timetable_year")?.settingValue
-        val period = db.getSetting("timetable_period")?.settingValue
+        val term = db.getSetting("timetable_term")?.settingValue
 
-        Log.d("load_timetable_setting", "interval=$interval, year=$year, period=$period")
+        Log.d("load_timetable_setting", "interval=$interval, year=$year, term=$term")
 
         refreshInterval = when(interval){
-            "0" -> -1L
-            "1" -> 0L
-            "2" -> 86400000L
-            "3" -> 86400000L * 2
-            "4" -> 86400000L * 7
-            "5" -> 86400000L * 14
+            "0" -> 0L
+            "1" -> 86400000L
+            "2" -> 86400000L * 2
+            "3" -> 86400000L * 7
+            "4" -> 86400000L * 14
             else -> 86400000L * 7
         }
 
-        val today = Calendar.getInstance()
         // year as 4 digits
         if(year?.matches(Regex("\\d{4}")) == true){
             timetableYear = year.toInt()
-            timetablePeriod = when(period){
+            timetableTerm = when(term){
                 "0" -> 10
                 "1" -> 20
                 else -> 10
@@ -115,8 +111,9 @@ class TimetableViewModel : ViewModel() {
         }
         // latest
         else{
+            val today = Calendar.getInstance()
             timetableYear = today.get(Calendar.YEAR)
-            timetablePeriod = if(today.get(Calendar.MONTH) < 9){
+            timetableTerm = if(today.get(Calendar.MONTH) < 10 || today.get(Calendar.MONTH) >= 5){
                 10
             }else{
                 20
@@ -143,13 +140,14 @@ class TimetableViewModel : ViewModel() {
             "ScombMobileDB"
         ).allowMainThreadQueries().build()
 
-        return db.classCellDao().getAllClassCell()
+        return db.classCellDao().getClasses(timetableYear!!, timetableTerm!!)
     }
 
     /**
      * @param requiredRefresh force fetch from server
      */
     fun fetch(context: Context, requiredRefresh: Boolean = false){
+        loadTimetableSettings(context)
         viewModelScope.launch(Dispatchers.IO) {
 
             var classesFromDB = fetchFromDB(context)
@@ -165,7 +163,7 @@ class TimetableViewModel : ViewModel() {
             }
 
             // if classes info in db is too old, fetch new from server
-            if((in24h.isEmpty() || refreshInterval != -1L) || requiredRefresh){
+            if(in24h.isEmpty() || requiredRefresh){
                 val newClasses = fetchFromServer(context)
 
                 if(newClasses != null){

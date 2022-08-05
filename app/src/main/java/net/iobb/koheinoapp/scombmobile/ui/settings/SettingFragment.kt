@@ -6,11 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.room.Room
-import kotlinx.android.synthetic.main.fragment_setting.*
 import kotlinx.android.synthetic.main.fragment_setting.view.*
 import net.iobb.koheinoapp.scombmobile.R
 import net.iobb.koheinoapp.scombmobile.common.AppDatabase
@@ -35,7 +33,7 @@ class SettingFragment : Fragment() {
             "ScombMobileDB"
         ).allowMainThreadQueries().build()
 
-        val intervalSelection = mutableListOf("自動更新なし", "常に更新", "1日", "2日", "1週間", "2週間")
+        val intervalSelection = mutableListOf("常に更新", "1日", "2日", "1週間", "2週間")
         setRightGravityAdapterToSpinner(requireContext(), intervalSelection, root.refreshIntervalSpinner){ selectedIndex, _ ->
             db.settingDao().insertSetting(Setting("refresh_interval", selectedIndex.toString()))
         }
@@ -50,15 +48,15 @@ class SettingFragment : Fragment() {
             Log.d("setting_inserted", selectedValue)
             // "最新" selected
             if(selectedIndex == 0){
-                root.periodSpinner.visibility = View.INVISIBLE
+                root.termSpinner.visibility = View.INVISIBLE
             }else{
-                root.periodSpinner.visibility = View.VISIBLE
+                root.termSpinner.visibility = View.VISIBLE
             }
         }
 
-        val periodSelection = mutableListOf("前期", "後期")
-        setRightGravityAdapterToSpinner(requireContext(), periodSelection, root.periodSpinner) { selectedIndex, _ ->
-            db.settingDao().insertSetting(Setting("timetable_period", selectedIndex.toString()))
+        val termSelection = mutableListOf("前期", "後期")
+        setRightGravityAdapterToSpinner(requireContext(), termSelection, root.termSpinner) { selectedIndex, _ ->
+            db.settingDao().insertSetting(Setting("timetable_term", selectedIndex.toString()))
         }
 
         recoverSettings(db, root, yearSelection)
@@ -71,12 +69,12 @@ class SettingFragment : Fragment() {
         // saved user and pass
         root.userNameSaveBtn.setOnClickListener {
             db.userDao().removeAllUser()
-            db.userDao().insertUser(User(db.userDao().getUser()?.username ?: root.userEditText.text.toString(), root.passEditText.text.toString()))
+            db.userDao().insertUser(User(root.userEditText.text.toString(), root.passEditText.text.toString()))
             Toast.makeText(requireContext(), "学籍番号を保存しました", Toast.LENGTH_SHORT).show()
         }
         root.passwordSaveBtn.setOnClickListener {
             db.userDao().removeAllUser()
-            db.userDao().insertUser(User(root.userEditText.text.toString(), db.userDao().getUser()?.password ?: root.passEditText.text.toString()))
+            db.userDao().insertUser(User(root.userEditText.text.toString(), root.passEditText.text.toString()))
             Toast.makeText(requireContext(), "パスワードを保存しました", Toast.LENGTH_SHORT).show()
         }
 
@@ -98,7 +96,7 @@ class SettingFragment : Fragment() {
         root.refreshIntervalSpinner.setSelection(db.settingDao().getSetting("refresh_interval")?.settingValue?.toInt() ?: 4)
         val yearIndex = yearSelection.indexOf(db.settingDao().getSetting("timetable_year")?.settingValue ?: "最新")
         root.yearSpinner.setSelection(yearIndex)
-        root.periodSpinner.setSelection(db.settingDao().getSetting("timetable_period")?.settingValue?.toInt() ?: 0)
+        root.termSpinner.setSelection(db.settingDao().getSetting("timetable_term")?.settingValue?.toInt() ?: 0)
     }
 
 }

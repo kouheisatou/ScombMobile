@@ -17,6 +17,9 @@ interface ClassCellDao {
     @Query("SELECT * FROM classCell")
     fun getAllClassCell(): Array<ClassCell>
 
+    @Query("SELECT * FROM classCell WHERE year = :year AND term = :term")
+    fun getClasses(year: Int, term: Int): Array<ClassCell>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertClassCell(classCell: ClassCell)
 }

@@ -1,7 +1,6 @@
 package net.iobb.koheinoapp.scombmobile.common
 
 import androidx.lifecycle.MutableLiveData
-import org.jsoup.HttpStatusException
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 
@@ -42,8 +41,9 @@ class Page {
             }
 
             networkState.postValue(NetworkState.Finished)
-        } catch (e: HttpStatusException) {
+        } catch (e: Exception) {
             e.printStackTrace()
+            networkState.postValue(NetworkState.Finished)
         }
         return document
     }
