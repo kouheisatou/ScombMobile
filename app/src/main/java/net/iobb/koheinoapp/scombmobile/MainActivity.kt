@@ -13,7 +13,9 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
 import net.iobb.koheinoapp.scombmobile.common.AppViewModel
+import net.iobb.koheinoapp.scombmobile.common.ScombMobileNotification
 import net.iobb.koheinoapp.scombmobile.databinding.ActivityMainBinding
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -45,6 +47,8 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        ScombMobileNotification.createNotificationChannel(this)
     }
 
     override fun onStart() {
