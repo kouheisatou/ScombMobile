@@ -18,6 +18,7 @@ import net.iobb.koheinoapp.scombmobile.common.setRightGravityAdapterToSpinner
 import net.iobb.koheinoapp.scombmobile.ui.login.User
 import java.util.*
 
+val timeSelection = mutableListOf("10分前", "30分前", "1時間前", "2時間前", "3時間前", "24時間前")
 
 class SettingFragment : Fragment() {
 
@@ -66,7 +67,6 @@ class SettingFragment : Fragment() {
             root.taskNotifyTimeSpinner.isVisible = isChecked
         }
 
-        val timeSelection = mutableListOf("10分前", "30分前", "1時間前", "2時間前", "3時間前", "24時間前")
         setRightGravityAdapterToSpinner(requireContext(), timeSelection, root.taskNotifyTimeSpinner){ selectedItemIndex, _ ->
             db.settingDao().insertSetting(Setting("task_notify_time", selectedItemIndex.toString()))
         }

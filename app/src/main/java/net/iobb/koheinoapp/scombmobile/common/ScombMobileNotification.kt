@@ -11,6 +11,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.room.Room
 import net.iobb.koheinoapp.scombmobile.R
+import net.iobb.koheinoapp.scombmobile.ui.settings.timeSelection
 import net.iobb.koheinoapp.scombmobile.ui.task.Task
 import java.util.*
 
@@ -33,7 +34,9 @@ class ScombMobileNotification : BroadcastReceiver() {
         val content = intent.getStringExtra("content")
         val id = intent.getIntExtra("id", 0)
 
-        sendNotification(context, "Scomb課題締切り", content ?: "", id)
+        val remainedTime = timeSelection[db.settingDao().getSetting("task_notify_time")?.settingValue?.toInt() ?: 0]
+
+        sendNotification(context, "Scomb課題締切り", "$content ($remainedTime)", id)
     }
 
     // 通知の送信
@@ -98,7 +101,7 @@ class ScombMobileNotification : BroadcastReceiver() {
             // 通知チャンネルの生成
             val channel = NotificationChannel(
                 CHANNEL_ID, // チャンネルID
-                "ScombMobile通知", // チャンネル名
+                "Scomb課題締切通知", // チャンネル名
                 NotificationManager.IMPORTANCE_DEFAULT) // 重要度
 
             // システムに通知チャンネルを登録
