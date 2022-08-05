@@ -9,6 +9,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.room.Room
 import net.iobb.koheinoapp.scombmobile.R
 import net.iobb.koheinoapp.scombmobile.ui.task.Task
 import java.util.*
@@ -18,8 +19,20 @@ val CHANNEL_ID = "SCOMB_MOBILE_NOTIFICATION"
 class ScombMobileNotification : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
+        val db = Room.databaseBuilder(
+            context,
+            AppDatabase::class.java,
+            "ScombMobileDB"
+        ).allowMainThreadQueries().build()
+
+        val enabledNotification = db.settingDao().getSetting("task_notification")?.settingValue == "true"
+        if(!enabledNotification){
+            return
+        }
+
         val content = intent.getStringExtra("content")
         val id = intent.getIntExtra("id", 0)
+
         sendNotification(context, "Scomb課題締切り", content ?: "", id)
     }
 
@@ -42,6 +55,21 @@ class ScombMobileNotification : BroadcastReceiver() {
     companion object {
 
         fun setTaskAlarm(context: Context, task: Task){
+            val db = Room.databaseBuilder(
+                context,
+                AppDatabase::class.java,
+                "ScombMobileDB"
+            ).allowMainThreadQueries().build()
+            val notifyTimeMillis = when(db.settingDao().getSetting("task_notify_time")?.settingValue){
+                "0" -> 60000 * 10
+                "1" -> 60000 * 30
+                "2" -> 60000 * 60
+                "3" -> 60000 * 60 * 2
+                "4" -> 60000 * 60 * 3
+                "5" -> 60000 * 60 * 24
+                else -> 0
+            }
+
             val alarmManager: AlarmManager = context.getSystemService(ALARM_SERVICE) as AlarmManager
             val alarmIntent: PendingIntent = Intent(context, ScombMobileNotification::class.java).let { intent ->
                 intent.putExtra("content", task.title)
@@ -50,7 +78,7 @@ class ScombMobileNotification : BroadcastReceiver() {
             }
             alarmManager.set(
                 AlarmManager.RTC,
-                task.deadLineTime,
+                task.deadLineTime - notifyTimeMillis,
                 alarmIntent
             )
         }

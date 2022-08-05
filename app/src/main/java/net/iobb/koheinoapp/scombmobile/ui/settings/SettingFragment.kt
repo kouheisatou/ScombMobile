@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -60,6 +61,25 @@ class SettingFragment : Fragment() {
             db.settingDao().insertSetting(Setting("timetable_term", selectedIndex.toString()))
         }
 
+        root.taskNotificationCheckbox.setOnCheckedChangeListener { _, isChecked ->
+            db.settingDao().insertSetting(Setting("task_notification", isChecked.toString()))
+            root.taskNotifyTimeSpinner.isVisible = isChecked
+        }
+
+        val timeSelection = mutableListOf("10分前", "30分前", "1時間前", "2時間前", "3時間前", "24時間前")
+        setRightGravityAdapterToSpinner(requireContext(), timeSelection, root.taskNotifyTimeSpinner){ selectedItemIndex, _ ->
+            db.settingDao().insertSetting(Setting("task_notify_time", selectedItemIndex.toString()))
+        }
+
+        root.timetableNotificationCheckbox.setOnCheckedChangeListener { _, isChecked ->
+            db.settingDao().insertSetting(Setting("timetable_notification", isChecked.toString()))
+            root.timetableNotifyTimeSpinner.isVisible = isChecked
+        }
+
+        setRightGravityAdapterToSpinner(requireContext(), timeSelection, root.timetableNotifyTimeSpinner) { selectedItemIndex, _ ->
+            db.settingDao().insertSetting(Setting("timetable_notify_time", selectedItemIndex.toString()))
+        }
+
         recoverSettings(db, root, yearSelection)
 
         // auto login checkbox
@@ -96,6 +116,11 @@ class SettingFragment : Fragment() {
         val yearIndex = yearSelection.indexOf(db.settingDao().getSetting("timetable_year")?.settingValue ?: "最新")
         root.yearSpinner.setSelection(yearIndex)
         root.termSpinner.setSelection(db.settingDao().getSetting("timetable_term")?.settingValue?.toInt() ?: 0)
+
+        root.taskNotificationCheckbox.isChecked = db.settingDao().getSetting("task_notification")?.settingValue == "true"
+        root.taskNotifyTimeSpinner.setSelection(db.settingDao().getSetting("task_notify_time")?.settingValue?.toInt() ?: 0)
+        root.timetableNotificationCheckbox.isChecked = db.settingDao().getSetting("timetable_notification")?.settingValue == "true"
+        root.timetableNotifyTimeSpinner.setSelection(db.settingDao().getSetting("timetable_notify_time")?.settingValue?.toInt() ?: 0)
     }
 
 }
