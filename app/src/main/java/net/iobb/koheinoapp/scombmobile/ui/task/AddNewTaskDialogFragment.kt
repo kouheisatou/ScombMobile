@@ -83,7 +83,7 @@ class AddNewTaskDialogFragment : DialogFragment() {
             override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
                 val v = super.getDropDownView(position, convertView, parent)
                 (v as TextView).gravity = Gravity.CENTER
-                val classInfo = allClasses.getOrNull(position) ?: return v
+                val classInfo = allClasses.getOrNull(position+1) ?: return v
                 if(classInfo.customColorInt != null) {
                     v.setTextColor(classInfo.customColorInt!!)
                 }else{
