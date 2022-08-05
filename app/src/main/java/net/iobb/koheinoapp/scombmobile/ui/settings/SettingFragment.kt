@@ -5,24 +5,21 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.Spinner
-import android.widget.TextView
+import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.room.Room
 import kotlinx.android.synthetic.main.fragment_setting.*
+import kotlinx.android.synthetic.main.fragment_setting.view.*
 import net.iobb.koheinoapp.scombmobile.R
 import net.iobb.koheinoapp.scombmobile.common.AppDatabase
+import net.iobb.koheinoapp.scombmobile.common.setRightGravityAdapterToSpinner
 import net.iobb.koheinoapp.scombmobile.ui.login.User
+import java.util.*
 
 
 class SettingFragment : Fragment() {
-
-    companion object {
-        fun newInstance() = SettingFragment()
-    }
 
     private lateinit var viewModel: SettingViewModel
 
@@ -30,15 +27,7 @@ class SettingFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_setting, container, false)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(SettingViewModel::class.java)
-    }
-
-    override fun onStart() {
+        val root = inflater.inflate(R.layout.fragment_setting, container, false)
 
         val db = Room.databaseBuilder(
             requireContext(),
@@ -46,42 +35,69 @@ class SettingFragment : Fragment() {
             "ScombMobileDB"
         ).allowMainThreadQueries().build()
 
+        val intervalSelection = mutableListOf("自動更新なし", "常に更新", "1日", "2日", "1週間", "2週間")
+        setRightGravityAdapterToSpinner(requireContext(), intervalSelection, root.refreshIntervalSpinner){ selectedIndex, _ ->
+            db.settingDao().insertSetting(Setting("refresh_interval", selectedIndex.toString()))
+        }
+
+        val yearSelection = mutableListOf("最新")
+        val yearOfToday = Calendar.getInstance().get(Calendar.YEAR)
+        for(i in 0 until 10){
+            yearSelection.add((yearOfToday - i).toString())
+        }
+        setRightGravityAdapterToSpinner(requireContext(), yearSelection, root.yearSpinner){ selectedIndex, _ ->
+            db.settingDao().insertSetting(Setting("timetable_year", selectedIndex.toString()))
+            Log.d("setting_inserted", selectedIndex.toString())
+            if(selectedIndex == 0){
+                root.periodSpinner.visibility = View.INVISIBLE
+            }else{
+                root.periodSpinner.visibility = View.VISIBLE
+            }
+        }
+
+        val periodSelection = mutableListOf("前期", "後期")
+        setRightGravityAdapterToSpinner(requireContext(), periodSelection, root.periodSpinner) { selectedIndex, _ ->
+            db.settingDao().insertSetting(Setting("timetable_period", selectedIndex.toString()))
+        }
+
+        recoverSettings(db, root)
+
         // auto login checkbox
-        autoLoginCheckBox.isChecked = db.settingDao().getSetting("enabled_auto_login")?.settingValue == "true"
-        autoLoginCheckBox.setOnClickListener {
-            db.settingDao().insertSetting(Setting("enabled_auto_login", autoLoginCheckBox.isChecked.toString()))
-            Log.d("SettingDao : enabled_auto_login", db.settingDao().getSetting("enabled_auto_login")?.settingValue ?: "null")
+        root.autoLoginCheckBox.setOnClickListener {
+            db.settingDao().insertSetting(Setting("enabled_auto_login", root.autoLoginCheckBox.isChecked.toString()))
         }
 
         // saved user and pass
-        idTextView.setText(db.userDao().getUser()?.username ?: "")
-        passwordTextView.setText(db.userDao().getUser()?.password ?: "")
-        idTextView.addTextChangedListener {
+        root.userNameSaveBtn.setOnClickListener {
             db.userDao().removeAllUser()
-            db.userDao().insertUser(User(idTextView.text.toString(), passwordTextView.text.toString()))
+            db.userDao().insertUser(User(db.userDao().getUser()?.username ?: root.userEditText.text.toString(), root.passEditText.text.toString()))
+            Toast.makeText(requireContext(), "学籍番号を保存しました", Toast.LENGTH_SHORT).show()
         }
-        passwordTextView.addTextChangedListener {
+        root.passwordSaveBtn.setOnClickListener {
             db.userDao().removeAllUser()
-            db.userDao().insertUser(User(idTextView.text.toString(), passwordTextView.text.toString()))
+            db.userDao().insertUser(User(root.userEditText.text.toString(), db.userDao().getUser()?.password ?: root.passEditText.text.toString()))
+            Toast.makeText(requireContext(), "パスワードを保存しました", Toast.LENGTH_SHORT).show()
         }
 
+        return root
+    }
 
-        refreshIntervalSpinner.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
-                // アイテムが選択された時の動作
-                override fun onItemSelected(
-                    parent: AdapterView<*>,
-                    view: View,
-                    position: Int,
-                    id: Long
-                ) {
-                }
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel = ViewModelProvider(this).get(SettingViewModel::class.java)
+    }
 
-                // 何も選択されなかった時の動作
-                override fun onNothingSelected(parent: AdapterView<*>?) {}
-            }
 
-        super.onStart()
+    fun recoverSettings(db: AppDatabase, root: View){
+        root.autoLoginCheckBox.isChecked = db.settingDao().getSetting("enabled_auto_login")?.settingValue == "true"
+
+        root.userEditText.setText(db.userDao().getUser()?.username ?: "")
+        root.passEditText.setText(db.userDao().getUser()?.password ?: "")
+
+        root.refreshIntervalSpinner.setSelection(db.settingDao().getSetting("refresh_interval")?.settingValue?.toInt() ?: 4)
+        root.yearSpinner.setSelection(db.settingDao().getSetting("timetable_year")?.settingValue?.toInt() ?: 0)
+        Log.d("setting_loaded", db.settingDao().getSetting("timetable_year")?.settingValue ?: "null")
+        root.periodSpinner.setSelection(db.settingDao().getSetting("timetable_period")?.settingValue?.toInt() ?: 0)
     }
 
 }

@@ -34,11 +34,19 @@
                 android:layout_height="wrap_content"
                 android:text="学籍番号　"/>
             <EditText
-                android:id="@+id/idTextView"
-                android:layout_width="match_parent"
+                android:id="@+id/userEditText"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:inputType="textPersonName" />
+            <ImageView
+                android:id="@+id/userNameSaveBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_baseline_save_24"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:clickable="true"/>
         </LinearLayout>
 
         <LinearLayout
@@ -52,11 +60,20 @@
                 android:text="パスワード"/>
 
             <EditText
-                android:id="@+id/passwordTextView"
-                android:layout_width="match_parent"
+                android:id="@+id/passEditText"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:inputType="textPassword" />
+
+            <ImageView
+                android:id="@+id/passwordSaveBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_baseline_save_24"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:clickable="true"/>
         </LinearLayout>
 
         <CheckBox
@@ -95,10 +112,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="自動更新間隔"/>
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
             <Spinner
                 android:id="@+id/refreshIntervalSpinner"
-                android:layout_weight="1"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         </LinearLayout>
 
@@ -110,11 +130,14 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="年度"/>
+                android:text="表示年度"/>
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
             <Spinner
                 android:id="@+id/yearSpinner"
-                android:layout_weight="1"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         </LinearLayout>
 
@@ -126,11 +149,14 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="学期"/>
+                android:text="表示学期"/>
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
             <Spinner
                 android:id="@+id/periodSpinner"
-                android:layout_weight="1"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         </LinearLayout>
 

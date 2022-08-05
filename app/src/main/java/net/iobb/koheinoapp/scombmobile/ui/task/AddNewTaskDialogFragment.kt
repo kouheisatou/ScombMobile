@@ -63,26 +63,11 @@ class AddNewTaskDialogFragment : DialogFragment() {
             showDatePickerDialog()
         }
 
-        val taskTypeAdapter: ArrayAdapter<String?> = object : ArrayAdapter<String?>(requireContext(), android.R.layout.simple_spinner_item) {
-            // pos in item
-            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-                val v = super.getView(position, convertView, parent)
-                (v as TextView).gravity = Gravity.RIGHT
-                return v
-            }
-        }
+        val taskTypeAdapter = rightGravityArrayAdapter<String>(requireContext(), root.taskTypeSpinner)
         taskTypeAdapter.addAll(japaneseTaskType())
-        taskTypeAdapter.setDropDownViewResource(androidx.appcompat.R.layout.support_simple_spinner_dropdown_item)
         root.taskTypeSpinner.adapter = taskTypeAdapter
 
-        val classNameAdapter: ArrayAdapter<String?> = object : ArrayAdapter<String?>(requireContext(), android.R.layout.simple_spinner_item) {
-            // pos in item
-            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-                val v = super.getView(position, convertView, parent)
-                (v as TextView).gravity = Gravity.RIGHT
-                return v
-            }
-        }
+        val classNameAdapter = rightGravityArrayAdapter<String>(requireContext(), root.classNameSpinner)
         val allClasses = taskViewModel.getAllClasses(requireContext())
         val classesNameString = mutableListOf<String>()
         allClasses.forEach {
@@ -90,7 +75,6 @@ class AddNewTaskDialogFragment : DialogFragment() {
         }
         classNameAdapter.add("指定なし")
         classNameAdapter.addAll(classesNameString)
-        classNameAdapter.setDropDownViewResource(androidx.appcompat.R.layout.support_simple_spinner_dropdown_item)
         root.classNameSpinner.adapter = classNameAdapter
 
         root.positive_button.setOnClickListener {
