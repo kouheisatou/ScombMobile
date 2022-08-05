@@ -34,29 +34,35 @@ class ScombMobileNotification : BroadcastReceiver() {
             .setPriority(NotificationCompat.PRIORITY_HIGH) // 重要度
             .build()
 
-        // 通知の送信
         with (NotificationManagerCompat.from(context)) {
-            notify(id, notification) // 通知ID (更新、削除で利用)
+            notify(id, notification)
         }
     }
 
     companion object {
-        fun setTaskAlerm(context: Context, task: Task){
-            setAlarm(context, task.deadLineTime, task.title, task.taskId.hashCode())
-        }
 
-        fun setAlarm(context: Context, notifyTimeMillis: Long, content: String, id: Int){
+        fun setTaskAlarm(context: Context, task: Task){
             val alarmManager: AlarmManager = context.getSystemService(ALARM_SERVICE) as AlarmManager
             val alarmIntent: PendingIntent = Intent(context, ScombMobileNotification::class.java).let { intent ->
-                intent.putExtra("content", content)
-                intent.putExtra("id", id)
-                PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_IMMUTABLE)
+                intent.putExtra("content", task.title)
+                intent.putExtra("id", task.taskId)
+                PendingIntent.getBroadcast(context, task.taskId, intent, PendingIntent.FLAG_IMMUTABLE)
             }
             alarmManager.set(
                 AlarmManager.RTC,
-                notifyTimeMillis,
+                task.deadLineTime,
                 alarmIntent
             )
+        }
+
+        fun cancelTaskAlerm(context: Context, task: Task){
+            val alarmManager: AlarmManager = context.getSystemService(ALARM_SERVICE) as AlarmManager
+            val alarmIntent: PendingIntent = Intent(context, ScombMobileNotification::class.java).let { intent ->
+                intent.putExtra("content", task.title)
+                intent.putExtra("id", task.taskId)
+                PendingIntent.getBroadcast(context, task.taskId, intent, PendingIntent.FLAG_IMMUTABLE)
+            }
+            alarmManager.cancel(alarmIntent)
         }
 
         // 通知チャンネルの生成

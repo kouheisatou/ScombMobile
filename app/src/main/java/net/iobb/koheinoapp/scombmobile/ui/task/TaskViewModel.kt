@@ -63,7 +63,7 @@ class TaskViewModel : ViewModel() {
 
             // alerm
             newTasks.forEach {
-                ScombMobileNotification.setTaskAlerm(context, it)
+                ScombMobileNotification.setTaskAlarm(context, it)
             }
 
             Log.d("fetched_task", newTasks.toString())

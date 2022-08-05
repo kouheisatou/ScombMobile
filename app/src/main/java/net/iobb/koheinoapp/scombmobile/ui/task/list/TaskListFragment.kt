@@ -17,11 +17,11 @@ import kotlinx.android.synthetic.main.fragment_item_list.view.*
 import net.iobb.koheinoapp.scombmobile.R
 import net.iobb.koheinoapp.scombmobile.common.AppViewModel
 import net.iobb.koheinoapp.scombmobile.common.NetworkState
+import net.iobb.koheinoapp.scombmobile.common.ScombMobileNotification
 import net.iobb.koheinoapp.scombmobile.ui.task.AddNewTaskDialogFragment
 import net.iobb.koheinoapp.scombmobile.ui.task.Task
 import net.iobb.koheinoapp.scombmobile.ui.task.TaskFragment
 import net.iobb.koheinoapp.scombmobile.ui.task.TaskViewModel
-import java.util.*
 
 class TaskListFragment : Fragment(), TaskFragment {
 
@@ -98,6 +98,7 @@ class TaskListFragment : Fragment(), TaskFragment {
 
     override fun removeTask(removeTarget: Task) {
         taskViewModel.removeMyTask(requireContext(), removeTarget)
+        ScombMobileNotification.cancelTaskAlerm(requireContext(), removeTarget)
         refresh()
     }
 }

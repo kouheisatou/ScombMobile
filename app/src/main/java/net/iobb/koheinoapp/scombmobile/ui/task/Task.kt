@@ -23,7 +23,7 @@ class Task(
 ) {
 
     @PrimaryKey
-    var taskId: Long = Calendar.getInstance().timeInMillis
+    var taskId: Int = Calendar.getInstance().timeInMillis.hashCode()
     var reportId: String? = null
     var classId: String? = null
     var customColor: Int? = null
@@ -41,7 +41,7 @@ class Task(
         }
 
         if (!addManually && reportId != null){
-            taskId = reportId!!.hashCode().toLong()
+            taskId = reportId!!.hashCode()
         }
     }
 
