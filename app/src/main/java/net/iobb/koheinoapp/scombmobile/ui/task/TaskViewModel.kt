@@ -16,13 +16,13 @@ import java.util.*
 
 class TaskViewModel : ViewModel() {
     lateinit var appViewModel: AppViewModel
-    val page = Page(TASK_LIST_PAGE_URL)
+    val page = Page()
     val tasks = MutableLiveData(mutableListOf<Task>())
     val tasksOfTheDate = MutableLiveData(mutableListOf<Task>())
 
     fun fetchTasks(context: Context){
         viewModelScope.launch(Dispatchers.IO) {
-            val document = page.fetch(appViewModel.sessionId)
+            val document = page.fetch(TASK_LIST_PAGE_URL, appViewModel.sessionId)
 
             // tasks from scomb
             val newTasks = mutableListOf<Task>()

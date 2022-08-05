@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.*
 import android.widget.LinearLayout
 import android.widget.TableRow
+import androidx.core.view.children
 import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -75,6 +76,16 @@ class TimetableFragment : Fragment(), SimpleDialog.OnDialogResultListener {
             }
         }
         viewModel.timeTable.observe(viewLifecycleOwner){
+            // remove cell
+            for(row in timeTable.children.withIndex()){
+                if(row.index == 0) continue
+                for(cell in (row.value as TableRow).children.withIndex()){
+                    if(cell.index == 0) continue
+                    (cell.value as LinearLayout).removeAllViews()
+                }
+            }
+
+            // construct cell
             applyToAllCell { classCell, row, col ->
                 val tableRow = binding.timeTable[row + 1] as TableRow
                 val cellView = tableRow[col + 1] as LinearLayout
@@ -95,7 +106,6 @@ class TimetableFragment : Fragment(), SimpleDialog.OnDialogResultListener {
                         classCell.view.classNameBtn.setOnClickListener { v ->
                             val dialog = ClassDetailDialogFragment.create(row, col)
                             dialog.show(childFragmentManager, "class_detail_dialog")
-                            true
                         }
 
                         classCell.view.classNameBtn.setOnLongClickListener { v ->

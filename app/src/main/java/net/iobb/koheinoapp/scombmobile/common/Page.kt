@@ -12,11 +12,11 @@ private const val HEADER_ACCEPT_LANG = "ja,en-US;q=0.7,en;q=0.3"
 private const val HEADER_ACCEPT_ENCODING = "gzip, deflate, br"
 private const val HEADER_REFERER = "https://www.xxxxx/yyyy"
 
-class Page(val url: String) {
+class Page {
 
     var networkState = MutableLiveData(NetworkState.Initialized)
 
-    fun fetch(cookieId: String?): Document?{
+    fun fetch(url: String, cookieId: String?): Document?{
         var document: Document? = null
 
         if(cookieId == null){

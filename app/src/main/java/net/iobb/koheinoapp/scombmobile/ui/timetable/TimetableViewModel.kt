@@ -9,12 +9,13 @@ import androidx.room.Room
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.iobb.koheinoapp.scombmobile.common.*
+import net.iobb.koheinoapp.scombmobile.ui.settings.Setting
 import java.lang.StringBuilder
 import java.util.*
 
 class TimetableViewModel : ViewModel() {
 
-    val page = Page(SCOMB_TIMETABLE_URL)
+    val page = Page()
     lateinit var appViewModel: AppViewModel
     // 時間割二次元配列 (7(1-7限) * 6(月-土の6日))
     val timeTable = MutableLiveData<Array<Array<ClassCell?>>>(
@@ -27,14 +28,21 @@ class TimetableViewModel : ViewModel() {
     val timetableListenerState = MutableLiveData(TimetableFragment.ListenerState.Initialize)
     var selectedColor: Int? = null
 
+    // timetable setting
+    var refreshInterval: Long = 86400000L * 7
+    var timetableYear: Int? = null
+    var timetablePeriod: Int? = null    // 前期 -> 10, 後期 -> 20
+
     companion object {
         var refreshRequired = false
     }
 
     suspend fun fetchFromServer(context: Context): Array<ClassCell>?{
+        loadTimetableSettings(context)
+        val url = "$SCOMB_TIMETABLE_URL?risyunen=${timetableYear ?: ""}&kikanCd=${timetablePeriod ?: ""}"
 
         // get from web
-        val doc = page.fetch(appViewModel.sessionId)
+        val doc = page.fetch(url, appViewModel.sessionId)
 
         val tableElement = doc?.getElementsByClass(TIMETABLE_ROW_CSS_CLASS_NM) ?: return null
         val classes = mutableListOf<ClassCell>()
@@ -71,6 +79,51 @@ class TimetableViewModel : ViewModel() {
         return classes.toTypedArray()
     }
 
+    fun loadTimetableSettings(context: Context) {
+        val db = Room.databaseBuilder(
+            context,
+            AppDatabase::class.java,
+            "ScombMobileDB"
+        ).allowMainThreadQueries().build().settingDao()
+
+
+        val interval = db.getSetting("refresh_interval")?.settingValue
+        val year = db.getSetting("timetable_year")?.settingValue
+        val period = db.getSetting("timetable_period")?.settingValue
+
+        Log.d("load_timetable_setting", "interval=$interval, year=$year, period=$period")
+
+        refreshInterval = when(interval){
+            "0" -> -1L
+            "1" -> 0L
+            "2" -> 86400000L
+            "3" -> 86400000L * 2
+            "4" -> 86400000L * 7
+            "5" -> 86400000L * 14
+            else -> 86400000L * 7
+        }
+
+        val today = Calendar.getInstance()
+        // year as 4 digits
+        if(year?.matches(Regex("\\d{4}")) == true){
+            timetableYear = year.toInt()
+            timetablePeriod = when(period){
+                "0" -> 10
+                "1" -> 20
+                else -> 10
+            }
+        }
+        // latest
+        else{
+            timetableYear = today.get(Calendar.YEAR)
+            timetablePeriod = if(today.get(Calendar.MONTH) < 9){
+                10
+            }else{
+                20
+            }
+        }
+    }
+
     fun updateDB(classes: Array<ClassCell>, context: Context){
         classes.forEach {
             val db = Room.databaseBuilder(
@@ -101,19 +154,18 @@ class TimetableViewModel : ViewModel() {
 
             var classesFromDB = fetchFromDB(context)
 
-            val yesterday = Calendar.getInstance()
-            yesterday.add(Calendar.HOUR, -1 * TIMETABLE_EFFECTIVE_TIME)
+            val now = Calendar.getInstance()
 
             // get classes fetched in 24h
             val in24h = mutableListOf<ClassCell>()
             classesFromDB.forEach {
-                if(it.createdDate > yesterday.timeInMillis){
+                if(it.createdDate > now.timeInMillis - refreshInterval){
                     in24h.add(it)
                 }
             }
 
             // if classes info in db is too old, fetch new from server
-            if(in24h.isEmpty() || requiredRefresh){
+            if((in24h.isEmpty() || refreshInterval != -1L) || requiredRefresh){
                 val newClasses = fetchFromServer(context)
 
                 if(newClasses != null){
