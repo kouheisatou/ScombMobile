@@ -1,4 +1,4 @@
-package net.iobb.koheinoapp.scombmobile.common
+package net.iobb.koheinoapp.scombmobile.background
 
 import android.app.*
 import android.content.BroadcastReceiver
@@ -11,6 +11,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.room.Room
 import net.iobb.koheinoapp.scombmobile.R
+import net.iobb.koheinoapp.scombmobile.common.AppDatabase
 import net.iobb.koheinoapp.scombmobile.ui.task.Task
 import java.util.*
 

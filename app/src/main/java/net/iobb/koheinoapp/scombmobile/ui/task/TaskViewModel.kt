@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.room.Room
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import net.iobb.koheinoapp.scombmobile.background.ScombMobileNotification
 import net.iobb.koheinoapp.scombmobile.common.*
 import net.iobb.koheinoapp.scombmobile.ui.timetable.ClassCell
 import java.lang.Exception

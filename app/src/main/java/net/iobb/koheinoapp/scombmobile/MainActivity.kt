@@ -1,5 +1,6 @@
 package net.iobb.koheinoapp.scombmobile
 
+import android.app.AlarmManager
 import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
@@ -13,7 +14,8 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
 import net.iobb.koheinoapp.scombmobile.common.AppViewModel
-import net.iobb.koheinoapp.scombmobile.common.ScombMobileNotification
+import net.iobb.koheinoapp.scombmobile.background.ScombMobileNotification
+import net.iobb.koheinoapp.scombmobile.background.TasksFetchReceiver
 import net.iobb.koheinoapp.scombmobile.databinding.ActivityMainBinding
 import java.util.*
 
@@ -49,6 +51,9 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
 
         ScombMobileNotification.createNotificationChannel(this)
+
+        TasksFetchReceiver.resumeBackgroundTask(this, "MjU4OTFhY2EtZWM4MC00YTAwLWFjODUtMDEyODIyODY0Mzdm", Calendar.getInstance().timeInMillis, AlarmManager.INTERVAL_DAY)
+
     }
 
     override fun onStart() {

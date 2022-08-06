@@ -20,10 +20,8 @@ import kotlinx.android.synthetic.main.fragment_home.*
 import net.iobb.koheinoapp.scombmobile.*
 import net.iobb.koheinoapp.scombmobile.common.AppViewModel
 import net.iobb.koheinoapp.scombmobile.common.NetworkState
-import net.iobb.koheinoapp.scombmobile.common.ScombMobileNotification
 import net.iobb.koheinoapp.scombmobile.databinding.FragmentHomeBinding
 import net.iobb.koheinoapp.scombmobile.ui.timetable.TimetableViewModel.Companion.refreshRequired
-import java.util.*
 
 
 class TimetableFragment : Fragment(), SimpleDialog.OnDialogResultListener {

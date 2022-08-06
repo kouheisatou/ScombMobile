@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.fragment_calendar.view.*
 import net.iobb.koheinoapp.scombmobile.R
 import net.iobb.koheinoapp.scombmobile.common.AppViewModel
 import net.iobb.koheinoapp.scombmobile.common.NetworkState
-import net.iobb.koheinoapp.scombmobile.common.ScombMobileNotification
+import net.iobb.koheinoapp.scombmobile.background.ScombMobileNotification
 import net.iobb.koheinoapp.scombmobile.ui.task.AddNewTaskDialogFragment
 import net.iobb.koheinoapp.scombmobile.ui.task.Task
 import net.iobb.koheinoapp.scombmobile.ui.task.TaskFragment
