@@ -11,7 +11,6 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.room.Room
 import net.iobb.koheinoapp.scombmobile.R
-import net.iobb.koheinoapp.scombmobile.ui.settings.timeSelection
 import net.iobb.koheinoapp.scombmobile.ui.task.Task
 import java.util.*
 
@@ -26,7 +25,7 @@ class ScombMobileNotification : BroadcastReceiver() {
             "ScombMobileDB"
         ).allowMainThreadQueries().build()
 
-        val enabledNotification = db.settingDao().getSetting("task_notification")?.settingValue == "true"
+        val enabledNotification = (db.settingDao().getSetting("task_notification")?.settingValue ?: "true") == "true"
         if(!enabledNotification){
             return
         }
@@ -34,9 +33,13 @@ class ScombMobileNotification : BroadcastReceiver() {
         val content = intent.getStringExtra("content")
         val id = intent.getIntExtra("id", 0)
 
-        val remainedTime = timeSelection[db.settingDao().getSetting("task_notify_time")?.settingValue?.toInt() ?: 0]
+        val notificationReservationTime = intent.getLongExtra("deadline_time", 0)
+        val now = Calendar.getInstance()
+        val deltaT = (notificationReservationTime - now.timeInMillis) / 1000 / 60
 
-        sendNotification(context, "Scomb課題締切り", "$content ($remainedTime)", id)
+        if(deltaT > 0){
+            sendNotification(context, "Scomb課題締切り", "$content (${deltaT}分前)", id)
+        }
     }
 
     // 通知の送信
@@ -77,6 +80,7 @@ class ScombMobileNotification : BroadcastReceiver() {
             val alarmIntent: PendingIntent = Intent(context, ScombMobileNotification::class.java).let { intent ->
                 intent.putExtra("content", task.title)
                 intent.putExtra("id", task.taskId)
+                intent.putExtra("deadline_time", task.deadLineTime)
                 PendingIntent.getBroadcast(context, task.taskId, intent, PendingIntent.FLAG_IMMUTABLE)
             }
             alarmManager.set(

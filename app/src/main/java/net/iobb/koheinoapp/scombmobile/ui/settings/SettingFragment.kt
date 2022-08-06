@@ -18,8 +18,6 @@ import net.iobb.koheinoapp.scombmobile.common.setRightGravityAdapterToSpinner
 import net.iobb.koheinoapp.scombmobile.ui.login.User
 import java.util.*
 
-val timeSelection = mutableListOf("10分前", "30分前", "1時間前", "2時間前", "3時間前", "24時間前")
-
 class SettingFragment : Fragment() {
 
     private lateinit var viewModel: SettingViewModel
@@ -62,20 +60,25 @@ class SettingFragment : Fragment() {
             db.settingDao().insertSetting(Setting("timetable_term", selectedIndex.toString()))
         }
 
+        // enabled task and test notification
         root.taskNotificationCheckbox.setOnCheckedChangeListener { _, isChecked ->
             db.settingDao().insertSetting(Setting("task_notification", isChecked.toString()))
             root.taskNotifyTimeSpinner.isVisible = isChecked
         }
 
+        // timing of task and test notification
+        val timeSelection = mutableListOf("10分前", "30分前", "1時間前", "2時間前", "3時間前", "24時間前")
         setRightGravityAdapterToSpinner(requireContext(), timeSelection, root.taskNotifyTimeSpinner){ selectedItemIndex, _ ->
             db.settingDao().insertSetting(Setting("task_notify_time", selectedItemIndex.toString()))
         }
 
+        // enabled timetable notification
         root.timetableNotificationCheckbox.setOnCheckedChangeListener { _, isChecked ->
             db.settingDao().insertSetting(Setting("timetable_notification", isChecked.toString()))
             root.timetableNotifyTimeSpinner.isVisible = isChecked
         }
 
+        // timing of timetable class notification
         setRightGravityAdapterToSpinner(requireContext(), timeSelection, root.timetableNotifyTimeSpinner) { selectedItemIndex, _ ->
             db.settingDao().insertSetting(Setting("timetable_notify_time", selectedItemIndex.toString()))
         }
@@ -117,9 +120,11 @@ class SettingFragment : Fragment() {
         root.yearSpinner.setSelection(yearIndex)
         root.termSpinner.setSelection(db.settingDao().getSetting("timetable_term")?.settingValue?.toInt() ?: 0)
 
-        root.taskNotificationCheckbox.isChecked = db.settingDao().getSetting("task_notification")?.settingValue == "true"
+        root.taskNotificationCheckbox.isChecked = (db.settingDao().getSetting("task_notification")?.settingValue ?: "true") == "true"
+        root.taskNotifyTimeSpinner.isVisible = root.taskNotificationCheckbox.isChecked
         root.taskNotifyTimeSpinner.setSelection(db.settingDao().getSetting("task_notify_time")?.settingValue?.toInt() ?: 0)
-        root.timetableNotificationCheckbox.isChecked = db.settingDao().getSetting("timetable_notification")?.settingValue == "true"
+        root.timetableNotificationCheckbox.isChecked = (db.settingDao().getSetting("timetable_notification")?.settingValue ?: "true") == "true"
+        root.timetableNotifyTimeSpinner.isVisible = root.timetableNotificationCheckbox.isChecked
         root.timetableNotifyTimeSpinner.setSelection(db.settingDao().getSetting("timetable_notify_time")?.settingValue?.toInt() ?: 0)
     }
 

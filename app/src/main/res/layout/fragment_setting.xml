@@ -178,7 +178,6 @@
                     android:background="@color/black"/>
 
                 <LinearLayout
-                    android:layout_marginVertical="8dp"
                     android:gravity="center_vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -198,7 +197,6 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_marginVertical="8dp"
                     android:gravity="center_vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
