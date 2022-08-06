@@ -19,6 +19,7 @@ import androidx.room.Room
 import kotlinx.android.synthetic.main.fragment_login.*
 import net.iobb.koheinoapp.scombmobile.*
 import net.iobb.koheinoapp.scombmobile.common.*
+import net.iobb.koheinoapp.scombmobile.ui.settings.Setting
 import java.lang.Exception
 
 class LoginFragment : Fragment() {
@@ -88,6 +89,10 @@ class LoginFragment : Fragment() {
 
                     appViewModel.sessionId = webView.sessionId ?: return@observe
                     appViewModel.userId.value = webView.loginUser ?: return@observe
+
+                    // save session id to db
+                    // use in background task fetch
+                    db.settingDao().insertSetting(Setting("session_id", appViewModel.sessionId!!))
 
                     findNavController().popBackStack()
                 }

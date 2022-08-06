@@ -12,10 +12,12 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.room.Room
 import com.google.android.material.navigation.NavigationView
 import net.iobb.koheinoapp.scombmobile.common.AppViewModel
 import net.iobb.koheinoapp.scombmobile.background.ScombMobileNotification
 import net.iobb.koheinoapp.scombmobile.background.TasksFetchReceiver
+import net.iobb.koheinoapp.scombmobile.common.AppDatabase
 import net.iobb.koheinoapp.scombmobile.databinding.ActivityMainBinding
 import java.util.*
 
@@ -52,7 +54,13 @@ class MainActivity : AppCompatActivity() {
 
         ScombMobileNotification.createNotificationChannel(this)
 
-        TasksFetchReceiver.resumeBackgroundTask(this, "MjU4OTFhY2EtZWM4MC00YTAwLWFjODUtMDEyODIyODY0Mzdm", Calendar.getInstance().timeInMillis + 5000, AlarmManager.INTERVAL_DAY)
+        val db = Room.databaseBuilder(
+            this,
+            AppDatabase::class.java,
+            "ScombMobileDB"
+        ).allowMainThreadQueries().build()
+        val sessionId = db.settingDao().getSetting("session_id")?.settingValue
+        TasksFetchReceiver.resumeBackgroundTask(this, sessionId, Calendar.getInstance().timeInMillis + 5000, AlarmManager.INTERVAL_DAY)
 
     }
 
