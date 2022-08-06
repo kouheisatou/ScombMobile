@@ -17,14 +17,10 @@ class TasksFetchReceiver : BroadcastReceiver() {
                 intent.putExtra("session_id", sessionId)
                 PendingIntent.getBroadcast(context, 2, intent, PendingIntent.FLAG_IMMUTABLE)
             }
-//            alarmManager.setInexactRepeating(
-//                AlarmManager.RTC_WAKEUP,
-//                executeTime,
-//                interval,
-//                alarmIntent
-//            )
-            alarmManager.setAlarmClock(
-                AlarmManager.AlarmClockInfo(executeTime, alarmIntent),
+            alarmManager.setInexactRepeating(
+                AlarmManager.RTC_WAKEUP,
+                executeTime,
+                interval,
                 alarmIntent
             )
         }

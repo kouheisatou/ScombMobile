@@ -52,6 +52,10 @@ class TasksFetchDemon : Service() {
                 Toast.makeText(baseContext, fetchedTasks.toString(), Toast.LENGTH_SHORT).show()
             }
 
+            fetchedTasks.forEach {
+                ScombMobileNotification.setTaskAlarm(baseContext, it)
+            }
+
             // end service
             baseContext.stopService(Intent(baseContext, this::class.java))
         }

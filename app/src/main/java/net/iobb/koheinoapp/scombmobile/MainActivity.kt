@@ -63,8 +63,15 @@ class MainActivity : AppCompatActivity() {
         val sessionId = db.settingDao().getSetting("session_id")?.settingValue
         Log.d("session_id", sessionId ?: "null")
         appViewModel.sessionId = sessionId
-        TasksFetchReceiver.resumeBackgroundTask(this, sessionId, Calendar.getInstance().timeInMillis + 5000, AlarmManager.INTERVAL_DAY)
 
+        val startTime = Calendar.getInstance().apply {
+            add(Calendar.DATE, 1)
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+        TasksFetchReceiver.resumeBackgroundTask(this, sessionId, startTime.timeInMillis, AlarmManager.INTERVAL_DAY)
     }
 
     override fun onStart() {
