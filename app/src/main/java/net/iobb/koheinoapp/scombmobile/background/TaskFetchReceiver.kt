@@ -28,8 +28,8 @@ class TasksFetchReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
         val sessionId = intent?.getStringExtra("session_id")
-        Toast.makeText(context, "${this::class.simpleName}#onReceive()", Toast.LENGTH_SHORT).show()
-        Toast.makeText(context, "session_id=${sessionId}", Toast.LENGTH_SHORT).show()
+//        Toast.makeText(context, "${this::class.simpleName}#onReceive()", Toast.LENGTH_SHORT).show()
+//        Toast.makeText(context, "session_id=${sessionId}", Toast.LENGTH_SHORT).show()
 
         val startServiceIntent = Intent(context, TasksFetchDemon::class.java)
         startServiceIntent.putExtra("session_id", sessionId)
