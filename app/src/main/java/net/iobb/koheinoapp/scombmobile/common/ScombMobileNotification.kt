@@ -66,6 +66,8 @@ class ScombMobileNotification : BroadcastReceiver() {
                 AppDatabase::class.java,
                 "ScombMobileDB"
             ).allowMainThreadQueries().build()
+
+            // load notify timing setting
             val notifyTimeMillis = when(db.settingDao().getSetting("task_notify_time")?.settingValue){
                 "0" -> 60000 * 10
                 "1" -> 60000 * 30
@@ -83,11 +85,7 @@ class ScombMobileNotification : BroadcastReceiver() {
                 intent.putExtra("deadline_time", task.deadLineTime)
                 PendingIntent.getBroadcast(context, task.taskId, intent, PendingIntent.FLAG_IMMUTABLE)
             }
-            alarmManager.set(
-                AlarmManager.RTC,
-                task.deadLineTime - notifyTimeMillis,
-                alarmIntent
-            )
+            alarmManager.setAlarmClock(AlarmManager.AlarmClockInfo(task.deadLineTime - notifyTimeMillis, null), alarmIntent)
         }
 
         fun cancelTaskAlerm(context: Context, task: Task){
