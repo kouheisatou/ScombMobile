@@ -38,6 +38,9 @@ class TasksFetchDemon : Service() {
         fetchTasksFromScomb(sessionId){ document ->
             fetchedTasks = TaskViewModel.generateTaskFromHtml(baseContext, document ?: return@fetchTasksFromScomb)
             Log.d("fetched_tasks", fetchedTasks.toString())
+            CoroutineScope(Dispatchers.Main).launch {
+                Toast.makeText(baseContext, fetchedTasks.toString(), Toast.LENGTH_SHORT).show()
+            }
         }
 
         return START_NOT_STICKY

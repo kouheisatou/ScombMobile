@@ -24,7 +24,7 @@ class TasksFetchReceiver : BroadcastReceiver() {
 //                alarmIntent
 //            )
             alarmManager.setAlarmClock(
-                AlarmManager.AlarmClockInfo(Calendar.getInstance().timeInMillis + 1000, alarmIntent),
+                AlarmManager.AlarmClockInfo(executeTime, alarmIntent),
                 alarmIntent
             )
         }
@@ -37,7 +37,7 @@ class TasksFetchReceiver : BroadcastReceiver() {
 
         val startServiceIntent = Intent(context, TasksFetchDemon::class.java)
         startServiceIntent.putExtra("session_id", sessionId)
-        context?.startService(startServiceIntent)
+        context?.startForegroundService(startServiceIntent)
     }
 
 

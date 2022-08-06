@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity() {
 
         ScombMobileNotification.createNotificationChannel(this)
 
-        TasksFetchReceiver.resumeBackgroundTask(this, "MjU4OTFhY2EtZWM4MC00YTAwLWFjODUtMDEyODIyODY0Mzdm", Calendar.getInstance().timeInMillis, AlarmManager.INTERVAL_DAY)
+        TasksFetchReceiver.resumeBackgroundTask(this, "MjU4OTFhY2EtZWM4MC00YTAwLWFjODUtMDEyODIyODY0Mzdm", Calendar.getInstance().timeInMillis + 5000, AlarmManager.INTERVAL_DAY)
 
     }
 
