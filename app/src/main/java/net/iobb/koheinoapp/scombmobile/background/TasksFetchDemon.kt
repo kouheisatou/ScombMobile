@@ -5,11 +5,14 @@ import android.content.Intent
 import android.os.IBinder
 import android.util.Log
 import android.widget.Toast
+import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.iobb.koheinoapp.scombmobile.common.SCOMB_LOGGED_OUT_PAGE_URL
 import net.iobb.koheinoapp.scombmobile.common.TASK_LIST_PAGE_URL
+import net.iobb.koheinoapp.scombmobile.ui.task.Task
+import net.iobb.koheinoapp.scombmobile.ui.task.TaskViewModel
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 
@@ -24,6 +27,8 @@ class TasksFetchDemon : Service() {
         return null
     }
 
+    var fetchedTasks: List<Task> = mutableListOf()
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Toast.makeText(baseContext, "${this::class.simpleName}#onStartCommand()", Toast.LENGTH_SHORT).show()
 
@@ -31,7 +36,8 @@ class TasksFetchDemon : Service() {
         Toast.makeText(baseContext, "session_id=${sessionId}", Toast.LENGTH_SHORT).show()
 
         fetchTasksFromScomb(sessionId){ document ->
-            Log.d("fetched_tasks", document?.text() ?: "null")
+            fetchedTasks = TaskViewModel.generateTaskFromHtml(baseContext, document ?: return@fetchTasksFromScomb)
+            Log.d("fetched_tasks", fetchedTasks.toString())
         }
 
         return START_NOT_STICKY

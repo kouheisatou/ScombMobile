@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 import net.iobb.koheinoapp.scombmobile.background.ScombMobileNotification
 import net.iobb.koheinoapp.scombmobile.common.*
 import net.iobb.koheinoapp.scombmobile.ui.timetable.ClassCell
+import org.jsoup.nodes.Document
 import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
@@ -23,34 +24,10 @@ class TaskViewModel : ViewModel() {
 
     fun fetchTasks(context: Context){
         viewModelScope.launch(Dispatchers.IO) {
-            val document = page.fetch(TASK_LIST_PAGE_URL, appViewModel.sessionId)
+            val document = page.fetch(TASK_LIST_PAGE_URL, appViewModel.sessionId) ?: return@launch
 
             // tasks from scomb
-            val newTasks = mutableListOf<Task>()
-            val fetchedTasks = document?.getElementsByClass(TASK_LIST_CSS_CLASS_NM) ?: return@launch
-            for(row in fetchedTasks) {
-                val className = row.getElementsByClass(TASK_LIST_CLASS_CULUMN_CSS_NM).text()
-                val taskType = when(row.getElementsByClass(TASK_LIST_TYPE_CULUMN_CSS_NM).getOrNull(0)?.text()) {
-                    "課題" -> TaskType.Task
-                    "テスト" -> TaskType.Exam
-                    "アンケート" -> TaskType.Questionnaire
-                    else -> null
-                }
-                val taskTitle = row.getElementsByClass(TASK_LIST_TITLE_CULUMN_CSS_NM).getOrNull(0)?.text() ?: "null"
-                val relativeLocation = row.getElementsByAttribute("href").attr("href")
-                val url = "$SCOMBZ_DOMAIN$relativeLocation"
-                val deadlineString = row.getElementsByClass(TASK_LIST_DEADLINE_CULUMN_CSS_NM).text().replace("期限： ", "")
-                val deadline = Calendar.getInstance()
-                try{
-                    deadline.time = SimpleDateFormat("yyyy/MM/dd HH:mm:ss").parse(deadlineString)
-                }catch (e: Exception){
-                    e.printStackTrace()
-                }
-
-                val newTask = Task(taskTitle, className, taskType, deadline.timeInMillis, url, false)
-                newTask.applyClassCustomColor(context)
-                newTasks.add(newTask)
-            }
+            val newTasks = generateTaskFromHtml(context, document).toMutableList()
 
             // tasks added manually
             val myTasks = fetchMyTask(context)
@@ -149,5 +126,46 @@ class TaskViewModel : ViewModel() {
             }
         }
         return result
+    }
+
+    companion object {
+
+        fun generateTaskFromHtml(context: Context, document: Document): List<Task> {
+
+            val newTasks = mutableListOf<Task>()
+            val fetchedTasks =
+                document.getElementsByClass(TASK_LIST_CSS_CLASS_NM) ?: return listOf()
+            for (row in fetchedTasks) {
+                val className = row.getElementsByClass(TASK_LIST_CLASS_CULUMN_CSS_NM).text()
+                val taskType =
+                    when (row.getElementsByClass(TASK_LIST_TYPE_CULUMN_CSS_NM).getOrNull(0)
+                        ?.text()) {
+                        "課題" -> TaskType.Task
+                        "テスト" -> TaskType.Exam
+                        "アンケート" -> TaskType.Questionnaire
+                        else -> null
+                    }
+                val taskTitle =
+                    row.getElementsByClass(TASK_LIST_TITLE_CULUMN_CSS_NM).getOrNull(0)?.text()
+                        ?: "null"
+                val relativeLocation = row.getElementsByAttribute("href").attr("href")
+                val url = "$SCOMBZ_DOMAIN$relativeLocation"
+                val deadlineString = row.getElementsByClass(TASK_LIST_DEADLINE_CULUMN_CSS_NM).text()
+                    .replace("期限： ", "")
+                val deadline = Calendar.getInstance()
+                try {
+                    deadline.time = SimpleDateFormat("yyyy/MM/dd HH:mm:ss").parse(deadlineString)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+
+                val newTask =
+                    Task(taskTitle, className, taskType, deadline.timeInMillis, url, false)
+                newTask.applyClassCustomColor(context)
+                newTasks.add(newTask)
+            }
+
+            return newTasks
+        }
     }
 }
