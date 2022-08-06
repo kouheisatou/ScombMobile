@@ -3,6 +3,7 @@ package net.iobb.koheinoapp.scombmobile
 import android.app.AlarmManager
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -60,6 +61,8 @@ class MainActivity : AppCompatActivity() {
             "ScombMobileDB"
         ).allowMainThreadQueries().build()
         val sessionId = db.settingDao().getSetting("session_id")?.settingValue
+        Log.d("session_id", sessionId ?: "null")
+        appViewModel.sessionId = sessionId
         TasksFetchReceiver.resumeBackgroundTask(this, sessionId, Calendar.getInstance().timeInMillis + 5000, AlarmManager.INTERVAL_DAY)
 
     }

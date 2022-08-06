@@ -54,6 +54,7 @@ class TimetableFragment : Fragment(), SimpleDialog.OnDialogResultListener {
                     binding.swipeLayout.isRefreshing = false
                     binding.timeTable.isVisible = true
                     viewModel.fetch(requireContext(), refreshRequired)
+                    viewModel.checkSessionIdValidity()
                 }
                 NetworkState.Loading -> {
                     binding.swipeLayout.isRefreshing = true

@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.room.Room
 import kotlinx.coroutines.Dispatchers
@@ -201,5 +202,14 @@ class TimetableViewModel : ViewModel() {
             newTimetable[it.period][it.dayOfWeek] = it
         }
         timeTable.postValue(newTimetable)
+    }
+
+    fun checkSessionIdValidity() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val validity = Page().fetch(TASK_LIST_PAGE_URL, appViewModel.sessionId) != null
+            if(!validity){
+                page.networkState.postValue(NetworkState.NotPermitted)
+            }
+        }
     }
 }
