@@ -39,8 +39,4 @@ class TasksFetchReceiver : BroadcastReceiver() {
         startServiceIntent.putExtra("session_id", sessionId)
         context?.startForegroundService(startServiceIntent)
     }
-
-
-
-
 }

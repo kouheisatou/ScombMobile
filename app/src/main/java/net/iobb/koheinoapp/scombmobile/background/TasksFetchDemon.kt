@@ -1,14 +1,17 @@
 package net.iobb.koheinoapp.scombmobile.background
 
+import android.app.Notification
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import android.util.Log
 import android.widget.Toast
+import androidx.core.app.NotificationCompat
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import net.iobb.koheinoapp.scombmobile.R
 import net.iobb.koheinoapp.scombmobile.common.SCOMB_LOGGED_OUT_PAGE_URL
 import net.iobb.koheinoapp.scombmobile.common.TASK_LIST_PAGE_URL
 import net.iobb.koheinoapp.scombmobile.ui.task.Task
@@ -30,6 +33,13 @@ class TasksFetchDemon : Service() {
     var fetchedTasks: List<Task> = mutableListOf()
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        // registration of service
+        val notification = Notification.Builder(baseContext, CHANNEL_ID)
+            .setContentTitle("データ取得中...")
+            .setContentText("Scombからテストと課題の一覧を取得中")
+            .build()
+        startForeground(1, notification)
+
         Toast.makeText(baseContext, "${this::class.simpleName}#onStartCommand()", Toast.LENGTH_SHORT).show()
 
         val sessionId = intent?.getStringExtra("session_id")
@@ -41,6 +51,9 @@ class TasksFetchDemon : Service() {
             CoroutineScope(Dispatchers.Main).launch {
                 Toast.makeText(baseContext, fetchedTasks.toString(), Toast.LENGTH_SHORT).show()
             }
+
+            // end service
+            baseContext.stopService(Intent(baseContext, this::class.java))
         }
 
         return START_NOT_STICKY
