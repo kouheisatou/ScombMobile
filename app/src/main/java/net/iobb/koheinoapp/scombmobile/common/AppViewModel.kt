@@ -21,9 +21,6 @@ const val TASK_LIST_PAGE_URL = "https://scombz.shibaura-it.ac.jp/lms/task"
 /** ScombのCookieとして保存されているセッションIDのキー **/
 const val SESSION_COOKIE_ID = "SESSION"
 
-/** 時間割をローカルに保存する有効期限 **/
-const val TIMETABLE_EFFECTIVE_TIME = 24
-
 // Scombに2段階認証が未設定でログインしようとすると出る"2要素認証は無効になっています。"確認画面の"次へ"ボタンのhtmlのid
 const val TWO_STEP_VERIFICATION_LOGIN_BUTTON_ID = "continueButton"
 

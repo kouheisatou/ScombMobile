@@ -6,11 +6,14 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.util.AttributeSet
+import android.util.Log
 import android.webkit.*
 import androidx.lifecycle.MutableLiveData
+import kotlinx.android.synthetic.main.fragment_class_detail.view.*
 
 
 class StatefulWebView : WebView {
+    val TAG = "StatefulWebView"
 
     var networkState = MutableLiveData(NetworkState.Initialized)
 
@@ -21,9 +24,14 @@ class StatefulWebView : WebView {
         super.onAttachedToWindow()
     }
 
-    fun loadUrl(url: String, onScriptCallback: ((String) -> Unit)?, vararg scripts: String) {
+    fun loadUrl(url: String, sessionId: String, onScriptCallback: ((String) -> Unit)?, vararg scripts: String) {
         (webViewClient as StatefulWebViewClient).scripts.addAll(scripts)
         (webViewClient as StatefulWebViewClient).onScriptCallback = onScriptCallback ?: {}
+
+        val cookieString = "$SESSION_COOKIE_ID=$sessionId; path=/"
+        CookieManager.getInstance().setCookie(SCOMBZ_DOMAIN, cookieString)
+        Log.d(TAG, "cookie=$cookieString")
+
         super.loadUrl(url)
     }
 

@@ -4,10 +4,12 @@ import android.annotation.SuppressLint
 import android.content.Context
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.CookieManager
 import android.webkit.WebViewClient
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.activityViewModels
@@ -17,12 +19,14 @@ import kotlinx.android.synthetic.main.fragment_web_scomb.view.*
 import net.iobb.koheinoapp.scombmobile.*
 import net.iobb.koheinoapp.scombmobile.common.AppViewModel
 import net.iobb.koheinoapp.scombmobile.common.SCOMB_HOME_URL
+import net.iobb.koheinoapp.scombmobile.common.SESSION_COOKIE_ID
 
 class WebScombFragment : Fragment() {
 
     companion object {
         fun newInstance() = WebScombFragment()
     }
+    val TAG = "WebScombFragment"
 
     private lateinit var viewModel: WebScombViewModel
     private val appViewModel: AppViewModel by activityViewModels()
@@ -39,6 +43,11 @@ class WebScombFragment : Fragment() {
         }else{
             root.webView.webViewClient = WebViewClient()
             root.webView.settings.javaScriptEnabled = true
+
+            val cookieString = "$SESSION_COOKIE_ID=${appViewModel.sessionId ?: ""}; path=/"
+            CookieManager.getInstance().setCookie(SCOMB_HOME_URL, cookieString)
+            Log.d(TAG, "cookie=$cookieString")
+
             root.webView.loadUrl(SCOMB_HOME_URL)
         }
 

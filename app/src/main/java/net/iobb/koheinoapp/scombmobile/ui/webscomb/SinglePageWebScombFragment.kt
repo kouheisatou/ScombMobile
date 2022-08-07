@@ -23,7 +23,7 @@ class SinglePageWebScombFragment : Fragment() {
     private lateinit var viewModel: SinglePageWebScombViewModel
     private val appViewModel: AppViewModel by activityViewModels()
     private val args: SinglePageWebScombFragmentArgs by navArgs()
-
+    val TAG = "SinglePageWebScombFragment"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,6 +52,7 @@ class SinglePageWebScombFragment : Fragment() {
 
                     root.webView.loadUrl(
                         args.url,
+                        appViewModel.sessionId ?: "",
                         onScriptCallback = {
                             ((activity ?: return@loadUrl) as MainActivity).binding.appBarMain.toolbar.title = it.replace("\"", "")
                         },
