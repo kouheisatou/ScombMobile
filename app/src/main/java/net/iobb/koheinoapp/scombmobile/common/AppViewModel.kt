@@ -1,7 +1,14 @@
 package net.iobb.koheinoapp.scombmobile.common
 
+import android.content.Context
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
+import androidx.room.Room
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 const val SCOMBZ_DOMAIN = "https://scombz.shibaura-it.ac.jp"
 const val SCOMB_LOGIN_PAGE_URL = "https://scombz.shibaura-it.ac.jp/saml/login?idp=http://adfs.sic.shibaura-it.ac.jp/adfs/services/trust"
@@ -54,4 +61,23 @@ class AppViewModel : ViewModel(){
     // login
     var sessionId: String? = null
     var userId = MutableLiveData("ログインしていません")
+
+
+
+    fun checkSessionIdValidity(context: Context, onPermissionDenied: () -> Unit = { } ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val validity = Page().fetch(TASK_LIST_PAGE_URL, sessionId) != null
+            if(!validity){
+                sessionId = null
+                onPermissionDenied()
+            }else{
+                val db = Room.databaseBuilder(
+                    context,
+                    AppDatabase::class.java,
+                    "ScombMobileDB"
+                ).allowMainThreadQueries().build()
+                userId.postValue(db.userDao().getUser()?.username ?: return@launch)
+            }
+        }
+    }
 }

@@ -15,10 +15,10 @@ class Page {
 
     var networkState = MutableLiveData(NetworkState.Initialized)
 
-    fun fetch(url: String, cookieId: String?): Document?{
+    fun fetch(url: String, sessionId: String?): Document?{
         var document: Document? = null
 
-        if(cookieId == null){
+        if(sessionId == null){
             networkState.postValue(NetworkState.NotPermitted)
             return null
         }
@@ -32,7 +32,7 @@ class Page {
                 .header("Accept-Encoding", HEADER_ACCEPT_ENCODING)
                 .header("Referer", HEADER_REFERER)
                 .timeout(10 * 1000)
-                .cookie("SESSION", cookieId)
+                .cookie("SESSION", sessionId)
                 .get()
 
             if(document.baseUri() == SCOMB_LOGGED_OUT_PAGE_URL){

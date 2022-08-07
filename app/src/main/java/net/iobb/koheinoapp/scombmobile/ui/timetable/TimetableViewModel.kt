@@ -203,13 +203,4 @@ class TimetableViewModel : ViewModel() {
         }
         timeTable.postValue(newTimetable)
     }
-
-    fun checkSessionIdValidity() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val validity = Page().fetch(TASK_LIST_PAGE_URL, appViewModel.sessionId) != null
-            if(!validity){
-                page.networkState.postValue(NetworkState.NotPermitted)
-            }
-        }
-    }
 }

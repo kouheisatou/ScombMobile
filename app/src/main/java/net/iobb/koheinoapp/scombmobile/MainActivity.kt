@@ -8,6 +8,8 @@ import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -15,10 +17,11 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.room.Room
 import com.google.android.material.navigation.NavigationView
-import net.iobb.koheinoapp.scombmobile.common.AppViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import net.iobb.koheinoapp.scombmobile.background.ScombMobileNotification
 import net.iobb.koheinoapp.scombmobile.background.TasksFetchReceiver
-import net.iobb.koheinoapp.scombmobile.common.AppDatabase
+import net.iobb.koheinoapp.scombmobile.common.*
 import net.iobb.koheinoapp.scombmobile.databinding.ActivityMainBinding
 import java.util.*
 
@@ -72,6 +75,8 @@ class MainActivity : AppCompatActivity() {
             set(Calendar.MILLISECOND, 0)
         }
         TasksFetchReceiver.resumeBackgroundTask(this, sessionId, startTime.timeInMillis, AlarmManager.INTERVAL_DAY)
+
+        appViewModel.checkSessionIdValidity(this)
     }
 
     override fun onStart() {
@@ -84,11 +89,5 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
-    }
-
-    fun restart(){
-        val intent = Intent(baseContext, MainActivity::class.java)
-        finish()
-        startActivity(intent)
     }
 }
