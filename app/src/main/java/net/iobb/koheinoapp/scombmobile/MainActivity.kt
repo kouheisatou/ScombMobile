@@ -7,6 +7,8 @@ import android.util.Log
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
@@ -38,6 +40,9 @@ class MainActivity : AppCompatActivity() {
         setTheme(R.style.Theme_ScombMobile_NoActionBar);
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // disable dark theme
+        AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_NO)
 
         setSupportActionBar(binding.appBarMain.toolbar)
 
