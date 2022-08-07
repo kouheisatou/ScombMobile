@@ -51,10 +51,12 @@ fun <T>rightGravityArrayAdapter(context: Context, spinner: Spinner): ArrayAdapte
     return arrayAdapter
 }
 
-fun setRightGravityAdapterToSpinner(context: Context, selection: List<String>, spinner: Spinner, onSpinnerItemSelected: (selectedItemIndex: Int, selectedItemValue: String) -> Unit){
+fun setRightGravityAdapterToSpinner(context: Context, selection: Map<String, Any?>, spinner: Spinner, onSpinnerItemSelected: (selectedItemIndex: Int, selectedItemValue: String) -> Unit){
 
     val adapter = rightGravityArrayAdapter<String>(context, spinner)
-    adapter.addAll(selection)
+    for (s in selection) {
+        adapter.add(s.key)
+    }
     spinner.adapter = adapter
     spinner.onItemSelectedListener =
         object : AdapterView.OnItemSelectedListener {
@@ -64,8 +66,21 @@ fun setRightGravityAdapterToSpinner(context: Context, selection: List<String>, s
                 position: Int,
                 id: Long
             ) {
-                onSpinnerItemSelected(position, selection[position])
+                view ?: return
+                val selectedItemValue = (view as TextView).text.toString()
+                onSpinnerItemSelected(position, selectedItemValue)
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
+}
+
+fun getIndexOfValuesInSpinner(spinner: Spinner, spinnerItemText: String): Int?{
+    val adapter = spinner.adapter
+    val size = adapter.count
+    for(i in 0 until size){
+        if(spinnerItemText == adapter.getItem(i)){
+            return i
+        }
+    }
+    return null
 }

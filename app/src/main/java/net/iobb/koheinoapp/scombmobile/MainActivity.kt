@@ -23,6 +23,7 @@ import net.iobb.koheinoapp.scombmobile.background.ScombMobileNotification
 import net.iobb.koheinoapp.scombmobile.background.ScombTaskFetchWorker
 import net.iobb.koheinoapp.scombmobile.common.*
 import net.iobb.koheinoapp.scombmobile.databinding.ActivityMainBinding
+import net.iobb.koheinoapp.scombmobile.ui.settings.SettingFragment
 import java.util.*
 
 
@@ -63,7 +64,7 @@ class MainActivity : AppCompatActivity() {
             AppDatabase::class.java,
             "ScombMobileDB"
         ).allowMainThreadQueries().build()
-        val sessionId = db.settingDao().getSetting("session_id")?.settingValue
+        val sessionId = db.settingDao().getSetting(SettingFragment.SettingKeys.SESSION_ID)?.settingValue
         Log.d("session_id", sessionId ?: "null")
         appViewModel.sessionId = sessionId
 

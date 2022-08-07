@@ -82,18 +82,14 @@ class AddNewTaskDialogFragment : DialogFragment() {
                 allClasses.add(it)
             }
         }
-        val classesNameString = mutableListOf("指定なし")
+        val classesSelection = mutableMapOf<String, ClassCell?>("指定なし" to null)
         allClasses.forEach {
-            if(!classesNameString.contains(it.name)){
-                classesNameString.add(it.name)
+            if(!classesSelection.contains(it.name)){
+                classesSelection[it.name] = it
             }
         }
-        setRightGravityAdapterToSpinner(requireContext(), classesNameString, root.classNameSpinner){ position, _ ->
-            selectedClass = if(position == 0){
-                null
-            }else{
-                allClasses[position-1]
-            }
+        setRightGravityAdapterToSpinner(requireContext(), classesSelection, root.classNameSpinner){ _, selectedValueString ->
+            selectedClass = classesSelection[selectedValueString]
         }
 
         root.positive_button.setOnClickListener {

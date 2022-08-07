@@ -1,7 +1,6 @@
 package net.iobb.koheinoapp.scombmobile.ui.settings
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,11 +10,17 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.room.Room
+import kotlinx.android.synthetic.main.fragment_setting.*
 import kotlinx.android.synthetic.main.fragment_setting.view.*
 import net.iobb.koheinoapp.scombmobile.R
 import net.iobb.koheinoapp.scombmobile.common.AppDatabase
+import net.iobb.koheinoapp.scombmobile.common.getIndexOfValuesInSpinner
 import net.iobb.koheinoapp.scombmobile.common.setRightGravityAdapterToSpinner
 import net.iobb.koheinoapp.scombmobile.ui.login.User
+import net.iobb.koheinoapp.scombmobile.ui.settings.SettingFragment.SettingValues.intervalSelection
+import net.iobb.koheinoapp.scombmobile.ui.settings.SettingFragment.SettingValues.termSelection
+import net.iobb.koheinoapp.scombmobile.ui.settings.SettingFragment.SettingValues.notifyShiftTimeSelection
+import net.iobb.koheinoapp.scombmobile.ui.settings.SettingFragment.SettingValues.yearSelection
 import java.util.*
 
 class SettingFragment : Fragment() {
@@ -26,7 +31,12 @@ class SettingFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val root = inflater.inflate(R.layout.fragment_setting, container, false)
+        return inflater.inflate(R.layout.fragment_setting, container, false)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel = ViewModelProvider(this).get(SettingViewModel::class.java)
 
         val db = Room.databaseBuilder(
             requireContext(),
@@ -34,98 +44,125 @@ class SettingFragment : Fragment() {
             "ScombMobileDB"
         ).allowMainThreadQueries().build()
 
-        val intervalSelection = mutableListOf("常に更新", "1日", "2日", "1週間", "2週間")
-        setRightGravityAdapterToSpinner(requireContext(), intervalSelection, root.refreshIntervalSpinner){ selectedIndex, _ ->
-            db.settingDao().insertSetting(Setting("refresh_interval", selectedIndex.toString()))
+        setRightGravityAdapterToSpinner(requireContext(), intervalSelection, refreshIntervalSpinner){ _, selectedValue ->
+            db.settingDao().insertSetting(Setting(SettingKeys.REFRESH_INTERVAL, selectedValue))
         }
 
-        val yearSelection = mutableListOf("最新")
-        val yearOfToday = Calendar.getInstance().get(Calendar.YEAR)
-        for(i in 0 until 10){
-            yearSelection.add((yearOfToday - i).toString())
-        }
-        setRightGravityAdapterToSpinner(requireContext(), yearSelection, root.yearSpinner){ selectedIndex, selectedValue ->
-            db.settingDao().insertSetting(Setting("timetable_year", selectedValue))
-            Log.d("setting_inserted", selectedValue)
+        setRightGravityAdapterToSpinner(requireContext(), yearSelection, yearSpinner){ _, selectedValue ->
+            db.settingDao().insertSetting(Setting(SettingKeys.TIMETABLE_YEAR, selectedValue))
             // "最新" selected
-            if(selectedIndex == 0){
-                root.termSpinner.visibility = View.INVISIBLE
-            }else{
-                root.termSpinner.visibility = View.VISIBLE
-            }
+            termSpinner.visibility = if(selectedValue == "最新"){ View.INVISIBLE }else{ View.VISIBLE }
         }
 
-        val termSelection = mutableListOf("前期", "後期")
-        setRightGravityAdapterToSpinner(requireContext(), termSelection, root.termSpinner) { selectedIndex, _ ->
-            db.settingDao().insertSetting(Setting("timetable_term", selectedIndex.toString()))
+        setRightGravityAdapterToSpinner(requireContext(), termSelection, termSpinner) { _, selectedValue ->
+            db.settingDao().insertSetting(Setting(SettingKeys.TIMETABLE_TERM, selectedValue.toString()))
         }
 
         // enabled task and test notification
-        root.taskNotificationCheckbox.setOnCheckedChangeListener { _, isChecked ->
-            db.settingDao().insertSetting(Setting("task_notification", isChecked.toString()))
-            root.taskNotifyTimeSpinner.isVisible = isChecked
+        taskNotificationCheckbox.setOnCheckedChangeListener { _, isChecked ->
+            db.settingDao().insertSetting(Setting(SettingKeys.ENABLED_TASK_NOTIFICATION, isChecked.toString()))
+            taskNotifyTimeSpinner.isVisible = isChecked
         }
 
         // timing of task and test notification
-        val timeSelection = mutableListOf("10分前", "30分前", "1時間前", "2時間前", "3時間前", "24時間前")
-        setRightGravityAdapterToSpinner(requireContext(), timeSelection, root.taskNotifyTimeSpinner){ selectedItemIndex, _ ->
-            db.settingDao().insertSetting(Setting("task_notify_time", selectedItemIndex.toString()))
+        setRightGravityAdapterToSpinner(requireContext(), notifyShiftTimeSelection, taskNotifyTimeSpinner){ _, selectedValue ->
+            db.settingDao().insertSetting(Setting(SettingKeys.TASK_NOTIFY_TIME_SHIFT, selectedValue))
         }
 
-        // enabled timetable notification
-        root.timetableNotificationCheckbox.setOnCheckedChangeListener { _, isChecked ->
-            db.settingDao().insertSetting(Setting("timetable_notification", isChecked.toString()))
-            root.timetableNotifyTimeSpinner.isVisible = isChecked
-        }
-
-        // timing of timetable class notification
-        setRightGravityAdapterToSpinner(requireContext(), timeSelection, root.timetableNotifyTimeSpinner) { selectedItemIndex, _ ->
-            db.settingDao().insertSetting(Setting("timetable_notify_time", selectedItemIndex.toString()))
-        }
-
-        recoverSettings(db, root, yearSelection)
+        recoverSettings(db)
 
         // auto login checkbox
-        root.autoLoginCheckBox.setOnClickListener {
-            db.settingDao().insertSetting(Setting("enabled_auto_login", root.autoLoginCheckBox.isChecked.toString()))
+        autoLoginCheckBox.setOnClickListener {
+            db.settingDao().insertSetting(Setting(SettingKeys.ENABLED_AUTO_LOGIN, autoLoginCheckBox.isChecked.toString()))
         }
 
         // saved user and pass
-        root.userEditText.addTextChangedListener {
+        userEditText.addTextChangedListener {
             db.userDao().removeAllUser()
-            db.userDao().insertUser(User(root.userEditText.text.toString(), root.passEditText.text.toString()))
+            db.userDao().insertUser(User(userEditText.text.toString(), passEditText.text.toString()))
         }
-        root.passEditText.addTextChangedListener {
+        passEditText.addTextChangedListener {
             db.userDao().removeAllUser()
-            db.userDao().insertUser(User(root.userEditText.text.toString(), root.passEditText.text.toString()))
+            db.userDao().insertUser(User(userEditText.text.toString(), passEditText.text.toString()))
         }
-
-        return root
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(SettingViewModel::class.java)
     }
 
 
-    fun recoverSettings(db: AppDatabase, root: View, yearSelection: List<String>){
-        root.autoLoginCheckBox.isChecked = (db.settingDao().getSetting("enabled_auto_login")?.settingValue ?: "true") == "true"
+    fun recoverSettings(db: AppDatabase){
+        autoLoginCheckBox.isChecked = (db.settingDao().getSetting(SettingKeys.ENABLED_AUTO_LOGIN)?.settingValue ?: "true") == "true"
 
-        root.userEditText.setText(db.userDao().getUser()?.username ?: "")
-        root.passEditText.setText(db.userDao().getUser()?.password ?: "")
+        userEditText.setText(db.userDao().getUser()?.username ?: "")
+        passEditText.setText(db.userDao().getUser()?.password ?: "")
 
-        root.refreshIntervalSpinner.setSelection(db.settingDao().getSetting("refresh_interval")?.settingValue?.toInt() ?: 4)
-        val yearIndex = yearSelection.indexOf(db.settingDao().getSetting("timetable_year")?.settingValue ?: "最新")
-        root.yearSpinner.setSelection(yearIndex)
-        root.termSpinner.setSelection(db.settingDao().getSetting("timetable_term")?.settingValue?.toInt() ?: 0)
+        val refreshIntervalSettingValue = db.settingDao().getSetting(SettingKeys.REFRESH_INTERVAL)?.settingValue
+        val refreshIntervalSelectionIndex = getIndexOfValuesInSpinner(
+            refreshIntervalSpinner,
+            refreshIntervalSettingValue ?: "1週間"
+        ) ?: 0
+        refreshIntervalSpinner.setSelection(refreshIntervalSelectionIndex)
 
-        root.taskNotificationCheckbox.isChecked = (db.settingDao().getSetting("task_notification")?.settingValue ?: "true") == "true"
-        root.taskNotifyTimeSpinner.isVisible = root.taskNotificationCheckbox.isChecked
-        root.taskNotifyTimeSpinner.setSelection(db.settingDao().getSetting("task_notify_time")?.settingValue?.toInt() ?: 0)
-        root.timetableNotificationCheckbox.isChecked = (db.settingDao().getSetting("timetable_notification")?.settingValue ?: "true") == "true"
-        root.timetableNotifyTimeSpinner.isVisible = root.timetableNotificationCheckbox.isChecked
-        root.timetableNotifyTimeSpinner.setSelection(db.settingDao().getSetting("timetable_notify_time")?.settingValue?.toInt() ?: 0)
+        val yearSettingValue = db.settingDao().getSetting(SettingKeys.TIMETABLE_YEAR)?.settingValue
+        termSpinner.visibility = if(yearSettingValue == "最新"){ View.INVISIBLE }else{ View.VISIBLE }
+        val yearIndex = getIndexOfValuesInSpinner(
+            yearSpinner,
+            yearSettingValue ?: "最新"
+        ) ?: 0
+        yearSpinner.setSelection(yearIndex)
+
+        val termSettingValue = db.settingDao().getSetting(SettingKeys.TIMETABLE_TERM)?.settingValue
+        val termIndex = getIndexOfValuesInSpinner(termSpinner, termSettingValue ?: "前期") ?: 0
+        termSpinner.setSelection(termIndex)
+
+        taskNotificationCheckbox.isChecked = (db.settingDao().getSetting(SettingKeys.ENABLED_TASK_NOTIFICATION)?.settingValue ?: "true") == "true"
+        taskNotifyTimeSpinner.isVisible = taskNotificationCheckbox.isChecked
+        val taskNotifySpinnerIndex = getIndexOfValuesInSpinner(
+            taskNotifyTimeSpinner,
+            db.settingDao().getSetting(SettingKeys.TASK_NOTIFY_TIME_SHIFT)?.settingValue ?: "30分前"
+        ) ?: 0
+        taskNotifyTimeSpinner.setSelection(taskNotifySpinnerIndex)
+    }
+
+    object SettingKeys {
+        const val ENABLED_TASK_NOTIFICATION = "enabled_task_notification"
+        const val TASK_NOTIFY_TIME_SHIFT = "task_notify_time_shift"
+        const val ENABLED_AUTO_LOGIN = "enabled_auto_login"
+        const val REFRESH_INTERVAL = "refresh_interval"
+        const val TIMETABLE_YEAR = "timetable_year"
+        const val TIMETABLE_TERM = "timetable_term"
+        const val SESSION_ID = "session_id"
+    }
+
+    object SettingValues {
+        val notifyShiftTimeSelection = mapOf(
+            "10分前" to 60000 * 10,
+            "30分前" to 60000 * 30,
+            "1時間前" to 60000 * 60,
+            "2時間前" to 60000 * 60 * 2,
+            "3時間前" to 60000 * 60 * 3,
+            "24時間前" to 60000 * 60 * 4
+        )
+        val termSelection = mapOf(
+            "前期" to 10,
+            "後期" to 20
+        )
+        val intervalSelection = mapOf(
+            "常に更新" to 0,
+            "1日" to 86400000L * 1,
+            "2日" to 86400000L * 2,
+            "1週間" to 86400000L * 7,
+            "2週間" to 86400000L * 14
+        )
+        val yearSelection = mutableMapOf<String, Int>()
+
+        init {
+            val today = Calendar.getInstance()
+            val yearOfToday = today.get(Calendar.YEAR)
+            yearSelection["最新"] = yearOfToday
+            // {key=2022, value=2022}, {key=2021, value=2021}, ...
+            for(i in 0 until 10){
+                yearSelection[(yearOfToday - i).toString()] = yearOfToday - i
+            }
+        }
     }
 
 }

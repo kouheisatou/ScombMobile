@@ -21,6 +21,7 @@ import net.iobb.koheinoapp.scombmobile.*
 import net.iobb.koheinoapp.scombmobile.background.ScombTaskFetchWorker
 import net.iobb.koheinoapp.scombmobile.common.*
 import net.iobb.koheinoapp.scombmobile.ui.settings.Setting
+import net.iobb.koheinoapp.scombmobile.ui.settings.SettingFragment
 import java.lang.Exception
 
 class LoginFragment : Fragment() {
@@ -54,7 +55,7 @@ class LoginFragment : Fragment() {
         passwordTextView.setText(db.userDao().getUser()?.password ?: "")
 
         // auto login
-        if((db.settingDao().getSetting("enabled_auto_login")?.settingValue ?: "true") == "true"){
+        if((db.settingDao().getSetting(SettingFragment.SettingKeys.ENABLED_AUTO_LOGIN)?.settingValue ?: "true") == "true"){
             login(idTextView.text.toString(), passwordTextView.text.toString())
         }
 
@@ -93,7 +94,7 @@ class LoginFragment : Fragment() {
 
                     // save session id to db
                     // use in background task fetch
-                    db.settingDao().insertSetting(Setting("session_id", appViewModel.sessionId!!))
+                    db.settingDao().insertSetting(Setting(SettingFragment.SettingKeys.SESSION_ID, appViewModel.sessionId!!))
 
                     // resume background task fetch everyday
                     if (appViewModel.sessionId != null) {

@@ -1,13 +1,17 @@
 package net.iobb.koheinoapp.scombmobile.background
 
+import android.app.Notification
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.work.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import net.iobb.koheinoapp.scombmobile.R
 import net.iobb.koheinoapp.scombmobile.common.Page.Companion.HEADER_ACCEPT
 import net.iobb.koheinoapp.scombmobile.common.Page.Companion.HEADER_ACCEPT_ENCODING
 import net.iobb.koheinoapp.scombmobile.common.Page.Companion.HEADER_ACCEPT_LANG
@@ -27,9 +31,10 @@ class ScombTaskFetchWorker(
     val context: Context,
     workerParameters: WorkerParameters
 ) : CoroutineWorker(context, workerParameters) {
-    val TAG = "ScombTaskFetchWorker"
 
     companion object {
+        val TAG = "ScombTaskFetchWorker"
+
         fun resumeBackgroundFetch(context: Context, sessionId: String){
 
             val data = Data.Builder()

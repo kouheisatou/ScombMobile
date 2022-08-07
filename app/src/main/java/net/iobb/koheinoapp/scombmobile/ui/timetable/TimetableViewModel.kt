@@ -10,10 +10,12 @@ import androidx.room.Room
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.iobb.koheinoapp.scombmobile.common.*
+import net.iobb.koheinoapp.scombmobile.ui.settings.SettingFragment
 import java.lang.StringBuilder
 import java.util.*
 
 class TimetableViewModel : ViewModel() {
+    val TAG = "TimetableViewModel"
 
     val page = Page()
     lateinit var appViewModel: AppViewModel
@@ -86,29 +88,18 @@ class TimetableViewModel : ViewModel() {
         ).allowMainThreadQueries().build().settingDao()
 
 
-        val interval = db.getSetting("refresh_interval")?.settingValue
-        val year = db.getSetting("timetable_year")?.settingValue
-        val term = db.getSetting("timetable_term")?.settingValue
+        val interval = db.getSetting(SettingFragment.SettingKeys.REFRESH_INTERVAL)?.settingValue
+        val year = db.getSetting(SettingFragment.SettingKeys.TIMETABLE_YEAR)?.settingValue
+        val term = db.getSetting(SettingFragment.SettingKeys.TIMETABLE_TERM)?.settingValue
 
-        Log.d("load_timetable_setting", "interval=$interval, year=$year, term=$term")
+        Log.d(TAG, "load_timetable_setting={interval=$interval, year=$year, term=$term}")
 
-        refreshInterval = when(interval){
-            "0" -> 0L
-            "1" -> 86400000L
-            "2" -> 86400000L * 2
-            "3" -> 86400000L * 7
-            "4" -> 86400000L * 14
-            else -> 86400000L * 7
-        }
+        refreshInterval = SettingFragment.SettingValues.intervalSelection.getOrDefault(interval, 86400000L * 7)
 
         // year as 4 digits
         if(year?.matches(Regex("\\d{4}")) == true){
             timetableYear = year.toInt()
-            timetableTerm = when(term){
-                "0" -> 10
-                "1" -> 20
-                else -> 10
-            }
+            timetableTerm = SettingFragment.SettingValues.termSelection.getOrDefault(term, 10)
         }
         // latest
         else{

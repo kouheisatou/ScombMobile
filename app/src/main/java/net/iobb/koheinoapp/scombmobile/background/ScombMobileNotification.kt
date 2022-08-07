@@ -6,13 +6,11 @@ import android.content.Context
 import android.content.Context.ALARM_SERVICE
 import android.content.Intent
 import android.util.Log
-import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.room.Room
 import net.iobb.koheinoapp.scombmobile.R
 import net.iobb.koheinoapp.scombmobile.common.AppDatabase
-import net.iobb.koheinoapp.scombmobile.ui.settings.Setting
 import net.iobb.koheinoapp.scombmobile.ui.settings.SettingFragment
 import net.iobb.koheinoapp.scombmobile.ui.task.Task
 import java.util.*
@@ -66,15 +64,10 @@ class ScombMobileNotification : BroadcastReceiver() {
             ).allowMainThreadQueries().build()
 
             // load notify timing setting
-            val notifyTimeShiftMillis = when(db.settingDao().getSetting(SettingFragment.SettingKeys.TASK_NOTIFY_TIME_SHIFT)?.settingValue){
-                "0" -> 60000 * 10
-                "1" -> 60000 * 30
-                "2" -> 60000 * 60
-                "3" -> 60000 * 60 * 2
-                "4" -> 60000 * 60 * 3
-                "5" -> 60000 * 60 * 24
-                else -> 60000 * 10
-            }
+            val notifyTimeShiftMillis = SettingFragment.SettingValues.notifyShiftTimeSelection.getOrDefault(
+                db.settingDao().getSetting(SettingFragment.SettingKeys.TASK_NOTIFY_TIME_SHIFT)?.settingValue,
+                60000 * 10
+            )
 
             val alarmManager: AlarmManager = context.getSystemService(ALARM_SERVICE) as AlarmManager
             val alarmIntent: PendingIntent = Intent(context, ScombMobileNotification::class.java).let { intent ->
