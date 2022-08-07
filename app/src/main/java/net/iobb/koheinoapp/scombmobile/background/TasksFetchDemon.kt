@@ -40,17 +40,11 @@ class TasksFetchDemon : Service() {
             .build()
         startForeground(1, notification)
 
-//        Toast.makeText(baseContext, "${this::class.simpleName}#onStartCommand()", Toast.LENGTH_SHORT).show()
-
         val sessionId = intent?.getStringExtra("session_id")
-//        Toast.makeText(baseContext, "session_id=${sessionId}", Toast.LENGTH_SHORT).show()
 
         fetchTasksFromScomb(sessionId){ document ->
             fetchedTasks = TaskViewModel.generateTaskFromHtml(baseContext, document ?: return@fetchTasksFromScomb)
             Log.d("fetched_tasks", fetchedTasks.toString())
-//            CoroutineScope(Dispatchers.Main).launch {
-//                Toast.makeText(baseContext, fetchedTasks.toString(), Toast.LENGTH_SHORT).show()
-//            }
 
             fetchedTasks.forEach {
                 ScombMobileNotification.setTaskAlarm(baseContext, it)
@@ -83,12 +77,11 @@ class TasksFetchDemon : Service() {
                 if(document.baseUri() == SCOMB_LOGGED_OUT_PAGE_URL){
                     document = null
                 }
-
             }catch (e: Exception){
                 e.printStackTrace()
+            }finally {
+                onFinished(document)
             }
-
-            onFinished(document)
         }
     }
 

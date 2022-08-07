@@ -54,6 +54,7 @@ class TimetableFragment : Fragment(), SimpleDialog.OnDialogResultListener {
                     binding.swipeLayout.isRefreshing = false
                     binding.timeTable.isVisible = true
                     viewModel.fetch(requireContext(), refreshRequired)
+                    initToolbarTitle()
                 }
                 NetworkState.Loading -> {
                     binding.swipeLayout.isRefreshing = true
@@ -62,6 +63,7 @@ class TimetableFragment : Fragment(), SimpleDialog.OnDialogResultListener {
                 NetworkState.Finished -> {
                     binding.swipeLayout.isRefreshing = false
                     binding.timeTable.isVisible = true
+                    initToolbarTitle()
                 }
                 NetworkState.NotPermitted -> {
                     if(appViewModel.sessionId == null){
@@ -136,6 +138,15 @@ class TimetableFragment : Fragment(), SimpleDialog.OnDialogResultListener {
         }
 
         return root
+    }
+
+    fun initToolbarTitle(){
+        val term = when(viewModel.timetableTerm ){
+            10 -> "前期"
+            20 -> "後期"
+            else -> ""
+        }
+        ((activity ?: return) as MainActivity).binding.appBarMain.toolbar.title = "${viewModel.timetableYear}年度 $term 時間割"
     }
 
     enum class ListenerState{
