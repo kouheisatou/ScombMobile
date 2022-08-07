@@ -12,11 +12,12 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.room.Room
 import net.iobb.koheinoapp.scombmobile.R
 import net.iobb.koheinoapp.scombmobile.common.AppDatabase
+import net.iobb.koheinoapp.scombmobile.ui.settings.Setting
+import net.iobb.koheinoapp.scombmobile.ui.settings.SettingFragment
 import net.iobb.koheinoapp.scombmobile.ui.task.Task
 import java.util.*
 
 val CHANNEL_ID = "SCOMB_MOBILE_NOTIFICATION"
-val TAG = "ScombMobileNotification"
 
 class ScombMobileNotification : BroadcastReceiver() {
 
@@ -27,18 +28,11 @@ class ScombMobileNotification : BroadcastReceiver() {
             "ScombMobileDB"
         ).allowMainThreadQueries().build()
 
-        val enabledNotification = (db.settingDao().getSetting("task_notification")?.settingValue ?: "true") == "true"
-        Log.d(TAG, "enabled_notification=${db.settingDao().getSetting("task_notification")?.settingValue ?: "null"}")
-        if(!enabledNotification){
-            return
-        }
-
         val content = intent.getStringExtra("content")
         val id = intent.getIntExtra("id", 0)
-
         val notificationReservationTime = intent.getLongExtra("deadline_time", 0)
-        val now = Calendar.getInstance()
-        val deltaT = (notificationReservationTime - now.timeInMillis) / 1000 / 60
+
+        val deltaT = (notificationReservationTime - Calendar.getInstance().timeInMillis) / 1000 / 60
 
         if(deltaT > 0){
             sendNotification(context, "Scomb課題締切り", "$content (${deltaT}分前)", id)
@@ -62,6 +56,7 @@ class ScombMobileNotification : BroadcastReceiver() {
     }
 
     companion object {
+        val TAG = "ScombMobileNotification"
 
         fun setTaskAlarm(context: Context, task: Task){
             val db = Room.databaseBuilder(
@@ -71,14 +66,14 @@ class ScombMobileNotification : BroadcastReceiver() {
             ).allowMainThreadQueries().build()
 
             // load notify timing setting
-            val notifyTimeMillis = when(db.settingDao().getSetting("task_notify_time")?.settingValue){
+            val notifyTimeShiftMillis = when(db.settingDao().getSetting(SettingFragment.SettingKeys.TASK_NOTIFY_TIME_SHIFT)?.settingValue){
                 "0" -> 60000 * 10
                 "1" -> 60000 * 30
                 "2" -> 60000 * 60
                 "3" -> 60000 * 60 * 2
                 "4" -> 60000 * 60 * 3
                 "5" -> 60000 * 60 * 24
-                else -> 0
+                else -> 60000 * 10
             }
 
             val alarmManager: AlarmManager = context.getSystemService(ALARM_SERVICE) as AlarmManager
@@ -88,10 +83,9 @@ class ScombMobileNotification : BroadcastReceiver() {
                 intent.putExtra("deadline_time", task.deadLineTime)
                 PendingIntent.getBroadcast(context, task.taskId, intent, PendingIntent.FLAG_IMMUTABLE)
             }
-            val alarmTime = task.deadLineTime - notifyTimeMillis
-            alarmManager.setAlarmClock(AlarmManager.AlarmClockInfo(alarmTime, null), alarmIntent)
-
-            Log.d(TAG, "newAlarmAdded : $alarmTime, ${task.title}")
+            val alarmTime = task.deadLineTime - notifyTimeShiftMillis
+            Log.d(TAG, "newAlarmAdded : title=${task.title}, \ndeadline=${Date(task.deadLineTime)}, now=${Date(System.currentTimeMillis())}, alarmTime=${Date(alarmTime)}")
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime, alarmIntent)
         }
 
         fun cancelTaskAlerm(context: Context, task: Task){
