@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Context.ALARM_SERVICE
 import android.content.Intent
 import android.util.Log
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.room.Room
@@ -20,11 +21,19 @@ val CHANNEL_ID = "SCOMB_MOBILE_NOTIFICATION"
 class ScombMobileNotification : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        val db = Room.databaseBuilder(
-            context,
-            AppDatabase::class.java,
-            "ScombMobileDB"
-        ).allowMainThreadQueries().build()
+        val db = context.openOrCreateDatabase("ScombMobileDB", 0, null)
+        val cur = db.rawQuery("SELECT * FROM Setting WHERE settingKey='${SettingFragment.SettingKeys.ENABLED_TASK_NOTIFICATION}'", null)
+
+        cur.moveToFirst()
+        val settings = mutableMapOf<String, String>()
+        while(!cur.isAfterLast){
+            settings[cur.getString(0)] = cur.getString(1)
+            cur.moveToNext()
+        }
+        val enabledNotification = settings[SettingFragment.SettingKeys.ENABLED_TASK_NOTIFICATION] == "true"
+        if(!enabledNotification){
+            return
+        }
 
         val content = intent.getStringExtra("content")
         val id = intent.getIntExtra("id", 0)

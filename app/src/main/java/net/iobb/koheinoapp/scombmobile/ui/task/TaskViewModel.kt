@@ -39,7 +39,7 @@ class TaskViewModel : ViewModel() {
             // sort by deadline
             newTasks.sortBy { it.deadLineTime }
 
-            // alerm
+            // alarm
             newTasks.forEach {
                 ScombMobileNotification.setTaskAlarm(context, it)
             }
