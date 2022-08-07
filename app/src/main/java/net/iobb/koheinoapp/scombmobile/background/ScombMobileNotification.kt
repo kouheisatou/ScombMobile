@@ -16,6 +16,7 @@ import net.iobb.koheinoapp.scombmobile.ui.task.Task
 import java.util.*
 
 val CHANNEL_ID = "SCOMB_MOBILE_NOTIFICATION"
+val TAG = "ScombMobileNotification"
 
 class ScombMobileNotification : BroadcastReceiver() {
 
@@ -27,6 +28,7 @@ class ScombMobileNotification : BroadcastReceiver() {
         ).allowMainThreadQueries().build()
 
         val enabledNotification = (db.settingDao().getSetting("task_notification")?.settingValue ?: "true") == "true"
+        Log.d(TAG, "enabled_notification=${db.settingDao().getSetting("task_notification")?.settingValue ?: "null"}")
         if(!enabledNotification){
             return
         }
@@ -86,7 +88,10 @@ class ScombMobileNotification : BroadcastReceiver() {
                 intent.putExtra("deadline_time", task.deadLineTime)
                 PendingIntent.getBroadcast(context, task.taskId, intent, PendingIntent.FLAG_IMMUTABLE)
             }
-            alarmManager.setAlarmClock(AlarmManager.AlarmClockInfo(task.deadLineTime - notifyTimeMillis, null), alarmIntent)
+            val alarmTime = task.deadLineTime - notifyTimeMillis
+            alarmManager.setAlarmClock(AlarmManager.AlarmClockInfo(alarmTime, null), alarmIntent)
+
+            Log.d(TAG, "newAlarmAdded : $alarmTime, ${task.title}")
         }
 
         fun cancelTaskAlerm(context: Context, task: Task){

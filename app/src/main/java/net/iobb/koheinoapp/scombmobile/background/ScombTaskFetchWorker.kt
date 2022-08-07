@@ -27,6 +27,7 @@ class ScombTaskFetchWorker(
     val context: Context,
     workerParameters: WorkerParameters
 ) : CoroutineWorker(context, workerParameters) {
+    val TAG = "ScombTaskFetchWorker"
 
     companion object {
         fun resumeBackgroundFetch(context: Context, sessionId: String){
@@ -45,11 +46,14 @@ class ScombTaskFetchWorker(
 
             val workerManager = WorkManager.getInstance(context)
             workerManager.enqueue(request)
+
+            Log.d(TAG, "background_task_resumed")
         }
     }
 
     override suspend fun doWork(): Result {
         return withContext(Dispatchers.IO) {
+            Log.d(TAG, "background_task_started")
 
             val sessionId = inputData.getString("session_id") ?: return@withContext Result.failure()
 
@@ -59,7 +63,7 @@ class ScombTaskFetchWorker(
                 context,
                 document ?: return@withContext Result.failure()
             )
-            Log.d("background_fetched_tasks", fetchedTasks.toString())
+            Log.d(TAG, "fetchedTasks=$fetchedTasks")
 
             fetchedTasks.forEach {
                 ScombMobileNotification.setTaskAlarm(context, it)
