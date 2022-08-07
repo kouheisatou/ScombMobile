@@ -95,6 +95,12 @@ class SettingFragment : Fragment() {
             val intent = Intent(Intent.ACTION_VIEW, uri)
             startActivity(intent)
         }
+        // privacy policy link
+        privacyPolicyLinkTextView.setOnClickListener {
+            val uri = Uri.parse(privacyPolicyLinkTextView.text.toString())
+            val intent = Intent(Intent.ACTION_VIEW, uri)
+            startActivity(intent)
+        }
     }
 
 

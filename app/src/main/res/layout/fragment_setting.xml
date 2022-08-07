@@ -241,17 +241,12 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:orientation="vertical"
                     android:layout_marginVertical="8dp">
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:text="github : "/>
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"/>
+                        android:text="github"/>
                     <TextView
                         android:id="@+id/githubLinkTextView"
                         android:layout_width="wrap_content"
@@ -259,6 +254,25 @@
                         android:layout_height="match_parent"
                         android:textColor="#0000FF"
                         android:text="@string/github_link"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginVertical="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="プライバシーポリシー"/>
+                    <TextView
+                        android:id="@+id/privacyPolicyLinkTextView"
+                        android:layout_width="wrap_content"
+                        android:background="?attr/selectableItemBackground"
+                        android:layout_height="match_parent"
+                        android:textColor="#0000FF"
+                        android:text="@string/privacy_policy_link"/>
                 </LinearLayout>
 
             </LinearLayout>
