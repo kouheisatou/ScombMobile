@@ -13,16 +13,21 @@ android {
         applicationId "net.iobb.koheinoapp.scombmobile"
         minSdk 28
         targetSdk 32
-        versionCode 1
-        versionName "1.0"
-
+        versionCode 2
+        versionName "1.0.0"
+        resConfigs "jp"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled = false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    bundle {
+        language {
+            enableSplit = false
         }
     }
     compileOptions {
