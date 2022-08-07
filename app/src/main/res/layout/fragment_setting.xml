@@ -238,16 +238,28 @@
                     android:layout_marginBottom="10dp"
                     android:background="@color/black"/>
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="github : "/>
-                <TextView
-                    android:id="@+id/githubLinkTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textColor="#0000FF"
-                    android:text="@string/github_link"/>
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginVertical="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="github : "/>
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"/>
+                    <TextView
+                        android:id="@+id/githubLinkTextView"
+                        android:layout_width="wrap_content"
+                        android:background="?attr/selectableItemBackground"
+                        android:layout_height="match_parent"
+                        android:textColor="#0000FF"
+                        android:text="@string/github_link"/>
+                </LinearLayout>
 
             </LinearLayout>
         </LinearLayout>

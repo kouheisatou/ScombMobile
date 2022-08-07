@@ -1,5 +1,7 @@
 package net.iobb.koheinoapp.scombmobile.ui.settings
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +11,7 @@ import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.room.Room
 import kotlinx.android.synthetic.main.fragment_setting.*
 import kotlinx.android.synthetic.main.fragment_setting.view.*
@@ -84,6 +87,13 @@ class SettingFragment : Fragment() {
         passEditText.addTextChangedListener {
             db.userDao().removeAllUser()
             db.userDao().insertUser(User(userEditText.text.toString(), passEditText.text.toString()))
+        }
+
+        // github link
+        githubLinkTextView.setOnClickListener {
+            val uri = Uri.parse(githubLinkTextView.text.toString())
+            val intent = Intent(Intent.ACTION_VIEW, uri)
+            startActivity(intent)
         }
     }
 

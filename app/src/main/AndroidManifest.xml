@@ -34,10 +34,6 @@
         <receiver
             android:name=".background.ScombMobileNotification"
             android:process=":remote" />
-        <receiver
-            android:name=".background.TasksFetchReceiver"
-            android:process=":remote" />
-        <service android:name=".background.TasksFetchDemon"/>
     </application>
 
 </manifest>
