@@ -18,6 +18,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.room.Room
 import kotlinx.android.synthetic.main.fragment_login.*
 import net.iobb.koheinoapp.scombmobile.*
+import net.iobb.koheinoapp.scombmobile.background.ScombTaskFetchWorker
 import net.iobb.koheinoapp.scombmobile.common.*
 import net.iobb.koheinoapp.scombmobile.ui.settings.Setting
 import java.lang.Exception
@@ -93,6 +94,11 @@ class LoginFragment : Fragment() {
                     // save session id to db
                     // use in background task fetch
                     db.settingDao().insertSetting(Setting("session_id", appViewModel.sessionId!!))
+
+                    // resume background task fetch everyday
+                    if (appViewModel.sessionId != null) {
+                        ScombTaskFetchWorker.resumeBackgroundFetch(requireContext(), appViewModel.sessionId!!)
+                    }
 
                     findNavController().popBackStack()
                 }

@@ -60,9 +60,6 @@ dependencies {
     // jsoup
     implementation("org.jsoup:jsoup:1.15.2")
 
-    // base64
-    implementation("commons-codec:commons-codec:1.15")
-
     // room
     implementation "androidx.room:room-runtime:2.4.3"
     kapt "androidx.room:room-compiler:2.4.3"
@@ -76,4 +73,7 @@ dependencies {
 
     // url query
     implementation("org.apache.httpcomponents:httpclient:4.5.13")
+
+    // background
+    implementation "androidx.work:work-runtime-ktx:2.7.1"
 }

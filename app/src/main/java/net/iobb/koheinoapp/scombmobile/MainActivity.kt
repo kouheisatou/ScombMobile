@@ -20,7 +20,7 @@ import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.iobb.koheinoapp.scombmobile.background.ScombMobileNotification
-import net.iobb.koheinoapp.scombmobile.background.TasksFetchReceiver
+import net.iobb.koheinoapp.scombmobile.background.ScombTaskFetchWorker
 import net.iobb.koheinoapp.scombmobile.common.*
 import net.iobb.koheinoapp.scombmobile.databinding.ActivityMainBinding
 import java.util.*
@@ -66,15 +66,6 @@ class MainActivity : AppCompatActivity() {
         val sessionId = db.settingDao().getSetting("session_id")?.settingValue
         Log.d("session_id", sessionId ?: "null")
         appViewModel.sessionId = sessionId
-
-        val startTime = Calendar.getInstance().apply {
-            add(Calendar.DATE, 1)
-            set(Calendar.HOUR_OF_DAY, 0)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-        }
-        TasksFetchReceiver.resumeBackgroundTask(this, sessionId, startTime.timeInMillis, AlarmManager.INTERVAL_DAY)
 
         appViewModel.checkSessionIdValidity(this)
     }
