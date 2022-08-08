@@ -20,11 +20,11 @@ class StatefulWebView : WebView {
     @SuppressLint("SetJavaScriptEnabled")
     override fun onAttachedToWindow() {
         settings.javaScriptEnabled = true
-        webViewClient = StatefulWebViewClient()
         super.onAttachedToWindow()
     }
 
     fun loadUrl(url: String, sessionId: String, onScriptCallback: ((String) -> Unit)?, vararg scripts: String) {
+        webViewClient = StatefulWebViewClient()
         (webViewClient as StatefulWebViewClient).scripts.addAll(scripts)
         (webViewClient as StatefulWebViewClient).onScriptCallback = onScriptCallback ?: {}
 
