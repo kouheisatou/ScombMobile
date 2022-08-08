@@ -12,6 +12,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.room.Room
 import net.iobb.koheinoapp.scombmobile.R
 import net.iobb.koheinoapp.scombmobile.common.AppDatabase
+import net.iobb.koheinoapp.scombmobile.common.getSettingValueFromDB
 import net.iobb.koheinoapp.scombmobile.ui.settings.SettingFragment
 import net.iobb.koheinoapp.scombmobile.ui.task.Task
 import java.util.*
@@ -21,25 +22,19 @@ val CHANNEL_ID = "SCOMB_MOBILE_NOTIFICATION"
 class ScombMobileNotification : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        val db = context.openOrCreateDatabase("ScombMobileDB", 0, null)
-        val cur = db.rawQuery("SELECT * FROM Setting WHERE settingKey='${SettingFragment.SettingKeys.ENABLED_TASK_NOTIFICATION}'", null)
 
-        cur.moveToFirst()
-        val settings = mutableMapOf<String, String>()
-        while(!cur.isAfterLast){
-            settings[cur.getString(0)] = cur.getString(1)
-            cur.moveToNext()
-        }
-        val enabledNotification = settings[SettingFragment.SettingKeys.ENABLED_TASK_NOTIFICATION] == "true"
-        if(!enabledNotification){
+        // if notification is enabled
+        val isEnabledNotification = getSettingValueFromDB(context, SettingFragment.SettingKeys.ENABLED_TASK_NOTIFICATION) == "true"
+        Toast.makeText(context, getSettingValueFromDB(context, SettingFragment.SettingKeys.ENABLED_TASK_NOTIFICATION).toString(), Toast.LENGTH_SHORT).show()
+        if(!isEnabledNotification){
             return
         }
 
         val content = intent.getStringExtra("content")
         val id = intent.getIntExtra("id", 0)
-        val notificationReservationTime = intent.getLongExtra("deadline_time", 0)
+        val deadlineTime = intent.getLongExtra("deadline_time", 0)
 
-        val deltaT = (notificationReservationTime - Calendar.getInstance().timeInMillis) / 1000 / 60
+        val deltaT = (deadlineTime - Calendar.getInstance().timeInMillis) / 1000 / 60
 
         if(deltaT > 0){
             sendNotification(context, "Scomb課題締切り", "$content (${deltaT}分前)", id)

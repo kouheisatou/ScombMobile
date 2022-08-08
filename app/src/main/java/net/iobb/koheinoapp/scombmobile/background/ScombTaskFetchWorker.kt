@@ -19,9 +19,13 @@ import net.iobb.koheinoapp.scombmobile.common.Page.Companion.HEADER_REFERER
 import net.iobb.koheinoapp.scombmobile.common.Page.Companion.USER_AGENT
 import net.iobb.koheinoapp.scombmobile.common.SCOMB_LOGGED_OUT_PAGE_URL
 import net.iobb.koheinoapp.scombmobile.common.TASK_LIST_PAGE_URL
+import net.iobb.koheinoapp.scombmobile.common.insertSettingToDB
+import net.iobb.koheinoapp.scombmobile.ui.settings.Setting
+import net.iobb.koheinoapp.scombmobile.ui.settings.SettingFragment
 import net.iobb.koheinoapp.scombmobile.ui.task.TaskViewModel
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 const val WORKER_TAG = "scomb_task_fetch_worker"
@@ -73,6 +77,8 @@ class ScombTaskFetchWorker(
             fetchedTasks.forEach {
                 ScombMobileNotification.setTaskAlarm(context, it)
             }
+
+            insertSettingToDB(context, Setting(SettingFragment.SettingKeys.TASK_LIST_LAST_FETCHED_DATE, Calendar.getInstance().timeInMillis.toString()))
 
             return@withContext Result.success()
         }

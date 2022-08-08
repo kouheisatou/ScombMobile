@@ -10,6 +10,7 @@ import android.widget.Spinner
 import android.widget.TextView
 import kotlinx.android.synthetic.main.fragment_setting.view.*
 import net.iobb.koheinoapp.scombmobile.ui.settings.Setting
+import net.iobb.koheinoapp.scombmobile.ui.settings.SettingFragment
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -83,4 +84,23 @@ fun getIndexOfValuesInSpinner(spinner: Spinner, spinnerItemText: String): Int?{
         }
     }
     return null
+}
+
+fun getSettingValueFromDB(context: Context, settingKey: String): String?{
+    val db = context.openOrCreateDatabase("ScombMobileDB", 0, null)
+    val cur = db.rawQuery("SELECT * FROM Setting WHERE settingKey='${settingKey}'", null)
+
+    cur.moveToFirst()
+    val settings = mutableMapOf<String, String>()
+    while(!cur.isAfterLast){
+        settings[cur.getString(0)] = cur.getString(1)
+        cur.moveToNext()
+    }
+
+    return settings[settingKey]
+}
+
+fun insertSettingToDB(context: Context, setting: Setting){
+    val db = context.openOrCreateDatabase("ScombMobileDB", 0, null)
+    db.rawQuery("INSERT INTO Setting (settingKey, settingValue) VALUES (${setting.settingKey}, ${setting.settingValue})", null)
 }

@@ -10,6 +10,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.iobb.koheinoapp.scombmobile.background.ScombMobileNotification
 import net.iobb.koheinoapp.scombmobile.common.*
+import net.iobb.koheinoapp.scombmobile.ui.settings.Setting
+import net.iobb.koheinoapp.scombmobile.ui.settings.SettingFragment
 import net.iobb.koheinoapp.scombmobile.ui.timetable.ClassCell
 import org.jsoup.nodes.Document
 import java.lang.Exception
@@ -28,6 +30,12 @@ class TaskViewModel : ViewModel() {
 
             // tasks from scomb
             val newTasks = generateTaskFromHtml(context, document).toMutableList()
+            val db = Room.databaseBuilder(
+                context,
+                AppDatabase::class.java,
+                "ScombMobileDB"
+            ).allowMainThreadQueries().build()
+            db.settingDao().insertSetting(Setting(SettingFragment.SettingKeys.TASK_LIST_LAST_FETCHED_DATE, Calendar.getInstance().timeInMillis.toString()))
 
             // tasks added manually
             val myTasks = fetchMyTask(context)

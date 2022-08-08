@@ -6,19 +6,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.room.Room
 import kotlinx.android.synthetic.main.fragment_setting.*
-import kotlinx.android.synthetic.main.fragment_setting.view.*
 import net.iobb.koheinoapp.scombmobile.R
 import net.iobb.koheinoapp.scombmobile.common.AppDatabase
 import net.iobb.koheinoapp.scombmobile.common.getIndexOfValuesInSpinner
 import net.iobb.koheinoapp.scombmobile.common.setRightGravityAdapterToSpinner
+import net.iobb.koheinoapp.scombmobile.common.timeToString
 import net.iobb.koheinoapp.scombmobile.ui.login.User
 import net.iobb.koheinoapp.scombmobile.ui.settings.SettingFragment.SettingValues.intervalSelection
 import net.iobb.koheinoapp.scombmobile.ui.settings.SettingFragment.SettingValues.termSelection
@@ -37,11 +35,21 @@ class SettingFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_setting, container, false)
     }
 
+    override fun onStart() {
+
+        val lastFetchedDate = db.settingDao().getSetting(SettingKeys.TASK_LIST_LAST_FETCHED_DATE)?.settingValue?.toLong()
+        lastFetchDateTextView.text = if(lastFetchedDate != null) { timeToString(lastFetchedDate) } else { "未取得" }
+
+        super.onStart()
+    }
+
+    lateinit var db: AppDatabase
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(SettingViewModel::class.java)
 
-        val db = Room.databaseBuilder(
+        db = Room.databaseBuilder(
             requireContext(),
             AppDatabase::class.java,
             "ScombMobileDB"
@@ -146,6 +154,7 @@ class SettingFragment : Fragment() {
         const val TIMETABLE_YEAR = "timetable_year"
         const val TIMETABLE_TERM = "timetable_term"
         const val SESSION_ID = "session_id"
+        const val TASK_LIST_LAST_FETCHED_DATE = "task_list_last_fetched_date"
     }
 
     object SettingValues {
