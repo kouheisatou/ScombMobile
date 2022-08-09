@@ -10,7 +10,6 @@
         <entry key="app/src/main/res/drawable/ic_baseline_circle_24.xml" value="0.215" />
         <entry key="app/src/main/res/drawable/ic_baseline_palette_24.xml" value="0.215" />
         <entry key="app/src/main/res/drawable/ic_baseline_person_24.xml" value="0.2395" />
-        <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.1975" />
         <entry key="app/src/main/res/drawable/palette.xml" value="0.2385" />
         <entry key="app/src/main/res/drawable/shape_rounded_coners_10dp.xml" value="0.2385" />
         <entry key="app/src/main/res/drawable/side_nav_bar.xml" value="0.2395" />
@@ -37,7 +36,7 @@
         <entry key="app/src/main/res/layout/fragment_task2.xml" value="0.22447916666666667" />
         <entry key="app/src/main/res/layout/fragment_task_switcher.xml" value="0.3770833333333333" />
         <entry key="app/src/main/res/layout/fragment_web_scomb.xml" value="0.19583333333333333" />
-        <entry key="app/src/main/res/layout/nav_header_main.xml" value="0.19583333333333333" />
+        <entry key="app/src/main/res/layout/nav_header_main.xml" value="0.33" />
         <entry key="app/src/main/res/layout/pallete_image_button.xml" value="0.2234375" />
         <entry key="app/src/main/res/menu/activity_main_drawer.xml" value="0.19583333333333333" />
         <entry key="app/src/main/res/menu/bottom_nav_item.xml" value="0.37604166666666666" />
