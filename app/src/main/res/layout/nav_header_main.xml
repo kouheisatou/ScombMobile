@@ -1,43 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/nav_header_height"
     android:background="@drawable/side_nav_bar"
     android:gravity="bottom"
     android:orientation="vertical"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingTop="30dp"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:padding="20dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <ImageView
-        android:layout_width="wrap_content"
+        android:id="@+id/imageView3"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
         android:layout_gravity="center"
-        android:src="@drawable/scomb_mobile_logo"/>
+        android:paddingTop="30dp"
+        android:src="@drawable/scomb_mobile_logo"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="20dp" />
 
     <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:elevation="10dp"
+            android:text="学籍番号 : "
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textColor="#333333"
-            android:text="学籍番号 : "/>
+            android:textColor="#333333" />
+
         <TextView
             android:id="@+id/userNameTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="ログインしていません"
             android:elevation="10dp"
-            android:textColor="#333333"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+            android:text="ログインしていません"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="#333333" />
     </LinearLayout>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,5 +2,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@color/white"/>
     <item android:drawable="@drawable/scomb_mobile_logo"
+        android:width="300dp"
+        android:height="96dp"
         android:gravity="center" />
 </layer-list>
